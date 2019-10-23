@@ -1,0 +1,2189 @@
+<?xml version="1.0"?>
+<argos-configuration>
+  <!-- ************************* -->
+  <!-- * General configuration * -->
+  <!-- ************************* -->
+  <framework>
+    <system threads="0"/>
+    <experiment length="2003" ticks_per_second="1" random_seed="10"/>
+  </framework>
+  <!-- *************** -->
+  <!-- * Controllers * -->
+  <!-- *************** -->
+  <controllers>
+    <footbot_marching_controller id="fdc" library="build/controllers/footbot_marching/libfootbot_marching.so">
+      <actuators>
+        <differential_steering implementation="default"/>
+        <leds implementation="default" medium="leds"/>
+        <range_and_bearing implementation="default"/>
+      </actuators>
+      <sensors>
+        <footbot_proximity implementation="default" show_rays="false"/>
+        <footbot_light implementation="rot_z_only" show_rays="false"/>
+        <range_and_bearing implementation="medium" medium="rab" show_rays="true"/>
+      </sensors>
+      <params>
+        <motion alpha="7.5" delta="0.1" velocity="5"/>
+        <state spontaneous_switching_prob="0.1"/>
+        <!-- ************************* -->
+        <!-- * Decision Making rules * -->
+        <!-- * Default: none ********* -->
+      </params>
+    </footbot_marching_controller>
+  </controllers>
+  <!-- ****************** -->
+  <!-- * Loop functions * -->
+  <!-- ****************** -->
+  <loop_functions library="build/loop_functions/marching_loop_functions/libmarching_loop_functions" label="marching_loop_functions">
+    <folder name="marching" randID="1"/>
+  </loop_functions>
+  
+  <!-- ******************* -->
+  <!-- * Physics engines * -->
+  <!-- ******************* <cylinder id="c" height="0.5" radius="0.25" movable="false"> 
+		<body position="0,0,0" orientation="0,0,0" />
+	</cylinder>-->
+  <physics_engines>
+    <dynamics2d id="dyn2d"/>
+  </physics_engines>
+  <!-- ********* -->
+  <!-- * Media * -->
+  <!-- ********* -->
+  <media>
+    <range_and_bearing id="rab" check_occlusions="true"/>
+    <led id="leds"/>
+  </media>
+  
+  <!-- ****************** -->
+  <!-- * Visualization * -->
+  <!-- ******************  -->
+  <visualization>
+    <qt-opengl>
+      <camera>
+        <placement idx="0" position="0,0,5" look_at="0,0,0" lens_focal_length="5"/>
+        <placement idx="1" position="0,0,5" look_at="0,0,0" lens_focal_length="30"/>
+        <placement idx="2" position="0,0,5" look_at="0,0,0" lens_focal_length="2"/>
+      </camera>
+      <user_functions label="marching_qt_user_functions"/>
+    </qt-opengl>
+  </visualization>
+
+ 
+  <!-- *********************** -->
+  <!-- * Arena configuration * -->
+  <!-- *********************** -->
+  <arena size="100, 100, 10" center="0,0,0.5">
+    <distribute>
+      <position method="ring" center="0,0,0" quantity="100" z_value="0" outerwall_radius="9.0"/>
+      <!--<position method="ring" center="0,0,0" quantity="150" z_value="0" segment_diameter="0.26" />-->
+      <!--<position method="uniform" min="-5,-5,0" max="5,5,0" />-->
+      <orientation method="uniform" min="0,0,0" max="360,0,0"/>
+      <entity quantity="200" max_trials="100">
+        <foot-bot id="fb" rab_range="1.0">
+          <controller config="fdc"/>
+        </foot-bot>
+      </entity>
+    </distribute>
+    <light id="light_center" position="0,0,5" orientation="0,0,0" color="yellow" intensity="50.0" medium="leds"/>
+    <box id="wall_0" size="0.1,0.1,0.5" movable="false">
+      <body position="0,2,0" orientation="360,0,0"/>
+    </box>
+    <box id="wall_1" size="0.1,0.1,0.5" movable="false">
+      <body position="0.125581,1.99605,0" orientation="356.4,0,0"/>
+    </box>
+    <box id="wall_2" size="0.1,0.1,0.5" movable="false">
+      <body position="0.250666,1.98423,0" orientation="352.8,0,0"/>
+    </box>
+    <box id="wall_3" size="0.1,0.1,0.5" movable="false">
+      <body position="0.374763,1.96457,0" orientation="349.2,0,0"/>
+    </box>
+    <box id="wall_4" size="0.1,0.1,0.5" movable="false">
+      <body position="0.49738,1.93717,0" orientation="345.6,0,0"/>
+    </box>
+    <box id="wall_5" size="0.1,0.1,0.5" movable="false">
+      <body position="0.618034,1.90211,0" orientation="342,0,0"/>
+    </box>
+    <box id="wall_6" size="0.1,0.1,0.5" movable="false">
+      <body position="0.736249,1.85955,0" orientation="338.4,0,0"/>
+    </box>
+    <box id="wall_7" size="0.1,0.1,0.5" movable="false">
+      <body position="0.851559,1.80965,0" orientation="334.8,0,0"/>
+    </box>
+    <box id="wall_8" size="0.1,0.1,0.5" movable="false">
+      <body position="0.963507,1.75261,0" orientation="331.2,0,0"/>
+    </box>
+    <box id="wall_9" size="0.1,0.1,0.5" movable="false">
+      <body position="1.07165,1.68866,0" orientation="327.6,0,0"/>
+    </box>
+    <box id="wall_10" size="0.1,0.1,0.5" movable="false">
+      <body position="1.17557,1.61803,0" orientation="324,0,0"/>
+    </box>
+    <box id="wall_11" size="0.1,0.1,0.5" movable="false">
+      <body position="1.27485,1.54103,0" orientation="320.4,0,0"/>
+    </box>
+    <box id="wall_12" size="0.1,0.1,0.5" movable="false">
+      <body position="1.36909,1.45794,0" orientation="316.8,0,0"/>
+    </box>
+    <box id="wall_13" size="0.1,0.1,0.5" movable="false">
+      <body position="1.45794,1.36909,0" orientation="313.2,0,0"/>
+    </box>
+    <box id="wall_14" size="0.1,0.1,0.5" movable="false">
+      <body position="1.54103,1.27485,0" orientation="309.6,0,0"/>
+    </box>
+    <box id="wall_15" size="0.1,0.1,0.5" movable="false">
+      <body position="1.61803,1.17557,0" orientation="306,0,0"/>
+    </box>
+    <box id="wall_16" size="0.1,0.1,0.5" movable="false">
+      <body position="1.68866,1.07165,0" orientation="302.4,0,0"/>
+    </box>
+    <box id="wall_17" size="0.1,0.1,0.5" movable="false">
+      <body position="1.75261,0.963507,0" orientation="298.8,0,0"/>
+    </box>
+    <box id="wall_18" size="0.1,0.1,0.5" movable="false">
+      <body position="1.80965,0.851559,0" orientation="295.2,0,0"/>
+    </box>
+    <box id="wall_19" size="0.1,0.1,0.5" movable="false">
+      <body position="1.85955,0.736249,0" orientation="291.6,0,0"/>
+    </box>
+    <box id="wall_20" size="0.1,0.1,0.5" movable="false">
+      <body position="1.90211,0.618034,0" orientation="288,0,0"/>
+    </box>
+    <box id="wall_21" size="0.1,0.1,0.5" movable="false">
+      <body position="1.93717,0.49738,0" orientation="284.4,0,0"/>
+    </box>
+    <box id="wall_22" size="0.1,0.1,0.5" movable="false">
+      <body position="1.96457,0.374763,0" orientation="280.8,0,0"/>
+    </box>
+    <box id="wall_23" size="0.1,0.1,0.5" movable="false">
+      <body position="1.98423,0.250666,0" orientation="277.2,0,0"/>
+    </box>
+    <box id="wall_24" size="0.1,0.1,0.5" movable="false">
+      <body position="1.99605,0.125581,0" orientation="273.6,0,0"/>
+    </box>
+    <box id="wall_25" size="0.1,0.1,0.5" movable="false">
+      <body position="2,1.22465e-16,0" orientation="270,0,0"/>
+    </box>
+    <box id="wall_26" size="0.1,0.1,0.5" movable="false">
+      <body position="1.99605,-0.125581,0" orientation="266.4,0,0"/>
+    </box>
+    <box id="wall_27" size="0.1,0.1,0.5" movable="false">
+      <body position="1.98423,-0.250666,0" orientation="262.8,0,0"/>
+    </box>
+    <box id="wall_28" size="0.1,0.1,0.5" movable="false">
+      <body position="1.96457,-0.374763,0" orientation="259.2,0,0"/>
+    </box>
+    <box id="wall_29" size="0.1,0.1,0.5" movable="false">
+      <body position="1.93717,-0.49738,0" orientation="255.6,0,0"/>
+    </box>
+    <box id="wall_30" size="0.1,0.1,0.5" movable="false">
+      <body position="1.90211,-0.618034,0" orientation="252,0,0"/>
+    </box>
+    <box id="wall_31" size="0.1,0.1,0.5" movable="false">
+      <body position="1.85955,-0.736249,0" orientation="248.4,0,0"/>
+    </box>
+    <box id="wall_32" size="0.1,0.1,0.5" movable="false">
+      <body position="1.80965,-0.851559,0" orientation="244.8,0,0"/>
+    </box>
+    <box id="wall_33" size="0.1,0.1,0.5" movable="false">
+      <body position="1.75261,-0.963507,0" orientation="241.2,0,0"/>
+    </box>
+    <box id="wall_34" size="0.1,0.1,0.5" movable="false">
+      <body position="1.68866,-1.07165,0" orientation="237.6,0,0"/>
+    </box>
+    <box id="wall_35" size="0.1,0.1,0.5" movable="false">
+      <body position="1.61803,-1.17557,0" orientation="234,0,0"/>
+    </box>
+    <box id="wall_36" size="0.1,0.1,0.5" movable="false">
+      <body position="1.54103,-1.27485,0" orientation="230.4,0,0"/>
+    </box>
+    <box id="wall_37" size="0.1,0.1,0.5" movable="false">
+      <body position="1.45794,-1.36909,0" orientation="226.8,0,0"/>
+    </box>
+    <box id="wall_38" size="0.1,0.1,0.5" movable="false">
+      <body position="1.36909,-1.45794,0" orientation="223.2,0,0"/>
+    </box>
+    <box id="wall_39" size="0.1,0.1,0.5" movable="false">
+      <body position="1.27485,-1.54103,0" orientation="219.6,0,0"/>
+    </box>
+    <box id="wall_40" size="0.1,0.1,0.5" movable="false">
+      <body position="1.17557,-1.61803,0" orientation="216,0,0"/>
+    </box>
+    <box id="wall_41" size="0.1,0.1,0.5" movable="false">
+      <body position="1.07165,-1.68866,0" orientation="212.4,0,0"/>
+    </box>
+    <box id="wall_42" size="0.1,0.1,0.5" movable="false">
+      <body position="0.963507,-1.75261,0" orientation="208.8,0,0"/>
+    </box>
+    <box id="wall_43" size="0.1,0.1,0.5" movable="false">
+      <body position="0.851559,-1.80965,0" orientation="205.2,0,0"/>
+    </box>
+    <box id="wall_44" size="0.1,0.1,0.5" movable="false">
+      <body position="0.736249,-1.85955,0" orientation="201.6,0,0"/>
+    </box>
+    <box id="wall_45" size="0.1,0.1,0.5" movable="false">
+      <body position="0.618034,-1.90211,0" orientation="198,0,0"/>
+    </box>
+    <box id="wall_46" size="0.1,0.1,0.5" movable="false">
+      <body position="0.49738,-1.93717,0" orientation="194.4,0,0"/>
+    </box>
+    <box id="wall_47" size="0.1,0.1,0.5" movable="false">
+      <body position="0.374763,-1.96457,0" orientation="190.8,0,0"/>
+    </box>
+    <box id="wall_48" size="0.1,0.1,0.5" movable="false">
+      <body position="0.250666,-1.98423,0" orientation="187.2,0,0"/>
+    </box>
+    <box id="wall_49" size="0.1,0.1,0.5" movable="false">
+      <body position="0.125581,-1.99605,0" orientation="183.6,0,0"/>
+    </box>
+    <box id="wall_50" size="0.1,0.1,0.5" movable="false">
+      <body position="2.44929e-16,-2,0" orientation="180,0,0"/>
+    </box>
+    <box id="wall_51" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.125581,-1.99605,0" orientation="176.4,0,0"/>
+    </box>
+    <box id="wall_52" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.250666,-1.98423,0" orientation="172.8,0,0"/>
+    </box>
+    <box id="wall_53" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.374763,-1.96457,0" orientation="169.2,0,0"/>
+    </box>
+    <box id="wall_54" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.49738,-1.93717,0" orientation="165.6,0,0"/>
+    </box>
+    <box id="wall_55" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.618034,-1.90211,0" orientation="162,0,0"/>
+    </box>
+    <box id="wall_56" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.736249,-1.85955,0" orientation="158.4,0,0"/>
+    </box>
+    <box id="wall_57" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.851559,-1.80965,0" orientation="154.8,0,0"/>
+    </box>
+    <box id="wall_58" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.963507,-1.75261,0" orientation="151.2,0,0"/>
+    </box>
+    <box id="wall_59" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.07165,-1.68866,0" orientation="147.6,0,0"/>
+    </box>
+    <box id="wall_60" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.17557,-1.61803,0" orientation="144,0,0"/>
+    </box>
+    <box id="wall_61" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.27485,-1.54103,0" orientation="140.4,0,0"/>
+    </box>
+    <box id="wall_62" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.36909,-1.45794,0" orientation="136.8,0,0"/>
+    </box>
+    <box id="wall_63" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.45794,-1.36909,0" orientation="133.2,0,0"/>
+    </box>
+    <box id="wall_64" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.54103,-1.27485,0" orientation="129.6,0,0"/>
+    </box>
+    <box id="wall_65" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.61803,-1.17557,0" orientation="126,0,0"/>
+    </box>
+    <box id="wall_66" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.68866,-1.07165,0" orientation="122.4,0,0"/>
+    </box>
+    <box id="wall_67" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.75261,-0.963507,0" orientation="118.8,0,0"/>
+    </box>
+    <box id="wall_68" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.80965,-0.851559,0" orientation="115.2,0,0"/>
+    </box>
+    <box id="wall_69" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.85955,-0.736249,0" orientation="111.6,0,0"/>
+    </box>
+    <box id="wall_70" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.90211,-0.618034,0" orientation="108,0,0"/>
+    </box>
+    <box id="wall_71" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.93717,-0.49738,0" orientation="104.4,0,0"/>
+    </box>
+    <box id="wall_72" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.96457,-0.374763,0" orientation="100.8,0,0"/>
+    </box>
+    <box id="wall_73" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.98423,-0.250666,0" orientation="97.2,0,0"/>
+    </box>
+    <box id="wall_74" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.99605,-0.125581,0" orientation="93.6,0,0"/>
+    </box>
+    <box id="wall_75" size="0.1,0.1,0.5" movable="false">
+      <body position="-2,-3.67394e-16,0" orientation="90,0,0"/>
+    </box>
+    <box id="wall_76" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.99605,0.125581,0" orientation="86.4,0,0"/>
+    </box>
+    <box id="wall_77" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.98423,0.250666,0" orientation="82.8,0,0"/>
+    </box>
+    <box id="wall_78" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.96457,0.374763,0" orientation="79.2,0,0"/>
+    </box>
+    <box id="wall_79" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.93717,0.49738,0" orientation="75.6,0,0"/>
+    </box>
+    <box id="wall_80" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.90211,0.618034,0" orientation="72,0,0"/>
+    </box>
+    <box id="wall_81" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.85955,0.736249,0" orientation="68.4,0,0"/>
+    </box>
+    <box id="wall_82" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.80965,0.851559,0" orientation="64.8,0,0"/>
+    </box>
+    <box id="wall_83" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.75261,0.963507,0" orientation="61.2,0,0"/>
+    </box>
+    <box id="wall_84" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.68866,1.07165,0" orientation="57.6,0,0"/>
+    </box>
+    <box id="wall_85" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.61803,1.17557,0" orientation="54,0,0"/>
+    </box>
+    <box id="wall_86" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.54103,1.27485,0" orientation="50.4,0,0"/>
+    </box>
+    <box id="wall_87" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.45794,1.36909,0" orientation="46.8,0,0"/>
+    </box>
+    <box id="wall_88" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.36909,1.45794,0" orientation="43.2,0,0"/>
+    </box>
+    <box id="wall_89" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.27485,1.54103,0" orientation="39.6,0,0"/>
+    </box>
+    <box id="wall_90" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.17557,1.61803,0" orientation="36,0,0"/>
+    </box>
+    <box id="wall_91" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.07165,1.68866,0" orientation="32.4,0,0"/>
+    </box>
+    <box id="wall_92" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.963507,1.75261,0" orientation="28.8,0,0"/>
+    </box>
+    <box id="wall_93" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.851559,1.80965,0" orientation="25.2,0,0"/>
+    </box>
+    <box id="wall_94" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.736249,1.85955,0" orientation="21.6,0,0"/>
+    </box>
+    <box id="wall_95" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.618034,1.90211,0" orientation="18,0,0"/>
+    </box>
+    <box id="wall_96" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.49738,1.93717,0" orientation="14.4,0,0"/>
+    </box>
+    <box id="wall_97" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.374763,1.96457,0" orientation="10.8,0,0"/>
+    </box>
+    <box id="wall_98" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.250666,1.98423,0" orientation="7.2,0,0"/>
+    </box>
+    <box id="wall_99" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.125581,1.99605,0" orientation="3.6,0,0"/>
+    </box>
+    <box id="outerwall_0" size="0.1,0.1,0.5" movable="false">
+      <body position="0,12,0" orientation="360,0,0"/>
+    </box>
+    <box id="outerwall_1" size="0.1,0.1,0.5" movable="false">
+      <body position="0.125661,11.9993,0" orientation="359.4,0,0"/>
+    </box>
+    <box id="outerwall_2" size="0.1,0.1,0.5" movable="false">
+      <body position="0.251309,11.9974,0" orientation="358.8,0,0"/>
+    </box>
+    <box id="outerwall_3" size="0.1,0.1,0.5" movable="false">
+      <body position="0.376929,11.9941,0" orientation="358.2,0,0"/>
+    </box>
+    <box id="outerwall_4" size="0.1,0.1,0.5" movable="false">
+      <body position="0.502508,11.9895,0" orientation="357.6,0,0"/>
+    </box>
+    <box id="outerwall_5" size="0.1,0.1,0.5" movable="false">
+      <body position="0.628031,11.9836,0" orientation="357,0,0"/>
+    </box>
+    <box id="outerwall_6" size="0.1,0.1,0.5" movable="false">
+      <body position="0.753486,11.9763,0" orientation="356.4,0,0"/>
+    </box>
+    <box id="outerwall_7" size="0.1,0.1,0.5" movable="false">
+      <body position="0.878858,11.9678,0" orientation="355.8,0,0"/>
+    </box>
+    <box id="outerwall_8" size="0.1,0.1,0.5" movable="false">
+      <body position="1.00413,11.9579,0" orientation="355.2,0,0"/>
+    </box>
+    <box id="outerwall_9" size="0.1,0.1,0.5" movable="false">
+      <body position="1.1293,11.9467,0" orientation="354.6,0,0"/>
+    </box>
+    <box id="outerwall_10" size="0.1,0.1,0.5" movable="false">
+      <body position="1.25434,11.9343,0" orientation="354,0,0"/>
+    </box>
+    <box id="outerwall_11" size="0.1,0.1,0.5" movable="false">
+      <body position="1.37925,11.9205,0" orientation="353.4,0,0"/>
+    </box>
+    <box id="outerwall_12" size="0.1,0.1,0.5" movable="false">
+      <body position="1.504,11.9054,0" orientation="352.8,0,0"/>
+    </box>
+    <box id="outerwall_13" size="0.1,0.1,0.5" movable="false">
+      <body position="1.62859,11.889,0" orientation="352.2,0,0"/>
+    </box>
+    <box id="outerwall_14" size="0.1,0.1,0.5" movable="false">
+      <body position="1.753,11.8713,0" orientation="351.6,0,0"/>
+    </box>
+    <box id="outerwall_15" size="0.1,0.1,0.5" movable="false">
+      <body position="1.87721,11.8523,0" orientation="351,0,0"/>
+    </box>
+    <box id="outerwall_16" size="0.1,0.1,0.5" movable="false">
+      <body position="2.00122,11.832,0" orientation="350.4,0,0"/>
+    </box>
+    <box id="outerwall_17" size="0.1,0.1,0.5" movable="false">
+      <body position="2.12502,11.8103,0" orientation="349.8,0,0"/>
+    </box>
+    <box id="outerwall_18" size="0.1,0.1,0.5" movable="false">
+      <body position="2.24858,11.7874,0" orientation="349.2,0,0"/>
+    </box>
+    <box id="outerwall_19" size="0.1,0.1,0.5" movable="false">
+      <body position="2.37189,11.7633,0" orientation="348.6,0,0"/>
+    </box>
+    <box id="outerwall_20" size="0.1,0.1,0.5" movable="false">
+      <body position="2.49494,11.7378,0" orientation="348,0,0"/>
+    </box>
+    <box id="outerwall_21" size="0.1,0.1,0.5" movable="false">
+      <body position="2.61772,11.711,0" orientation="347.4,0,0"/>
+    </box>
+    <box id="outerwall_22" size="0.1,0.1,0.5" movable="false">
+      <body position="2.74021,11.6829,0" orientation="346.8,0,0"/>
+    </box>
+    <box id="outerwall_23" size="0.1,0.1,0.5" movable="false">
+      <body position="2.8624,11.6536,0" orientation="346.2,0,0"/>
+    </box>
+    <box id="outerwall_24" size="0.1,0.1,0.5" movable="false">
+      <body position="2.98428,11.623,0" orientation="345.6,0,0"/>
+    </box>
+    <box id="outerwall_25" size="0.1,0.1,0.5" movable="false">
+      <body position="3.10583,11.5911,0" orientation="345,0,0"/>
+    </box>
+    <box id="outerwall_26" size="0.1,0.1,0.5" movable="false">
+      <body position="3.22704,11.558,0" orientation="344.4,0,0"/>
+    </box>
+    <box id="outerwall_27" size="0.1,0.1,0.5" movable="false">
+      <body position="3.34789,11.5235,0" orientation="343.8,0,0"/>
+    </box>
+    <box id="outerwall_28" size="0.1,0.1,0.5" movable="false">
+      <body position="3.46838,11.4878,0" orientation="343.2,0,0"/>
+    </box>
+    <box id="outerwall_29" size="0.1,0.1,0.5" movable="false">
+      <body position="3.58849,11.4509,0" orientation="342.6,0,0"/>
+    </box>
+    <box id="outerwall_30" size="0.1,0.1,0.5" movable="false">
+      <body position="3.7082,11.4127,0" orientation="342,0,0"/>
+    </box>
+    <box id="outerwall_31" size="0.1,0.1,0.5" movable="false">
+      <body position="3.82751,11.3732,0" orientation="341.4,0,0"/>
+    </box>
+    <box id="outerwall_32" size="0.1,0.1,0.5" movable="false">
+      <body position="3.9464,11.3325,0" orientation="340.8,0,0"/>
+    </box>
+    <box id="outerwall_33" size="0.1,0.1,0.5" movable="false">
+      <body position="4.06486,11.2906,0" orientation="340.2,0,0"/>
+    </box>
+    <box id="outerwall_34" size="0.1,0.1,0.5" movable="false">
+      <body position="4.18286,11.2474,0" orientation="339.6,0,0"/>
+    </box>
+    <box id="outerwall_35" size="0.1,0.1,0.5" movable="false">
+      <body position="4.30042,11.203,0" orientation="339,0,0"/>
+    </box>
+    <box id="outerwall_36" size="0.1,0.1,0.5" movable="false">
+      <body position="4.41749,11.1573,0" orientation="338.4,0,0"/>
+    </box>
+    <box id="outerwall_37" size="0.1,0.1,0.5" movable="false">
+      <body position="4.53409,11.1104,0" orientation="337.8,0,0"/>
+    </box>
+    <box id="outerwall_38" size="0.1,0.1,0.5" movable="false">
+      <body position="4.65019,11.0624,0" orientation="337.2,0,0"/>
+    </box>
+    <box id="outerwall_39" size="0.1,0.1,0.5" movable="false">
+      <body position="4.76577,11.0131,0" orientation="336.6,0,0"/>
+    </box>
+    <box id="outerwall_40" size="0.1,0.1,0.5" movable="false">
+      <body position="4.88084,10.9625,0" orientation="336,0,0"/>
+    </box>
+    <box id="outerwall_41" size="0.1,0.1,0.5" movable="false">
+      <body position="4.99537,10.9108,0" orientation="335.4,0,0"/>
+    </box>
+    <box id="outerwall_42" size="0.1,0.1,0.5" movable="false">
+      <body position="5.10935,10.8579,0" orientation="334.8,0,0"/>
+    </box>
+    <box id="outerwall_43" size="0.1,0.1,0.5" movable="false">
+      <body position="5.22277,10.8038,0" orientation="334.2,0,0"/>
+    </box>
+    <box id="outerwall_44" size="0.1,0.1,0.5" movable="false">
+      <body position="5.33562,10.7485,0" orientation="333.6,0,0"/>
+    </box>
+    <box id="outerwall_45" size="0.1,0.1,0.5" movable="false">
+      <body position="5.44789,10.6921,0" orientation="333,0,0"/>
+    </box>
+    <box id="outerwall_46" size="0.1,0.1,0.5" movable="false">
+      <body position="5.55955,10.6344,0" orientation="332.4,0,0"/>
+    </box>
+    <box id="outerwall_47" size="0.1,0.1,0.5" movable="false">
+      <body position="5.67061,10.5756,0" orientation="331.8,0,0"/>
+    </box>
+    <box id="outerwall_48" size="0.1,0.1,0.5" movable="false">
+      <body position="5.78104,10.5157,0" orientation="331.2,0,0"/>
+    </box>
+    <box id="outerwall_49" size="0.1,0.1,0.5" movable="false">
+      <body position="5.89085,10.4546,0" orientation="330.6,0,0"/>
+    </box>
+    <box id="outerwall_50" size="0.1,0.1,0.5" movable="false">
+      <body position="6,10.3923,0" orientation="330,0,0"/>
+    </box>
+    <box id="outerwall_51" size="0.1,0.1,0.5" movable="false">
+      <body position="6.1085,10.3289,0" orientation="329.4,0,0"/>
+    </box>
+    <box id="outerwall_52" size="0.1,0.1,0.5" movable="false">
+      <body position="6.21632,10.2644,0" orientation="328.8,0,0"/>
+    </box>
+    <box id="outerwall_53" size="0.1,0.1,0.5" movable="false">
+      <body position="6.32347,10.1987,0" orientation="328.2,0,0"/>
+    </box>
+    <box id="outerwall_54" size="0.1,0.1,0.5" movable="false">
+      <body position="6.42992,10.1319,0" orientation="327.6,0,0"/>
+    </box>
+    <box id="outerwall_55" size="0.1,0.1,0.5" movable="false">
+      <body position="6.53567,10.064,0" orientation="327,0,0"/>
+    </box>
+    <box id="outerwall_56" size="0.1,0.1,0.5" movable="false">
+      <body position="6.6407,9.99505,0" orientation="326.4,0,0"/>
+    </box>
+    <box id="outerwall_57" size="0.1,0.1,0.5" movable="false">
+      <body position="6.745,9.92497,0" orientation="325.8,0,0"/>
+    </box>
+    <box id="outerwall_58" size="0.1,0.1,0.5" movable="false">
+      <body position="6.84856,9.85379,0" orientation="325.2,0,0"/>
+    </box>
+    <box id="outerwall_59" size="0.1,0.1,0.5" movable="false">
+      <body position="6.95137,9.78153,0" orientation="324.6,0,0"/>
+    </box>
+    <box id="outerwall_60" size="0.1,0.1,0.5" movable="false">
+      <body position="7.05342,9.7082,0" orientation="324,0,0"/>
+    </box>
+    <box id="outerwall_61" size="0.1,0.1,0.5" movable="false">
+      <body position="7.1547,9.63381,0" orientation="323.4,0,0"/>
+    </box>
+    <box id="outerwall_62" size="0.1,0.1,0.5" movable="false">
+      <body position="7.25519,9.55836,0" orientation="322.8,0,0"/>
+    </box>
+    <box id="outerwall_63" size="0.1,0.1,0.5" movable="false">
+      <body position="7.35488,9.48186,0" orientation="322.2,0,0"/>
+    </box>
+    <box id="outerwall_64" size="0.1,0.1,0.5" movable="false">
+      <body position="7.45377,9.40432,0" orientation="321.6,0,0"/>
+    </box>
+    <box id="outerwall_65" size="0.1,0.1,0.5" movable="false">
+      <body position="7.55184,9.32575,0" orientation="321,0,0"/>
+    </box>
+    <box id="outerwall_66" size="0.1,0.1,0.5" movable="false">
+      <body position="7.64909,9.24616,0" orientation="320.4,0,0"/>
+    </box>
+    <box id="outerwall_67" size="0.1,0.1,0.5" movable="false">
+      <body position="7.74549,9.16555,0" orientation="319.8,0,0"/>
+    </box>
+    <box id="outerwall_68" size="0.1,0.1,0.5" movable="false">
+      <body position="7.84105,9.08394,0" orientation="319.2,0,0"/>
+    </box>
+    <box id="outerwall_69" size="0.1,0.1,0.5" movable="false">
+      <body position="7.93574,9.00133,0" orientation="318.6,0,0"/>
+    </box>
+    <box id="outerwall_70" size="0.1,0.1,0.5" movable="false">
+      <body position="8.02957,8.91774,0" orientation="318,0,0"/>
+    </box>
+    <box id="outerwall_71" size="0.1,0.1,0.5" movable="false">
+      <body position="8.12251,8.83317,0" orientation="317.4,0,0"/>
+    </box>
+    <box id="outerwall_72" size="0.1,0.1,0.5" movable="false">
+      <body position="8.21457,8.74762,0" orientation="316.8,0,0"/>
+    </box>
+    <box id="outerwall_73" size="0.1,0.1,0.5" movable="false">
+      <body position="8.30572,8.66112,0" orientation="316.2,0,0"/>
+    </box>
+    <box id="outerwall_74" size="0.1,0.1,0.5" movable="false">
+      <body position="8.39596,8.57367,0" orientation="315.6,0,0"/>
+    </box>
+    <box id="outerwall_75" size="0.1,0.1,0.5" movable="false">
+      <body position="8.48528,8.48528,0" orientation="315,0,0"/>
+    </box>
+    <box id="outerwall_76" size="0.1,0.1,0.5" movable="false">
+      <body position="8.57367,8.39596,0" orientation="314.4,0,0"/>
+    </box>
+    <box id="outerwall_77" size="0.1,0.1,0.5" movable="false">
+      <body position="8.66112,8.30572,0" orientation="313.8,0,0"/>
+    </box>
+    <box id="outerwall_78" size="0.1,0.1,0.5" movable="false">
+      <body position="8.74762,8.21457,0" orientation="313.2,0,0"/>
+    </box>
+    <box id="outerwall_79" size="0.1,0.1,0.5" movable="false">
+      <body position="8.83317,8.12251,0" orientation="312.6,0,0"/>
+    </box>
+    <box id="outerwall_80" size="0.1,0.1,0.5" movable="false">
+      <body position="8.91774,8.02957,0" orientation="312,0,0"/>
+    </box>
+    <box id="outerwall_81" size="0.1,0.1,0.5" movable="false">
+      <body position="9.00133,7.93574,0" orientation="311.4,0,0"/>
+    </box>
+    <box id="outerwall_82" size="0.1,0.1,0.5" movable="false">
+      <body position="9.08394,7.84105,0" orientation="310.8,0,0"/>
+    </box>
+    <box id="outerwall_83" size="0.1,0.1,0.5" movable="false">
+      <body position="9.16555,7.74549,0" orientation="310.2,0,0"/>
+    </box>
+    <box id="outerwall_84" size="0.1,0.1,0.5" movable="false">
+      <body position="9.24616,7.64909,0" orientation="309.6,0,0"/>
+    </box>
+    <box id="outerwall_85" size="0.1,0.1,0.5" movable="false">
+      <body position="9.32575,7.55184,0" orientation="309,0,0"/>
+    </box>
+    <box id="outerwall_86" size="0.1,0.1,0.5" movable="false">
+      <body position="9.40432,7.45377,0" orientation="308.4,0,0"/>
+    </box>
+    <box id="outerwall_87" size="0.1,0.1,0.5" movable="false">
+      <body position="9.48186,7.35488,0" orientation="307.8,0,0"/>
+    </box>
+    <box id="outerwall_88" size="0.1,0.1,0.5" movable="false">
+      <body position="9.55836,7.25519,0" orientation="307.2,0,0"/>
+    </box>
+    <box id="outerwall_89" size="0.1,0.1,0.5" movable="false">
+      <body position="9.63381,7.1547,0" orientation="306.6,0,0"/>
+    </box>
+    <box id="outerwall_90" size="0.1,0.1,0.5" movable="false">
+      <body position="9.7082,7.05342,0" orientation="306,0,0"/>
+    </box>
+    <box id="outerwall_91" size="0.1,0.1,0.5" movable="false">
+      <body position="9.78153,6.95137,0" orientation="305.4,0,0"/>
+    </box>
+    <box id="outerwall_92" size="0.1,0.1,0.5" movable="false">
+      <body position="9.85379,6.84856,0" orientation="304.8,0,0"/>
+    </box>
+    <box id="outerwall_93" size="0.1,0.1,0.5" movable="false">
+      <body position="9.92497,6.745,0" orientation="304.2,0,0"/>
+    </box>
+    <box id="outerwall_94" size="0.1,0.1,0.5" movable="false">
+      <body position="9.99505,6.6407,0" orientation="303.6,0,0"/>
+    </box>
+    <box id="outerwall_95" size="0.1,0.1,0.5" movable="false">
+      <body position="10.064,6.53567,0" orientation="303,0,0"/>
+    </box>
+    <box id="outerwall_96" size="0.1,0.1,0.5" movable="false">
+      <body position="10.1319,6.42992,0" orientation="302.4,0,0"/>
+    </box>
+    <box id="outerwall_97" size="0.1,0.1,0.5" movable="false">
+      <body position="10.1987,6.32347,0" orientation="301.8,0,0"/>
+    </box>
+    <box id="outerwall_98" size="0.1,0.1,0.5" movable="false">
+      <body position="10.2644,6.21632,0" orientation="301.2,0,0"/>
+    </box>
+    <box id="outerwall_99" size="0.1,0.1,0.5" movable="false">
+      <body position="10.3289,6.1085,0" orientation="300.6,0,0"/>
+    </box>
+    <box id="outerwall_100" size="0.1,0.1,0.5" movable="false">
+      <body position="10.3923,6,0" orientation="300,0,0"/>
+    </box>
+    <box id="outerwall_101" size="0.1,0.1,0.5" movable="false">
+      <body position="10.4546,5.89085,0" orientation="299.4,0,0"/>
+    </box>
+    <box id="outerwall_102" size="0.1,0.1,0.5" movable="false">
+      <body position="10.5157,5.78104,0" orientation="298.8,0,0"/>
+    </box>
+    <box id="outerwall_103" size="0.1,0.1,0.5" movable="false">
+      <body position="10.5756,5.67061,0" orientation="298.2,0,0"/>
+    </box>
+    <box id="outerwall_104" size="0.1,0.1,0.5" movable="false">
+      <body position="10.6344,5.55955,0" orientation="297.6,0,0"/>
+    </box>
+    <box id="outerwall_105" size="0.1,0.1,0.5" movable="false">
+      <body position="10.6921,5.44789,0" orientation="297,0,0"/>
+    </box>
+    <box id="outerwall_106" size="0.1,0.1,0.5" movable="false">
+      <body position="10.7485,5.33562,0" orientation="296.4,0,0"/>
+    </box>
+    <box id="outerwall_107" size="0.1,0.1,0.5" movable="false">
+      <body position="10.8038,5.22277,0" orientation="295.8,0,0"/>
+    </box>
+    <box id="outerwall_108" size="0.1,0.1,0.5" movable="false">
+      <body position="10.8579,5.10935,0" orientation="295.2,0,0"/>
+    </box>
+    <box id="outerwall_109" size="0.1,0.1,0.5" movable="false">
+      <body position="10.9108,4.99537,0" orientation="294.6,0,0"/>
+    </box>
+    <box id="outerwall_110" size="0.1,0.1,0.5" movable="false">
+      <body position="10.9625,4.88084,0" orientation="294,0,0"/>
+    </box>
+    <box id="outerwall_111" size="0.1,0.1,0.5" movable="false">
+      <body position="11.0131,4.76577,0" orientation="293.4,0,0"/>
+    </box>
+    <box id="outerwall_112" size="0.1,0.1,0.5" movable="false">
+      <body position="11.0624,4.65019,0" orientation="292.8,0,0"/>
+    </box>
+    <box id="outerwall_113" size="0.1,0.1,0.5" movable="false">
+      <body position="11.1104,4.53409,0" orientation="292.2,0,0"/>
+    </box>
+    <box id="outerwall_114" size="0.1,0.1,0.5" movable="false">
+      <body position="11.1573,4.41749,0" orientation="291.6,0,0"/>
+    </box>
+    <box id="outerwall_115" size="0.1,0.1,0.5" movable="false">
+      <body position="11.203,4.30042,0" orientation="291,0,0"/>
+    </box>
+    <box id="outerwall_116" size="0.1,0.1,0.5" movable="false">
+      <body position="11.2474,4.18286,0" orientation="290.4,0,0"/>
+    </box>
+    <box id="outerwall_117" size="0.1,0.1,0.5" movable="false">
+      <body position="11.2906,4.06486,0" orientation="289.8,0,0"/>
+    </box>
+    <box id="outerwall_118" size="0.1,0.1,0.5" movable="false">
+      <body position="11.3325,3.9464,0" orientation="289.2,0,0"/>
+    </box>
+    <box id="outerwall_119" size="0.1,0.1,0.5" movable="false">
+      <body position="11.3732,3.82751,0" orientation="288.6,0,0"/>
+    </box>
+    <box id="outerwall_120" size="0.1,0.1,0.5" movable="false">
+      <body position="11.4127,3.7082,0" orientation="288,0,0"/>
+    </box>
+    <box id="outerwall_121" size="0.1,0.1,0.5" movable="false">
+      <body position="11.4509,3.58849,0" orientation="287.4,0,0"/>
+    </box>
+    <box id="outerwall_122" size="0.1,0.1,0.5" movable="false">
+      <body position="11.4878,3.46838,0" orientation="286.8,0,0"/>
+    </box>
+    <box id="outerwall_123" size="0.1,0.1,0.5" movable="false">
+      <body position="11.5235,3.34789,0" orientation="286.2,0,0"/>
+    </box>
+    <box id="outerwall_124" size="0.1,0.1,0.5" movable="false">
+      <body position="11.558,3.22704,0" orientation="285.6,0,0"/>
+    </box>
+    <box id="outerwall_125" size="0.1,0.1,0.5" movable="false">
+      <body position="11.5911,3.10583,0" orientation="285,0,0"/>
+    </box>
+    <box id="outerwall_126" size="0.1,0.1,0.5" movable="false">
+      <body position="11.623,2.98428,0" orientation="284.4,0,0"/>
+    </box>
+    <box id="outerwall_127" size="0.1,0.1,0.5" movable="false">
+      <body position="11.6536,2.8624,0" orientation="283.8,0,0"/>
+    </box>
+    <box id="outerwall_128" size="0.1,0.1,0.5" movable="false">
+      <body position="11.6829,2.74021,0" orientation="283.2,0,0"/>
+    </box>
+    <box id="outerwall_129" size="0.1,0.1,0.5" movable="false">
+      <body position="11.711,2.61772,0" orientation="282.6,0,0"/>
+    </box>
+    <box id="outerwall_130" size="0.1,0.1,0.5" movable="false">
+      <body position="11.7378,2.49494,0" orientation="282,0,0"/>
+    </box>
+    <box id="outerwall_131" size="0.1,0.1,0.5" movable="false">
+      <body position="11.7633,2.37189,0" orientation="281.4,0,0"/>
+    </box>
+    <box id="outerwall_132" size="0.1,0.1,0.5" movable="false">
+      <body position="11.7874,2.24858,0" orientation="280.8,0,0"/>
+    </box>
+    <box id="outerwall_133" size="0.1,0.1,0.5" movable="false">
+      <body position="11.8103,2.12502,0" orientation="280.2,0,0"/>
+    </box>
+    <box id="outerwall_134" size="0.1,0.1,0.5" movable="false">
+      <body position="11.832,2.00122,0" orientation="279.6,0,0"/>
+    </box>
+    <box id="outerwall_135" size="0.1,0.1,0.5" movable="false">
+      <body position="11.8523,1.87721,0" orientation="279,0,0"/>
+    </box>
+    <box id="outerwall_136" size="0.1,0.1,0.5" movable="false">
+      <body position="11.8713,1.753,0" orientation="278.4,0,0"/>
+    </box>
+    <box id="outerwall_137" size="0.1,0.1,0.5" movable="false">
+      <body position="11.889,1.62859,0" orientation="277.8,0,0"/>
+    </box>
+    <box id="outerwall_138" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9054,1.504,0" orientation="277.2,0,0"/>
+    </box>
+    <box id="outerwall_139" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9205,1.37925,0" orientation="276.6,0,0"/>
+    </box>
+    <box id="outerwall_140" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9343,1.25434,0" orientation="276,0,0"/>
+    </box>
+    <box id="outerwall_141" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9467,1.1293,0" orientation="275.4,0,0"/>
+    </box>
+    <box id="outerwall_142" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9579,1.00413,0" orientation="274.8,0,0"/>
+    </box>
+    <box id="outerwall_143" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9678,0.878858,0" orientation="274.2,0,0"/>
+    </box>
+    <box id="outerwall_144" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9763,0.753486,0" orientation="273.6,0,0"/>
+    </box>
+    <box id="outerwall_145" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9836,0.628031,0" orientation="273,0,0"/>
+    </box>
+    <box id="outerwall_146" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9895,0.502508,0" orientation="272.4,0,0"/>
+    </box>
+    <box id="outerwall_147" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9941,0.376929,0" orientation="271.8,0,0"/>
+    </box>
+    <box id="outerwall_148" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9974,0.251309,0" orientation="271.2,0,0"/>
+    </box>
+    <box id="outerwall_149" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9993,0.125661,0" orientation="270.6,0,0"/>
+    </box>
+    <box id="outerwall_150" size="0.1,0.1,0.5" movable="false">
+      <body position="12,7.34788e-16,0" orientation="270,0,0"/>
+    </box>
+    <box id="outerwall_151" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9993,-0.125661,0" orientation="269.4,0,0"/>
+    </box>
+    <box id="outerwall_152" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9974,-0.251309,0" orientation="268.8,0,0"/>
+    </box>
+    <box id="outerwall_153" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9941,-0.376929,0" orientation="268.2,0,0"/>
+    </box>
+    <box id="outerwall_154" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9895,-0.502508,0" orientation="267.6,0,0"/>
+    </box>
+    <box id="outerwall_155" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9836,-0.628031,0" orientation="267,0,0"/>
+    </box>
+    <box id="outerwall_156" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9763,-0.753486,0" orientation="266.4,0,0"/>
+    </box>
+    <box id="outerwall_157" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9678,-0.878858,0" orientation="265.8,0,0"/>
+    </box>
+    <box id="outerwall_158" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9579,-1.00413,0" orientation="265.2,0,0"/>
+    </box>
+    <box id="outerwall_159" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9467,-1.1293,0" orientation="264.6,0,0"/>
+    </box>
+    <box id="outerwall_160" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9343,-1.25434,0" orientation="264,0,0"/>
+    </box>
+    <box id="outerwall_161" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9205,-1.37925,0" orientation="263.4,0,0"/>
+    </box>
+    <box id="outerwall_162" size="0.1,0.1,0.5" movable="false">
+      <body position="11.9054,-1.504,0" orientation="262.8,0,0"/>
+    </box>
+    <box id="outerwall_163" size="0.1,0.1,0.5" movable="false">
+      <body position="11.889,-1.62859,0" orientation="262.2,0,0"/>
+    </box>
+    <box id="outerwall_164" size="0.1,0.1,0.5" movable="false">
+      <body position="11.8713,-1.753,0" orientation="261.6,0,0"/>
+    </box>
+    <box id="outerwall_165" size="0.1,0.1,0.5" movable="false">
+      <body position="11.8523,-1.87721,0" orientation="261,0,0"/>
+    </box>
+    <box id="outerwall_166" size="0.1,0.1,0.5" movable="false">
+      <body position="11.832,-2.00122,0" orientation="260.4,0,0"/>
+    </box>
+    <box id="outerwall_167" size="0.1,0.1,0.5" movable="false">
+      <body position="11.8103,-2.12502,0" orientation="259.8,0,0"/>
+    </box>
+    <box id="outerwall_168" size="0.1,0.1,0.5" movable="false">
+      <body position="11.7874,-2.24858,0" orientation="259.2,0,0"/>
+    </box>
+    <box id="outerwall_169" size="0.1,0.1,0.5" movable="false">
+      <body position="11.7633,-2.37189,0" orientation="258.6,0,0"/>
+    </box>
+    <box id="outerwall_170" size="0.1,0.1,0.5" movable="false">
+      <body position="11.7378,-2.49494,0" orientation="258,0,0"/>
+    </box>
+    <box id="outerwall_171" size="0.1,0.1,0.5" movable="false">
+      <body position="11.711,-2.61772,0" orientation="257.4,0,0"/>
+    </box>
+    <box id="outerwall_172" size="0.1,0.1,0.5" movable="false">
+      <body position="11.6829,-2.74021,0" orientation="256.8,0,0"/>
+    </box>
+    <box id="outerwall_173" size="0.1,0.1,0.5" movable="false">
+      <body position="11.6536,-2.8624,0" orientation="256.2,0,0"/>
+    </box>
+    <box id="outerwall_174" size="0.1,0.1,0.5" movable="false">
+      <body position="11.623,-2.98428,0" orientation="255.6,0,0"/>
+    </box>
+    <box id="outerwall_175" size="0.1,0.1,0.5" movable="false">
+      <body position="11.5911,-3.10583,0" orientation="255,0,0"/>
+    </box>
+    <box id="outerwall_176" size="0.1,0.1,0.5" movable="false">
+      <body position="11.558,-3.22704,0" orientation="254.4,0,0"/>
+    </box>
+    <box id="outerwall_177" size="0.1,0.1,0.5" movable="false">
+      <body position="11.5235,-3.34789,0" orientation="253.8,0,0"/>
+    </box>
+    <box id="outerwall_178" size="0.1,0.1,0.5" movable="false">
+      <body position="11.4878,-3.46838,0" orientation="253.2,0,0"/>
+    </box>
+    <box id="outerwall_179" size="0.1,0.1,0.5" movable="false">
+      <body position="11.4509,-3.58849,0" orientation="252.6,0,0"/>
+    </box>
+    <box id="outerwall_180" size="0.1,0.1,0.5" movable="false">
+      <body position="11.4127,-3.7082,0" orientation="252,0,0"/>
+    </box>
+    <box id="outerwall_181" size="0.1,0.1,0.5" movable="false">
+      <body position="11.3732,-3.82751,0" orientation="251.4,0,0"/>
+    </box>
+    <box id="outerwall_182" size="0.1,0.1,0.5" movable="false">
+      <body position="11.3325,-3.9464,0" orientation="250.8,0,0"/>
+    </box>
+    <box id="outerwall_183" size="0.1,0.1,0.5" movable="false">
+      <body position="11.2906,-4.06486,0" orientation="250.2,0,0"/>
+    </box>
+    <box id="outerwall_184" size="0.1,0.1,0.5" movable="false">
+      <body position="11.2474,-4.18286,0" orientation="249.6,0,0"/>
+    </box>
+    <box id="outerwall_185" size="0.1,0.1,0.5" movable="false">
+      <body position="11.203,-4.30042,0" orientation="249,0,0"/>
+    </box>
+    <box id="outerwall_186" size="0.1,0.1,0.5" movable="false">
+      <body position="11.1573,-4.41749,0" orientation="248.4,0,0"/>
+    </box>
+    <box id="outerwall_187" size="0.1,0.1,0.5" movable="false">
+      <body position="11.1104,-4.53409,0" orientation="247.8,0,0"/>
+    </box>
+    <box id="outerwall_188" size="0.1,0.1,0.5" movable="false">
+      <body position="11.0624,-4.65019,0" orientation="247.2,0,0"/>
+    </box>
+    <box id="outerwall_189" size="0.1,0.1,0.5" movable="false">
+      <body position="11.0131,-4.76577,0" orientation="246.6,0,0"/>
+    </box>
+    <box id="outerwall_190" size="0.1,0.1,0.5" movable="false">
+      <body position="10.9625,-4.88084,0" orientation="246,0,0"/>
+    </box>
+    <box id="outerwall_191" size="0.1,0.1,0.5" movable="false">
+      <body position="10.9108,-4.99537,0" orientation="245.4,0,0"/>
+    </box>
+    <box id="outerwall_192" size="0.1,0.1,0.5" movable="false">
+      <body position="10.8579,-5.10935,0" orientation="244.8,0,0"/>
+    </box>
+    <box id="outerwall_193" size="0.1,0.1,0.5" movable="false">
+      <body position="10.8038,-5.22277,0" orientation="244.2,0,0"/>
+    </box>
+    <box id="outerwall_194" size="0.1,0.1,0.5" movable="false">
+      <body position="10.7485,-5.33562,0" orientation="243.6,0,0"/>
+    </box>
+    <box id="outerwall_195" size="0.1,0.1,0.5" movable="false">
+      <body position="10.6921,-5.44789,0" orientation="243,0,0"/>
+    </box>
+    <box id="outerwall_196" size="0.1,0.1,0.5" movable="false">
+      <body position="10.6344,-5.55955,0" orientation="242.4,0,0"/>
+    </box>
+    <box id="outerwall_197" size="0.1,0.1,0.5" movable="false">
+      <body position="10.5756,-5.67061,0" orientation="241.8,0,0"/>
+    </box>
+    <box id="outerwall_198" size="0.1,0.1,0.5" movable="false">
+      <body position="10.5157,-5.78104,0" orientation="241.2,0,0"/>
+    </box>
+    <box id="outerwall_199" size="0.1,0.1,0.5" movable="false">
+      <body position="10.4546,-5.89085,0" orientation="240.6,0,0"/>
+    </box>
+    <box id="outerwall_200" size="0.1,0.1,0.5" movable="false">
+      <body position="10.3923,-6,0" orientation="240,0,0"/>
+    </box>
+    <box id="outerwall_201" size="0.1,0.1,0.5" movable="false">
+      <body position="10.3289,-6.1085,0" orientation="239.4,0,0"/>
+    </box>
+    <box id="outerwall_202" size="0.1,0.1,0.5" movable="false">
+      <body position="10.2644,-6.21632,0" orientation="238.8,0,0"/>
+    </box>
+    <box id="outerwall_203" size="0.1,0.1,0.5" movable="false">
+      <body position="10.1987,-6.32347,0" orientation="238.2,0,0"/>
+    </box>
+    <box id="outerwall_204" size="0.1,0.1,0.5" movable="false">
+      <body position="10.1319,-6.42992,0" orientation="237.6,0,0"/>
+    </box>
+    <box id="outerwall_205" size="0.1,0.1,0.5" movable="false">
+      <body position="10.064,-6.53567,0" orientation="237,0,0"/>
+    </box>
+    <box id="outerwall_206" size="0.1,0.1,0.5" movable="false">
+      <body position="9.99505,-6.6407,0" orientation="236.4,0,0"/>
+    </box>
+    <box id="outerwall_207" size="0.1,0.1,0.5" movable="false">
+      <body position="9.92497,-6.745,0" orientation="235.8,0,0"/>
+    </box>
+    <box id="outerwall_208" size="0.1,0.1,0.5" movable="false">
+      <body position="9.85379,-6.84856,0" orientation="235.2,0,0"/>
+    </box>
+    <box id="outerwall_209" size="0.1,0.1,0.5" movable="false">
+      <body position="9.78153,-6.95137,0" orientation="234.6,0,0"/>
+    </box>
+    <box id="outerwall_210" size="0.1,0.1,0.5" movable="false">
+      <body position="9.7082,-7.05342,0" orientation="234,0,0"/>
+    </box>
+    <box id="outerwall_211" size="0.1,0.1,0.5" movable="false">
+      <body position="9.63381,-7.1547,0" orientation="233.4,0,0"/>
+    </box>
+    <box id="outerwall_212" size="0.1,0.1,0.5" movable="false">
+      <body position="9.55836,-7.25519,0" orientation="232.8,0,0"/>
+    </box>
+    <box id="outerwall_213" size="0.1,0.1,0.5" movable="false">
+      <body position="9.48186,-7.35488,0" orientation="232.2,0,0"/>
+    </box>
+    <box id="outerwall_214" size="0.1,0.1,0.5" movable="false">
+      <body position="9.40432,-7.45377,0" orientation="231.6,0,0"/>
+    </box>
+    <box id="outerwall_215" size="0.1,0.1,0.5" movable="false">
+      <body position="9.32575,-7.55184,0" orientation="231,0,0"/>
+    </box>
+    <box id="outerwall_216" size="0.1,0.1,0.5" movable="false">
+      <body position="9.24616,-7.64909,0" orientation="230.4,0,0"/>
+    </box>
+    <box id="outerwall_217" size="0.1,0.1,0.5" movable="false">
+      <body position="9.16555,-7.74549,0" orientation="229.8,0,0"/>
+    </box>
+    <box id="outerwall_218" size="0.1,0.1,0.5" movable="false">
+      <body position="9.08394,-7.84105,0" orientation="229.2,0,0"/>
+    </box>
+    <box id="outerwall_219" size="0.1,0.1,0.5" movable="false">
+      <body position="9.00133,-7.93574,0" orientation="228.6,0,0"/>
+    </box>
+    <box id="outerwall_220" size="0.1,0.1,0.5" movable="false">
+      <body position="8.91774,-8.02957,0" orientation="228,0,0"/>
+    </box>
+    <box id="outerwall_221" size="0.1,0.1,0.5" movable="false">
+      <body position="8.83317,-8.12251,0" orientation="227.4,0,0"/>
+    </box>
+    <box id="outerwall_222" size="0.1,0.1,0.5" movable="false">
+      <body position="8.74762,-8.21457,0" orientation="226.8,0,0"/>
+    </box>
+    <box id="outerwall_223" size="0.1,0.1,0.5" movable="false">
+      <body position="8.66112,-8.30572,0" orientation="226.2,0,0"/>
+    </box>
+    <box id="outerwall_224" size="0.1,0.1,0.5" movable="false">
+      <body position="8.57367,-8.39596,0" orientation="225.6,0,0"/>
+    </box>
+    <box id="outerwall_225" size="0.1,0.1,0.5" movable="false">
+      <body position="8.48528,-8.48528,0" orientation="225,0,0"/>
+    </box>
+    <box id="outerwall_226" size="0.1,0.1,0.5" movable="false">
+      <body position="8.39596,-8.57367,0" orientation="224.4,0,0"/>
+    </box>
+    <box id="outerwall_227" size="0.1,0.1,0.5" movable="false">
+      <body position="8.30572,-8.66112,0" orientation="223.8,0,0"/>
+    </box>
+    <box id="outerwall_228" size="0.1,0.1,0.5" movable="false">
+      <body position="8.21457,-8.74762,0" orientation="223.2,0,0"/>
+    </box>
+    <box id="outerwall_229" size="0.1,0.1,0.5" movable="false">
+      <body position="8.12251,-8.83317,0" orientation="222.6,0,0"/>
+    </box>
+    <box id="outerwall_230" size="0.1,0.1,0.5" movable="false">
+      <body position="8.02957,-8.91774,0" orientation="222,0,0"/>
+    </box>
+    <box id="outerwall_231" size="0.1,0.1,0.5" movable="false">
+      <body position="7.93574,-9.00133,0" orientation="221.4,0,0"/>
+    </box>
+    <box id="outerwall_232" size="0.1,0.1,0.5" movable="false">
+      <body position="7.84105,-9.08394,0" orientation="220.8,0,0"/>
+    </box>
+    <box id="outerwall_233" size="0.1,0.1,0.5" movable="false">
+      <body position="7.74549,-9.16555,0" orientation="220.2,0,0"/>
+    </box>
+    <box id="outerwall_234" size="0.1,0.1,0.5" movable="false">
+      <body position="7.64909,-9.24616,0" orientation="219.6,0,0"/>
+    </box>
+    <box id="outerwall_235" size="0.1,0.1,0.5" movable="false">
+      <body position="7.55184,-9.32575,0" orientation="219,0,0"/>
+    </box>
+    <box id="outerwall_236" size="0.1,0.1,0.5" movable="false">
+      <body position="7.45377,-9.40432,0" orientation="218.4,0,0"/>
+    </box>
+    <box id="outerwall_237" size="0.1,0.1,0.5" movable="false">
+      <body position="7.35488,-9.48186,0" orientation="217.8,0,0"/>
+    </box>
+    <box id="outerwall_238" size="0.1,0.1,0.5" movable="false">
+      <body position="7.25519,-9.55836,0" orientation="217.2,0,0"/>
+    </box>
+    <box id="outerwall_239" size="0.1,0.1,0.5" movable="false">
+      <body position="7.1547,-9.63381,0" orientation="216.6,0,0"/>
+    </box>
+    <box id="outerwall_240" size="0.1,0.1,0.5" movable="false">
+      <body position="7.05342,-9.7082,0" orientation="216,0,0"/>
+    </box>
+    <box id="outerwall_241" size="0.1,0.1,0.5" movable="false">
+      <body position="6.95137,-9.78153,0" orientation="215.4,0,0"/>
+    </box>
+    <box id="outerwall_242" size="0.1,0.1,0.5" movable="false">
+      <body position="6.84856,-9.85379,0" orientation="214.8,0,0"/>
+    </box>
+    <box id="outerwall_243" size="0.1,0.1,0.5" movable="false">
+      <body position="6.745,-9.92497,0" orientation="214.2,0,0"/>
+    </box>
+    <box id="outerwall_244" size="0.1,0.1,0.5" movable="false">
+      <body position="6.6407,-9.99505,0" orientation="213.6,0,0"/>
+    </box>
+    <box id="outerwall_245" size="0.1,0.1,0.5" movable="false">
+      <body position="6.53567,-10.064,0" orientation="213,0,0"/>
+    </box>
+    <box id="outerwall_246" size="0.1,0.1,0.5" movable="false">
+      <body position="6.42992,-10.1319,0" orientation="212.4,0,0"/>
+    </box>
+    <box id="outerwall_247" size="0.1,0.1,0.5" movable="false">
+      <body position="6.32347,-10.1987,0" orientation="211.8,0,0"/>
+    </box>
+    <box id="outerwall_248" size="0.1,0.1,0.5" movable="false">
+      <body position="6.21632,-10.2644,0" orientation="211.2,0,0"/>
+    </box>
+    <box id="outerwall_249" size="0.1,0.1,0.5" movable="false">
+      <body position="6.1085,-10.3289,0" orientation="210.6,0,0"/>
+    </box>
+    <box id="outerwall_250" size="0.1,0.1,0.5" movable="false">
+      <body position="6,-10.3923,0" orientation="210,0,0"/>
+    </box>
+    <box id="outerwall_251" size="0.1,0.1,0.5" movable="false">
+      <body position="5.89085,-10.4546,0" orientation="209.4,0,0"/>
+    </box>
+    <box id="outerwall_252" size="0.1,0.1,0.5" movable="false">
+      <body position="5.78104,-10.5157,0" orientation="208.8,0,0"/>
+    </box>
+    <box id="outerwall_253" size="0.1,0.1,0.5" movable="false">
+      <body position="5.67061,-10.5756,0" orientation="208.2,0,0"/>
+    </box>
+    <box id="outerwall_254" size="0.1,0.1,0.5" movable="false">
+      <body position="5.55955,-10.6344,0" orientation="207.6,0,0"/>
+    </box>
+    <box id="outerwall_255" size="0.1,0.1,0.5" movable="false">
+      <body position="5.44789,-10.6921,0" orientation="207,0,0"/>
+    </box>
+    <box id="outerwall_256" size="0.1,0.1,0.5" movable="false">
+      <body position="5.33562,-10.7485,0" orientation="206.4,0,0"/>
+    </box>
+    <box id="outerwall_257" size="0.1,0.1,0.5" movable="false">
+      <body position="5.22277,-10.8038,0" orientation="205.8,0,0"/>
+    </box>
+    <box id="outerwall_258" size="0.1,0.1,0.5" movable="false">
+      <body position="5.10935,-10.8579,0" orientation="205.2,0,0"/>
+    </box>
+    <box id="outerwall_259" size="0.1,0.1,0.5" movable="false">
+      <body position="4.99537,-10.9108,0" orientation="204.6,0,0"/>
+    </box>
+    <box id="outerwall_260" size="0.1,0.1,0.5" movable="false">
+      <body position="4.88084,-10.9625,0" orientation="204,0,0"/>
+    </box>
+    <box id="outerwall_261" size="0.1,0.1,0.5" movable="false">
+      <body position="4.76577,-11.0131,0" orientation="203.4,0,0"/>
+    </box>
+    <box id="outerwall_262" size="0.1,0.1,0.5" movable="false">
+      <body position="4.65019,-11.0624,0" orientation="202.8,0,0"/>
+    </box>
+    <box id="outerwall_263" size="0.1,0.1,0.5" movable="false">
+      <body position="4.53409,-11.1104,0" orientation="202.2,0,0"/>
+    </box>
+    <box id="outerwall_264" size="0.1,0.1,0.5" movable="false">
+      <body position="4.41749,-11.1573,0" orientation="201.6,0,0"/>
+    </box>
+    <box id="outerwall_265" size="0.1,0.1,0.5" movable="false">
+      <body position="4.30042,-11.203,0" orientation="201,0,0"/>
+    </box>
+    <box id="outerwall_266" size="0.1,0.1,0.5" movable="false">
+      <body position="4.18286,-11.2474,0" orientation="200.4,0,0"/>
+    </box>
+    <box id="outerwall_267" size="0.1,0.1,0.5" movable="false">
+      <body position="4.06486,-11.2906,0" orientation="199.8,0,0"/>
+    </box>
+    <box id="outerwall_268" size="0.1,0.1,0.5" movable="false">
+      <body position="3.9464,-11.3325,0" orientation="199.2,0,0"/>
+    </box>
+    <box id="outerwall_269" size="0.1,0.1,0.5" movable="false">
+      <body position="3.82751,-11.3732,0" orientation="198.6,0,0"/>
+    </box>
+    <box id="outerwall_270" size="0.1,0.1,0.5" movable="false">
+      <body position="3.7082,-11.4127,0" orientation="198,0,0"/>
+    </box>
+    <box id="outerwall_271" size="0.1,0.1,0.5" movable="false">
+      <body position="3.58849,-11.4509,0" orientation="197.4,0,0"/>
+    </box>
+    <box id="outerwall_272" size="0.1,0.1,0.5" movable="false">
+      <body position="3.46838,-11.4878,0" orientation="196.8,0,0"/>
+    </box>
+    <box id="outerwall_273" size="0.1,0.1,0.5" movable="false">
+      <body position="3.34789,-11.5235,0" orientation="196.2,0,0"/>
+    </box>
+    <box id="outerwall_274" size="0.1,0.1,0.5" movable="false">
+      <body position="3.22704,-11.558,0" orientation="195.6,0,0"/>
+    </box>
+    <box id="outerwall_275" size="0.1,0.1,0.5" movable="false">
+      <body position="3.10583,-11.5911,0" orientation="195,0,0"/>
+    </box>
+    <box id="outerwall_276" size="0.1,0.1,0.5" movable="false">
+      <body position="2.98428,-11.623,0" orientation="194.4,0,0"/>
+    </box>
+    <box id="outerwall_277" size="0.1,0.1,0.5" movable="false">
+      <body position="2.8624,-11.6536,0" orientation="193.8,0,0"/>
+    </box>
+    <box id="outerwall_278" size="0.1,0.1,0.5" movable="false">
+      <body position="2.74021,-11.6829,0" orientation="193.2,0,0"/>
+    </box>
+    <box id="outerwall_279" size="0.1,0.1,0.5" movable="false">
+      <body position="2.61772,-11.711,0" orientation="192.6,0,0"/>
+    </box>
+    <box id="outerwall_280" size="0.1,0.1,0.5" movable="false">
+      <body position="2.49494,-11.7378,0" orientation="192,0,0"/>
+    </box>
+    <box id="outerwall_281" size="0.1,0.1,0.5" movable="false">
+      <body position="2.37189,-11.7633,0" orientation="191.4,0,0"/>
+    </box>
+    <box id="outerwall_282" size="0.1,0.1,0.5" movable="false">
+      <body position="2.24858,-11.7874,0" orientation="190.8,0,0"/>
+    </box>
+    <box id="outerwall_283" size="0.1,0.1,0.5" movable="false">
+      <body position="2.12502,-11.8103,0" orientation="190.2,0,0"/>
+    </box>
+    <box id="outerwall_284" size="0.1,0.1,0.5" movable="false">
+      <body position="2.00122,-11.832,0" orientation="189.6,0,0"/>
+    </box>
+    <box id="outerwall_285" size="0.1,0.1,0.5" movable="false">
+      <body position="1.87721,-11.8523,0" orientation="189,0,0"/>
+    </box>
+    <box id="outerwall_286" size="0.1,0.1,0.5" movable="false">
+      <body position="1.753,-11.8713,0" orientation="188.4,0,0"/>
+    </box>
+    <box id="outerwall_287" size="0.1,0.1,0.5" movable="false">
+      <body position="1.62859,-11.889,0" orientation="187.8,0,0"/>
+    </box>
+    <box id="outerwall_288" size="0.1,0.1,0.5" movable="false">
+      <body position="1.504,-11.9054,0" orientation="187.2,0,0"/>
+    </box>
+    <box id="outerwall_289" size="0.1,0.1,0.5" movable="false">
+      <body position="1.37925,-11.9205,0" orientation="186.6,0,0"/>
+    </box>
+    <box id="outerwall_290" size="0.1,0.1,0.5" movable="false">
+      <body position="1.25434,-11.9343,0" orientation="186,0,0"/>
+    </box>
+    <box id="outerwall_291" size="0.1,0.1,0.5" movable="false">
+      <body position="1.1293,-11.9467,0" orientation="185.4,0,0"/>
+    </box>
+    <box id="outerwall_292" size="0.1,0.1,0.5" movable="false">
+      <body position="1.00413,-11.9579,0" orientation="184.8,0,0"/>
+    </box>
+    <box id="outerwall_293" size="0.1,0.1,0.5" movable="false">
+      <body position="0.878858,-11.9678,0" orientation="184.2,0,0"/>
+    </box>
+    <box id="outerwall_294" size="0.1,0.1,0.5" movable="false">
+      <body position="0.753486,-11.9763,0" orientation="183.6,0,0"/>
+    </box>
+    <box id="outerwall_295" size="0.1,0.1,0.5" movable="false">
+      <body position="0.628031,-11.9836,0" orientation="183,0,0"/>
+    </box>
+    <box id="outerwall_296" size="0.1,0.1,0.5" movable="false">
+      <body position="0.502508,-11.9895,0" orientation="182.4,0,0"/>
+    </box>
+    <box id="outerwall_297" size="0.1,0.1,0.5" movable="false">
+      <body position="0.376929,-11.9941,0" orientation="181.8,0,0"/>
+    </box>
+    <box id="outerwall_298" size="0.1,0.1,0.5" movable="false">
+      <body position="0.251309,-11.9974,0" orientation="181.2,0,0"/>
+    </box>
+    <box id="outerwall_299" size="0.1,0.1,0.5" movable="false">
+      <body position="0.125661,-11.9993,0" orientation="180.6,0,0"/>
+    </box>
+    <box id="outerwall_300" size="0.1,0.1,0.5" movable="false">
+      <body position="1.46958e-15,-12,0" orientation="180,0,0"/>
+    </box>
+    <box id="outerwall_301" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.125661,-11.9993,0" orientation="179.4,0,0"/>
+    </box>
+    <box id="outerwall_302" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.251309,-11.9974,0" orientation="178.8,0,0"/>
+    </box>
+    <box id="outerwall_303" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.376929,-11.9941,0" orientation="178.2,0,0"/>
+    </box>
+    <box id="outerwall_304" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.502508,-11.9895,0" orientation="177.6,0,0"/>
+    </box>
+    <box id="outerwall_305" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.628031,-11.9836,0" orientation="177,0,0"/>
+    </box>
+    <box id="outerwall_306" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.753486,-11.9763,0" orientation="176.4,0,0"/>
+    </box>
+    <box id="outerwall_307" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.878858,-11.9678,0" orientation="175.8,0,0"/>
+    </box>
+    <box id="outerwall_308" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.00413,-11.9579,0" orientation="175.2,0,0"/>
+    </box>
+    <box id="outerwall_309" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.1293,-11.9467,0" orientation="174.6,0,0"/>
+    </box>
+    <box id="outerwall_310" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.25434,-11.9343,0" orientation="174,0,0"/>
+    </box>
+    <box id="outerwall_311" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.37925,-11.9205,0" orientation="173.4,0,0"/>
+    </box>
+    <box id="outerwall_312" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.504,-11.9054,0" orientation="172.8,0,0"/>
+    </box>
+    <box id="outerwall_313" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.62859,-11.889,0" orientation="172.2,0,0"/>
+    </box>
+    <box id="outerwall_314" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.753,-11.8713,0" orientation="171.6,0,0"/>
+    </box>
+    <box id="outerwall_315" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.87721,-11.8523,0" orientation="171,0,0"/>
+    </box>
+    <box id="outerwall_316" size="0.1,0.1,0.5" movable="false">
+      <body position="-2.00122,-11.832,0" orientation="170.4,0,0"/>
+    </box>
+    <box id="outerwall_317" size="0.1,0.1,0.5" movable="false">
+      <body position="-2.12502,-11.8103,0" orientation="169.8,0,0"/>
+    </box>
+    <box id="outerwall_318" size="0.1,0.1,0.5" movable="false">
+      <body position="-2.24858,-11.7874,0" orientation="169.2,0,0"/>
+    </box>
+    <box id="outerwall_319" size="0.1,0.1,0.5" movable="false">
+      <body position="-2.37189,-11.7633,0" orientation="168.6,0,0"/>
+    </box>
+    <box id="outerwall_320" size="0.1,0.1,0.5" movable="false">
+      <body position="-2.49494,-11.7378,0" orientation="168,0,0"/>
+    </box>
+    <box id="outerwall_321" size="0.1,0.1,0.5" movable="false">
+      <body position="-2.61772,-11.711,0" orientation="167.4,0,0"/>
+    </box>
+    <box id="outerwall_322" size="0.1,0.1,0.5" movable="false">
+      <body position="-2.74021,-11.6829,0" orientation="166.8,0,0"/>
+    </box>
+    <box id="outerwall_323" size="0.1,0.1,0.5" movable="false">
+      <body position="-2.8624,-11.6536,0" orientation="166.2,0,0"/>
+    </box>
+    <box id="outerwall_324" size="0.1,0.1,0.5" movable="false">
+      <body position="-2.98428,-11.623,0" orientation="165.6,0,0"/>
+    </box>
+    <box id="outerwall_325" size="0.1,0.1,0.5" movable="false">
+      <body position="-3.10583,-11.5911,0" orientation="165,0,0"/>
+    </box>
+    <box id="outerwall_326" size="0.1,0.1,0.5" movable="false">
+      <body position="-3.22704,-11.558,0" orientation="164.4,0,0"/>
+    </box>
+    <box id="outerwall_327" size="0.1,0.1,0.5" movable="false">
+      <body position="-3.34789,-11.5235,0" orientation="163.8,0,0"/>
+    </box>
+    <box id="outerwall_328" size="0.1,0.1,0.5" movable="false">
+      <body position="-3.46838,-11.4878,0" orientation="163.2,0,0"/>
+    </box>
+    <box id="outerwall_329" size="0.1,0.1,0.5" movable="false">
+      <body position="-3.58849,-11.4509,0" orientation="162.6,0,0"/>
+    </box>
+    <box id="outerwall_330" size="0.1,0.1,0.5" movable="false">
+      <body position="-3.7082,-11.4127,0" orientation="162,0,0"/>
+    </box>
+    <box id="outerwall_331" size="0.1,0.1,0.5" movable="false">
+      <body position="-3.82751,-11.3732,0" orientation="161.4,0,0"/>
+    </box>
+    <box id="outerwall_332" size="0.1,0.1,0.5" movable="false">
+      <body position="-3.9464,-11.3325,0" orientation="160.8,0,0"/>
+    </box>
+    <box id="outerwall_333" size="0.1,0.1,0.5" movable="false">
+      <body position="-4.06486,-11.2906,0" orientation="160.2,0,0"/>
+    </box>
+    <box id="outerwall_334" size="0.1,0.1,0.5" movable="false">
+      <body position="-4.18286,-11.2474,0" orientation="159.6,0,0"/>
+    </box>
+    <box id="outerwall_335" size="0.1,0.1,0.5" movable="false">
+      <body position="-4.30042,-11.203,0" orientation="159,0,0"/>
+    </box>
+    <box id="outerwall_336" size="0.1,0.1,0.5" movable="false">
+      <body position="-4.41749,-11.1573,0" orientation="158.4,0,0"/>
+    </box>
+    <box id="outerwall_337" size="0.1,0.1,0.5" movable="false">
+      <body position="-4.53409,-11.1104,0" orientation="157.8,0,0"/>
+    </box>
+    <box id="outerwall_338" size="0.1,0.1,0.5" movable="false">
+      <body position="-4.65019,-11.0624,0" orientation="157.2,0,0"/>
+    </box>
+    <box id="outerwall_339" size="0.1,0.1,0.5" movable="false">
+      <body position="-4.76577,-11.0131,0" orientation="156.6,0,0"/>
+    </box>
+    <box id="outerwall_340" size="0.1,0.1,0.5" movable="false">
+      <body position="-4.88084,-10.9625,0" orientation="156,0,0"/>
+    </box>
+    <box id="outerwall_341" size="0.1,0.1,0.5" movable="false">
+      <body position="-4.99537,-10.9108,0" orientation="155.4,0,0"/>
+    </box>
+    <box id="outerwall_342" size="0.1,0.1,0.5" movable="false">
+      <body position="-5.10935,-10.8579,0" orientation="154.8,0,0"/>
+    </box>
+    <box id="outerwall_343" size="0.1,0.1,0.5" movable="false">
+      <body position="-5.22277,-10.8038,0" orientation="154.2,0,0"/>
+    </box>
+    <box id="outerwall_344" size="0.1,0.1,0.5" movable="false">
+      <body position="-5.33562,-10.7485,0" orientation="153.6,0,0"/>
+    </box>
+    <box id="outerwall_345" size="0.1,0.1,0.5" movable="false">
+      <body position="-5.44789,-10.6921,0" orientation="153,0,0"/>
+    </box>
+    <box id="outerwall_346" size="0.1,0.1,0.5" movable="false">
+      <body position="-5.55955,-10.6344,0" orientation="152.4,0,0"/>
+    </box>
+    <box id="outerwall_347" size="0.1,0.1,0.5" movable="false">
+      <body position="-5.67061,-10.5756,0" orientation="151.8,0,0"/>
+    </box>
+    <box id="outerwall_348" size="0.1,0.1,0.5" movable="false">
+      <body position="-5.78104,-10.5157,0" orientation="151.2,0,0"/>
+    </box>
+    <box id="outerwall_349" size="0.1,0.1,0.5" movable="false">
+      <body position="-5.89085,-10.4546,0" orientation="150.6,0,0"/>
+    </box>
+    <box id="outerwall_350" size="0.1,0.1,0.5" movable="false">
+      <body position="-6,-10.3923,0" orientation="150,0,0"/>
+    </box>
+    <box id="outerwall_351" size="0.1,0.1,0.5" movable="false">
+      <body position="-6.1085,-10.3289,0" orientation="149.4,0,0"/>
+    </box>
+    <box id="outerwall_352" size="0.1,0.1,0.5" movable="false">
+      <body position="-6.21632,-10.2644,0" orientation="148.8,0,0"/>
+    </box>
+    <box id="outerwall_353" size="0.1,0.1,0.5" movable="false">
+      <body position="-6.32347,-10.1987,0" orientation="148.2,0,0"/>
+    </box>
+    <box id="outerwall_354" size="0.1,0.1,0.5" movable="false">
+      <body position="-6.42992,-10.1319,0" orientation="147.6,0,0"/>
+    </box>
+    <box id="outerwall_355" size="0.1,0.1,0.5" movable="false">
+      <body position="-6.53567,-10.064,0" orientation="147,0,0"/>
+    </box>
+    <box id="outerwall_356" size="0.1,0.1,0.5" movable="false">
+      <body position="-6.6407,-9.99505,0" orientation="146.4,0,0"/>
+    </box>
+    <box id="outerwall_357" size="0.1,0.1,0.5" movable="false">
+      <body position="-6.745,-9.92497,0" orientation="145.8,0,0"/>
+    </box>
+    <box id="outerwall_358" size="0.1,0.1,0.5" movable="false">
+      <body position="-6.84856,-9.85379,0" orientation="145.2,0,0"/>
+    </box>
+    <box id="outerwall_359" size="0.1,0.1,0.5" movable="false">
+      <body position="-6.95137,-9.78153,0" orientation="144.6,0,0"/>
+    </box>
+    <box id="outerwall_360" size="0.1,0.1,0.5" movable="false">
+      <body position="-7.05342,-9.7082,0" orientation="144,0,0"/>
+    </box>
+    <box id="outerwall_361" size="0.1,0.1,0.5" movable="false">
+      <body position="-7.1547,-9.63381,0" orientation="143.4,0,0"/>
+    </box>
+    <box id="outerwall_362" size="0.1,0.1,0.5" movable="false">
+      <body position="-7.25519,-9.55836,0" orientation="142.8,0,0"/>
+    </box>
+    <box id="outerwall_363" size="0.1,0.1,0.5" movable="false">
+      <body position="-7.35488,-9.48186,0" orientation="142.2,0,0"/>
+    </box>
+    <box id="outerwall_364" size="0.1,0.1,0.5" movable="false">
+      <body position="-7.45377,-9.40432,0" orientation="141.6,0,0"/>
+    </box>
+    <box id="outerwall_365" size="0.1,0.1,0.5" movable="false">
+      <body position="-7.55184,-9.32575,0" orientation="141,0,0"/>
+    </box>
+    <box id="outerwall_366" size="0.1,0.1,0.5" movable="false">
+      <body position="-7.64909,-9.24616,0" orientation="140.4,0,0"/>
+    </box>
+    <box id="outerwall_367" size="0.1,0.1,0.5" movable="false">
+      <body position="-7.74549,-9.16555,0" orientation="139.8,0,0"/>
+    </box>
+    <box id="outerwall_368" size="0.1,0.1,0.5" movable="false">
+      <body position="-7.84105,-9.08394,0" orientation="139.2,0,0"/>
+    </box>
+    <box id="outerwall_369" size="0.1,0.1,0.5" movable="false">
+      <body position="-7.93574,-9.00133,0" orientation="138.6,0,0"/>
+    </box>
+    <box id="outerwall_370" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.02957,-8.91774,0" orientation="138,0,0"/>
+    </box>
+    <box id="outerwall_371" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.12251,-8.83317,0" orientation="137.4,0,0"/>
+    </box>
+    <box id="outerwall_372" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.21457,-8.74762,0" orientation="136.8,0,0"/>
+    </box>
+    <box id="outerwall_373" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.30572,-8.66112,0" orientation="136.2,0,0"/>
+    </box>
+    <box id="outerwall_374" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.39596,-8.57367,0" orientation="135.6,0,0"/>
+    </box>
+    <box id="outerwall_375" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.48528,-8.48528,0" orientation="135,0,0"/>
+    </box>
+    <box id="outerwall_376" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.57367,-8.39596,0" orientation="134.4,0,0"/>
+    </box>
+    <box id="outerwall_377" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.66112,-8.30572,0" orientation="133.8,0,0"/>
+    </box>
+    <box id="outerwall_378" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.74762,-8.21457,0" orientation="133.2,0,0"/>
+    </box>
+    <box id="outerwall_379" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.83317,-8.12251,0" orientation="132.6,0,0"/>
+    </box>
+    <box id="outerwall_380" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.91774,-8.02957,0" orientation="132,0,0"/>
+    </box>
+    <box id="outerwall_381" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.00133,-7.93574,0" orientation="131.4,0,0"/>
+    </box>
+    <box id="outerwall_382" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.08394,-7.84105,0" orientation="130.8,0,0"/>
+    </box>
+    <box id="outerwall_383" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.16555,-7.74549,0" orientation="130.2,0,0"/>
+    </box>
+    <box id="outerwall_384" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.24616,-7.64909,0" orientation="129.6,0,0"/>
+    </box>
+    <box id="outerwall_385" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.32575,-7.55184,0" orientation="129,0,0"/>
+    </box>
+    <box id="outerwall_386" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.40432,-7.45377,0" orientation="128.4,0,0"/>
+    </box>
+    <box id="outerwall_387" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.48186,-7.35488,0" orientation="127.8,0,0"/>
+    </box>
+    <box id="outerwall_388" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.55836,-7.25519,0" orientation="127.2,0,0"/>
+    </box>
+    <box id="outerwall_389" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.63381,-7.1547,0" orientation="126.6,0,0"/>
+    </box>
+    <box id="outerwall_390" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.7082,-7.05342,0" orientation="126,0,0"/>
+    </box>
+    <box id="outerwall_391" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.78153,-6.95137,0" orientation="125.4,0,0"/>
+    </box>
+    <box id="outerwall_392" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.85379,-6.84856,0" orientation="124.8,0,0"/>
+    </box>
+    <box id="outerwall_393" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.92497,-6.745,0" orientation="124.2,0,0"/>
+    </box>
+    <box id="outerwall_394" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.99505,-6.6407,0" orientation="123.6,0,0"/>
+    </box>
+    <box id="outerwall_395" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.064,-6.53567,0" orientation="123,0,0"/>
+    </box>
+    <box id="outerwall_396" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.1319,-6.42992,0" orientation="122.4,0,0"/>
+    </box>
+    <box id="outerwall_397" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.1987,-6.32347,0" orientation="121.8,0,0"/>
+    </box>
+    <box id="outerwall_398" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.2644,-6.21632,0" orientation="121.2,0,0"/>
+    </box>
+    <box id="outerwall_399" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.3289,-6.1085,0" orientation="120.6,0,0"/>
+    </box>
+    <box id="outerwall_400" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.3923,-6,0" orientation="120,0,0"/>
+    </box>
+    <box id="outerwall_401" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.4546,-5.89085,0" orientation="119.4,0,0"/>
+    </box>
+    <box id="outerwall_402" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.5157,-5.78104,0" orientation="118.8,0,0"/>
+    </box>
+    <box id="outerwall_403" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.5756,-5.67061,0" orientation="118.2,0,0"/>
+    </box>
+    <box id="outerwall_404" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.6344,-5.55955,0" orientation="117.6,0,0"/>
+    </box>
+    <box id="outerwall_405" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.6921,-5.44789,0" orientation="117,0,0"/>
+    </box>
+    <box id="outerwall_406" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.7485,-5.33562,0" orientation="116.4,0,0"/>
+    </box>
+    <box id="outerwall_407" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.8038,-5.22277,0" orientation="115.8,0,0"/>
+    </box>
+    <box id="outerwall_408" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.8579,-5.10935,0" orientation="115.2,0,0"/>
+    </box>
+    <box id="outerwall_409" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.9108,-4.99537,0" orientation="114.6,0,0"/>
+    </box>
+    <box id="outerwall_410" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.9625,-4.88084,0" orientation="114,0,0"/>
+    </box>
+    <box id="outerwall_411" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.0131,-4.76577,0" orientation="113.4,0,0"/>
+    </box>
+    <box id="outerwall_412" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.0624,-4.65019,0" orientation="112.8,0,0"/>
+    </box>
+    <box id="outerwall_413" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.1104,-4.53409,0" orientation="112.2,0,0"/>
+    </box>
+    <box id="outerwall_414" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.1573,-4.41749,0" orientation="111.6,0,0"/>
+    </box>
+    <box id="outerwall_415" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.203,-4.30042,0" orientation="111,0,0"/>
+    </box>
+    <box id="outerwall_416" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.2474,-4.18286,0" orientation="110.4,0,0"/>
+    </box>
+    <box id="outerwall_417" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.2906,-4.06486,0" orientation="109.8,0,0"/>
+    </box>
+    <box id="outerwall_418" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.3325,-3.9464,0" orientation="109.2,0,0"/>
+    </box>
+    <box id="outerwall_419" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.3732,-3.82751,0" orientation="108.6,0,0"/>
+    </box>
+    <box id="outerwall_420" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.4127,-3.7082,0" orientation="108,0,0"/>
+    </box>
+    <box id="outerwall_421" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.4509,-3.58849,0" orientation="107.4,0,0"/>
+    </box>
+    <box id="outerwall_422" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.4878,-3.46838,0" orientation="106.8,0,0"/>
+    </box>
+    <box id="outerwall_423" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.5235,-3.34789,0" orientation="106.2,0,0"/>
+    </box>
+    <box id="outerwall_424" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.558,-3.22704,0" orientation="105.6,0,0"/>
+    </box>
+    <box id="outerwall_425" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.5911,-3.10583,0" orientation="105,0,0"/>
+    </box>
+    <box id="outerwall_426" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.623,-2.98428,0" orientation="104.4,0,0"/>
+    </box>
+    <box id="outerwall_427" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.6536,-2.8624,0" orientation="103.8,0,0"/>
+    </box>
+    <box id="outerwall_428" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.6829,-2.74021,0" orientation="103.2,0,0"/>
+    </box>
+    <box id="outerwall_429" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.711,-2.61772,0" orientation="102.6,0,0"/>
+    </box>
+    <box id="outerwall_430" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.7378,-2.49494,0" orientation="102,0,0"/>
+    </box>
+    <box id="outerwall_431" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.7633,-2.37189,0" orientation="101.4,0,0"/>
+    </box>
+    <box id="outerwall_432" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.7874,-2.24858,0" orientation="100.8,0,0"/>
+    </box>
+    <box id="outerwall_433" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.8103,-2.12502,0" orientation="100.2,0,0"/>
+    </box>
+    <box id="outerwall_434" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.832,-2.00122,0" orientation="99.6,0,0"/>
+    </box>
+    <box id="outerwall_435" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.8523,-1.87721,0" orientation="99,0,0"/>
+    </box>
+    <box id="outerwall_436" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.8713,-1.753,0" orientation="98.4,0,0"/>
+    </box>
+    <box id="outerwall_437" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.889,-1.62859,0" orientation="97.8,0,0"/>
+    </box>
+    <box id="outerwall_438" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9054,-1.504,0" orientation="97.2,0,0"/>
+    </box>
+    <box id="outerwall_439" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9205,-1.37925,0" orientation="96.6,0,0"/>
+    </box>
+    <box id="outerwall_440" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9343,-1.25434,0" orientation="96,0,0"/>
+    </box>
+    <box id="outerwall_441" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9467,-1.1293,0" orientation="95.4,0,0"/>
+    </box>
+    <box id="outerwall_442" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9579,-1.00413,0" orientation="94.8,0,0"/>
+    </box>
+    <box id="outerwall_443" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9678,-0.878858,0" orientation="94.2,0,0"/>
+    </box>
+    <box id="outerwall_444" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9763,-0.753486,0" orientation="93.6,0,0"/>
+    </box>
+    <box id="outerwall_445" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9836,-0.628031,0" orientation="93,0,0"/>
+    </box>
+    <box id="outerwall_446" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9895,-0.502508,0" orientation="92.4,0,0"/>
+    </box>
+    <box id="outerwall_447" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9941,-0.376929,0" orientation="91.8,0,0"/>
+    </box>
+    <box id="outerwall_448" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9974,-0.251309,0" orientation="91.2,0,0"/>
+    </box>
+    <box id="outerwall_449" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9993,-0.125661,0" orientation="90.6,0,0"/>
+    </box>
+    <box id="outerwall_450" size="0.1,0.1,0.5" movable="false">
+      <body position="-12,-2.20436e-15,0" orientation="90,0,0"/>
+    </box>
+    <box id="outerwall_451" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9993,0.125661,0" orientation="89.4,0,0"/>
+    </box>
+    <box id="outerwall_452" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9974,0.251309,0" orientation="88.8,0,0"/>
+    </box>
+    <box id="outerwall_453" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9941,0.376929,0" orientation="88.2,0,0"/>
+    </box>
+    <box id="outerwall_454" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9895,0.502508,0" orientation="87.6,0,0"/>
+    </box>
+    <box id="outerwall_455" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9836,0.628031,0" orientation="87,0,0"/>
+    </box>
+    <box id="outerwall_456" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9763,0.753486,0" orientation="86.4,0,0"/>
+    </box>
+    <box id="outerwall_457" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9678,0.878858,0" orientation="85.8,0,0"/>
+    </box>
+    <box id="outerwall_458" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9579,1.00413,0" orientation="85.2,0,0"/>
+    </box>
+    <box id="outerwall_459" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9467,1.1293,0" orientation="84.6,0,0"/>
+    </box>
+    <box id="outerwall_460" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9343,1.25434,0" orientation="84,0,0"/>
+    </box>
+    <box id="outerwall_461" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9205,1.37925,0" orientation="83.4,0,0"/>
+    </box>
+    <box id="outerwall_462" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.9054,1.504,0" orientation="82.8,0,0"/>
+    </box>
+    <box id="outerwall_463" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.889,1.62859,0" orientation="82.2,0,0"/>
+    </box>
+    <box id="outerwall_464" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.8713,1.753,0" orientation="81.6,0,0"/>
+    </box>
+    <box id="outerwall_465" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.8523,1.87721,0" orientation="81,0,0"/>
+    </box>
+    <box id="outerwall_466" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.832,2.00122,0" orientation="80.4,0,0"/>
+    </box>
+    <box id="outerwall_467" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.8103,2.12502,0" orientation="79.8,0,0"/>
+    </box>
+    <box id="outerwall_468" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.7874,2.24858,0" orientation="79.2,0,0"/>
+    </box>
+    <box id="outerwall_469" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.7633,2.37189,0" orientation="78.6,0,0"/>
+    </box>
+    <box id="outerwall_470" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.7378,2.49494,0" orientation="78,0,0"/>
+    </box>
+    <box id="outerwall_471" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.711,2.61772,0" orientation="77.4,0,0"/>
+    </box>
+    <box id="outerwall_472" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.6829,2.74021,0" orientation="76.8,0,0"/>
+    </box>
+    <box id="outerwall_473" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.6536,2.8624,0" orientation="76.2,0,0"/>
+    </box>
+    <box id="outerwall_474" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.623,2.98428,0" orientation="75.6,0,0"/>
+    </box>
+    <box id="outerwall_475" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.5911,3.10583,0" orientation="75,0,0"/>
+    </box>
+    <box id="outerwall_476" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.558,3.22704,0" orientation="74.4,0,0"/>
+    </box>
+    <box id="outerwall_477" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.5235,3.34789,0" orientation="73.8,0,0"/>
+    </box>
+    <box id="outerwall_478" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.4878,3.46838,0" orientation="73.2,0,0"/>
+    </box>
+    <box id="outerwall_479" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.4509,3.58849,0" orientation="72.6,0,0"/>
+    </box>
+    <box id="outerwall_480" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.4127,3.7082,0" orientation="72,0,0"/>
+    </box>
+    <box id="outerwall_481" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.3732,3.82751,0" orientation="71.4,0,0"/>
+    </box>
+    <box id="outerwall_482" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.3325,3.9464,0" orientation="70.8,0,0"/>
+    </box>
+    <box id="outerwall_483" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.2906,4.06486,0" orientation="70.2,0,0"/>
+    </box>
+    <box id="outerwall_484" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.2474,4.18286,0" orientation="69.6,0,0"/>
+    </box>
+    <box id="outerwall_485" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.203,4.30042,0" orientation="69,0,0"/>
+    </box>
+    <box id="outerwall_486" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.1573,4.41749,0" orientation="68.4,0,0"/>
+    </box>
+    <box id="outerwall_487" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.1104,4.53409,0" orientation="67.8,0,0"/>
+    </box>
+    <box id="outerwall_488" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.0624,4.65019,0" orientation="67.2,0,0"/>
+    </box>
+    <box id="outerwall_489" size="0.1,0.1,0.5" movable="false">
+      <body position="-11.0131,4.76577,0" orientation="66.6,0,0"/>
+    </box>
+    <box id="outerwall_490" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.9625,4.88084,0" orientation="66,0,0"/>
+    </box>
+    <box id="outerwall_491" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.9108,4.99537,0" orientation="65.4,0,0"/>
+    </box>
+    <box id="outerwall_492" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.8579,5.10935,0" orientation="64.8,0,0"/>
+    </box>
+    <box id="outerwall_493" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.8038,5.22277,0" orientation="64.2,0,0"/>
+    </box>
+    <box id="outerwall_494" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.7485,5.33562,0" orientation="63.6,0,0"/>
+    </box>
+    <box id="outerwall_495" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.6921,5.44789,0" orientation="63,0,0"/>
+    </box>
+    <box id="outerwall_496" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.6344,5.55955,0" orientation="62.4,0,0"/>
+    </box>
+    <box id="outerwall_497" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.5756,5.67061,0" orientation="61.8,0,0"/>
+    </box>
+    <box id="outerwall_498" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.5157,5.78104,0" orientation="61.2,0,0"/>
+    </box>
+    <box id="outerwall_499" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.4546,5.89085,0" orientation="60.6,0,0"/>
+    </box>
+    <box id="outerwall_500" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.3923,6,0" orientation="60,0,0"/>
+    </box>
+    <box id="outerwall_501" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.3289,6.1085,0" orientation="59.4,0,0"/>
+    </box>
+    <box id="outerwall_502" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.2644,6.21632,0" orientation="58.8,0,0"/>
+    </box>
+    <box id="outerwall_503" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.1987,6.32347,0" orientation="58.2,0,0"/>
+    </box>
+    <box id="outerwall_504" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.1319,6.42992,0" orientation="57.6,0,0"/>
+    </box>
+    <box id="outerwall_505" size="0.1,0.1,0.5" movable="false">
+      <body position="-10.064,6.53567,0" orientation="57,0,0"/>
+    </box>
+    <box id="outerwall_506" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.99505,6.6407,0" orientation="56.4,0,0"/>
+    </box>
+    <box id="outerwall_507" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.92497,6.745,0" orientation="55.8,0,0"/>
+    </box>
+    <box id="outerwall_508" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.85379,6.84856,0" orientation="55.2,0,0"/>
+    </box>
+    <box id="outerwall_509" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.78153,6.95137,0" orientation="54.6,0,0"/>
+    </box>
+    <box id="outerwall_510" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.7082,7.05342,0" orientation="54,0,0"/>
+    </box>
+    <box id="outerwall_511" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.63381,7.1547,0" orientation="53.4,0,0"/>
+    </box>
+    <box id="outerwall_512" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.55836,7.25519,0" orientation="52.8,0,0"/>
+    </box>
+    <box id="outerwall_513" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.48186,7.35488,0" orientation="52.2,0,0"/>
+    </box>
+    <box id="outerwall_514" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.40432,7.45377,0" orientation="51.6,0,0"/>
+    </box>
+    <box id="outerwall_515" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.32575,7.55184,0" orientation="51,0,0"/>
+    </box>
+    <box id="outerwall_516" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.24616,7.64909,0" orientation="50.4,0,0"/>
+    </box>
+    <box id="outerwall_517" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.16555,7.74549,0" orientation="49.8,0,0"/>
+    </box>
+    <box id="outerwall_518" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.08394,7.84105,0" orientation="49.2,0,0"/>
+    </box>
+    <box id="outerwall_519" size="0.1,0.1,0.5" movable="false">
+      <body position="-9.00133,7.93574,0" orientation="48.6,0,0"/>
+    </box>
+    <box id="outerwall_520" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.91774,8.02957,0" orientation="48,0,0"/>
+    </box>
+    <box id="outerwall_521" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.83317,8.12251,0" orientation="47.4,0,0"/>
+    </box>
+    <box id="outerwall_522" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.74762,8.21457,0" orientation="46.8,0,0"/>
+    </box>
+    <box id="outerwall_523" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.66112,8.30572,0" orientation="46.2,0,0"/>
+    </box>
+    <box id="outerwall_524" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.57367,8.39596,0" orientation="45.6,0,0"/>
+    </box>
+    <box id="outerwall_525" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.48528,8.48528,0" orientation="45,0,0"/>
+    </box>
+    <box id="outerwall_526" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.39596,8.57367,0" orientation="44.4,0,0"/>
+    </box>
+    <box id="outerwall_527" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.30572,8.66112,0" orientation="43.8,0,0"/>
+    </box>
+    <box id="outerwall_528" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.21457,8.74762,0" orientation="43.2,0,0"/>
+    </box>
+    <box id="outerwall_529" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.12251,8.83317,0" orientation="42.6,0,0"/>
+    </box>
+    <box id="outerwall_530" size="0.1,0.1,0.5" movable="false">
+      <body position="-8.02957,8.91774,0" orientation="42,0,0"/>
+    </box>
+    <box id="outerwall_531" size="0.1,0.1,0.5" movable="false">
+      <body position="-7.93574,9.00133,0" orientation="41.4,0,0"/>
+    </box>
+    <box id="outerwall_532" size="0.1,0.1,0.5" movable="false">
+      <body position="-7.84105,9.08394,0" orientation="40.8,0,0"/>
+    </box>
+    <box id="outerwall_533" size="0.1,0.1,0.5" movable="false">
+      <body position="-7.74549,9.16555,0" orientation="40.2,0,0"/>
+    </box>
+    <box id="outerwall_534" size="0.1,0.1,0.5" movable="false">
+      <body position="-7.64909,9.24616,0" orientation="39.6,0,0"/>
+    </box>
+    <box id="outerwall_535" size="0.1,0.1,0.5" movable="false">
+      <body position="-7.55184,9.32575,0" orientation="39,0,0"/>
+    </box>
+    <box id="outerwall_536" size="0.1,0.1,0.5" movable="false">
+      <body position="-7.45377,9.40432,0" orientation="38.4,0,0"/>
+    </box>
+    <box id="outerwall_537" size="0.1,0.1,0.5" movable="false">
+      <body position="-7.35488,9.48186,0" orientation="37.8,0,0"/>
+    </box>
+    <box id="outerwall_538" size="0.1,0.1,0.5" movable="false">
+      <body position="-7.25519,9.55836,0" orientation="37.2,0,0"/>
+    </box>
+    <box id="outerwall_539" size="0.1,0.1,0.5" movable="false">
+      <body position="-7.1547,9.63381,0" orientation="36.6,0,0"/>
+    </box>
+    <box id="outerwall_540" size="0.1,0.1,0.5" movable="false">
+      <body position="-7.05342,9.7082,0" orientation="36,0,0"/>
+    </box>
+    <box id="outerwall_541" size="0.1,0.1,0.5" movable="false">
+      <body position="-6.95137,9.78153,0" orientation="35.4,0,0"/>
+    </box>
+    <box id="outerwall_542" size="0.1,0.1,0.5" movable="false">
+      <body position="-6.84856,9.85379,0" orientation="34.8,0,0"/>
+    </box>
+    <box id="outerwall_543" size="0.1,0.1,0.5" movable="false">
+      <body position="-6.745,9.92497,0" orientation="34.2,0,0"/>
+    </box>
+    <box id="outerwall_544" size="0.1,0.1,0.5" movable="false">
+      <body position="-6.6407,9.99505,0" orientation="33.6,0,0"/>
+    </box>
+    <box id="outerwall_545" size="0.1,0.1,0.5" movable="false">
+      <body position="-6.53567,10.064,0" orientation="33,0,0"/>
+    </box>
+    <box id="outerwall_546" size="0.1,0.1,0.5" movable="false">
+      <body position="-6.42992,10.1319,0" orientation="32.4,0,0"/>
+    </box>
+    <box id="outerwall_547" size="0.1,0.1,0.5" movable="false">
+      <body position="-6.32347,10.1987,0" orientation="31.8,0,0"/>
+    </box>
+    <box id="outerwall_548" size="0.1,0.1,0.5" movable="false">
+      <body position="-6.21632,10.2644,0" orientation="31.2,0,0"/>
+    </box>
+    <box id="outerwall_549" size="0.1,0.1,0.5" movable="false">
+      <body position="-6.1085,10.3289,0" orientation="30.6,0,0"/>
+    </box>
+    <box id="outerwall_550" size="0.1,0.1,0.5" movable="false">
+      <body position="-6,10.3923,0" orientation="30,0,0"/>
+    </box>
+    <box id="outerwall_551" size="0.1,0.1,0.5" movable="false">
+      <body position="-5.89085,10.4546,0" orientation="29.4,0,0"/>
+    </box>
+    <box id="outerwall_552" size="0.1,0.1,0.5" movable="false">
+      <body position="-5.78104,10.5157,0" orientation="28.8,0,0"/>
+    </box>
+    <box id="outerwall_553" size="0.1,0.1,0.5" movable="false">
+      <body position="-5.67061,10.5756,0" orientation="28.2,0,0"/>
+    </box>
+    <box id="outerwall_554" size="0.1,0.1,0.5" movable="false">
+      <body position="-5.55955,10.6344,0" orientation="27.6,0,0"/>
+    </box>
+    <box id="outerwall_555" size="0.1,0.1,0.5" movable="false">
+      <body position="-5.44789,10.6921,0" orientation="27,0,0"/>
+    </box>
+    <box id="outerwall_556" size="0.1,0.1,0.5" movable="false">
+      <body position="-5.33562,10.7485,0" orientation="26.4,0,0"/>
+    </box>
+    <box id="outerwall_557" size="0.1,0.1,0.5" movable="false">
+      <body position="-5.22277,10.8038,0" orientation="25.8,0,0"/>
+    </box>
+    <box id="outerwall_558" size="0.1,0.1,0.5" movable="false">
+      <body position="-5.10935,10.8579,0" orientation="25.2,0,0"/>
+    </box>
+    <box id="outerwall_559" size="0.1,0.1,0.5" movable="false">
+      <body position="-4.99537,10.9108,0" orientation="24.6,0,0"/>
+    </box>
+    <box id="outerwall_560" size="0.1,0.1,0.5" movable="false">
+      <body position="-4.88084,10.9625,0" orientation="24,0,0"/>
+    </box>
+    <box id="outerwall_561" size="0.1,0.1,0.5" movable="false">
+      <body position="-4.76577,11.0131,0" orientation="23.4,0,0"/>
+    </box>
+    <box id="outerwall_562" size="0.1,0.1,0.5" movable="false">
+      <body position="-4.65019,11.0624,0" orientation="22.8,0,0"/>
+    </box>
+    <box id="outerwall_563" size="0.1,0.1,0.5" movable="false">
+      <body position="-4.53409,11.1104,0" orientation="22.2,0,0"/>
+    </box>
+    <box id="outerwall_564" size="0.1,0.1,0.5" movable="false">
+      <body position="-4.41749,11.1573,0" orientation="21.6,0,0"/>
+    </box>
+    <box id="outerwall_565" size="0.1,0.1,0.5" movable="false">
+      <body position="-4.30042,11.203,0" orientation="21,0,0"/>
+    </box>
+    <box id="outerwall_566" size="0.1,0.1,0.5" movable="false">
+      <body position="-4.18286,11.2474,0" orientation="20.4,0,0"/>
+    </box>
+    <box id="outerwall_567" size="0.1,0.1,0.5" movable="false">
+      <body position="-4.06486,11.2906,0" orientation="19.8,0,0"/>
+    </box>
+    <box id="outerwall_568" size="0.1,0.1,0.5" movable="false">
+      <body position="-3.9464,11.3325,0" orientation="19.2,0,0"/>
+    </box>
+    <box id="outerwall_569" size="0.1,0.1,0.5" movable="false">
+      <body position="-3.82751,11.3732,0" orientation="18.6,0,0"/>
+    </box>
+    <box id="outerwall_570" size="0.1,0.1,0.5" movable="false">
+      <body position="-3.7082,11.4127,0" orientation="18,0,0"/>
+    </box>
+    <box id="outerwall_571" size="0.1,0.1,0.5" movable="false">
+      <body position="-3.58849,11.4509,0" orientation="17.4,0,0"/>
+    </box>
+    <box id="outerwall_572" size="0.1,0.1,0.5" movable="false">
+      <body position="-3.46838,11.4878,0" orientation="16.8,0,0"/>
+    </box>
+    <box id="outerwall_573" size="0.1,0.1,0.5" movable="false">
+      <body position="-3.34789,11.5235,0" orientation="16.2,0,0"/>
+    </box>
+    <box id="outerwall_574" size="0.1,0.1,0.5" movable="false">
+      <body position="-3.22704,11.558,0" orientation="15.6,0,0"/>
+    </box>
+    <box id="outerwall_575" size="0.1,0.1,0.5" movable="false">
+      <body position="-3.10583,11.5911,0" orientation="15,0,0"/>
+    </box>
+    <box id="outerwall_576" size="0.1,0.1,0.5" movable="false">
+      <body position="-2.98428,11.623,0" orientation="14.4,0,0"/>
+    </box>
+    <box id="outerwall_577" size="0.1,0.1,0.5" movable="false">
+      <body position="-2.8624,11.6536,0" orientation="13.8,0,0"/>
+    </box>
+    <box id="outerwall_578" size="0.1,0.1,0.5" movable="false">
+      <body position="-2.74021,11.6829,0" orientation="13.2,0,0"/>
+    </box>
+    <box id="outerwall_579" size="0.1,0.1,0.5" movable="false">
+      <body position="-2.61772,11.711,0" orientation="12.6,0,0"/>
+    </box>
+    <box id="outerwall_580" size="0.1,0.1,0.5" movable="false">
+      <body position="-2.49494,11.7378,0" orientation="12,0,0"/>
+    </box>
+    <box id="outerwall_581" size="0.1,0.1,0.5" movable="false">
+      <body position="-2.37189,11.7633,0" orientation="11.4,0,0"/>
+    </box>
+    <box id="outerwall_582" size="0.1,0.1,0.5" movable="false">
+      <body position="-2.24858,11.7874,0" orientation="10.8,0,0"/>
+    </box>
+    <box id="outerwall_583" size="0.1,0.1,0.5" movable="false">
+      <body position="-2.12502,11.8103,0" orientation="10.2,0,0"/>
+    </box>
+    <box id="outerwall_584" size="0.1,0.1,0.5" movable="false">
+      <body position="-2.00122,11.832,0" orientation="9.6,0,0"/>
+    </box>
+    <box id="outerwall_585" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.87721,11.8523,0" orientation="9,0,0"/>
+    </box>
+    <box id="outerwall_586" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.753,11.8713,0" orientation="8.4,0,0"/>
+    </box>
+    <box id="outerwall_587" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.62859,11.889,0" orientation="7.8,0,0"/>
+    </box>
+    <box id="outerwall_588" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.504,11.9054,0" orientation="7.2,0,0"/>
+    </box>
+    <box id="outerwall_589" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.37925,11.9205,0" orientation="6.6,0,0"/>
+    </box>
+    <box id="outerwall_590" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.25434,11.9343,0" orientation="6,0,0"/>
+    </box>
+    <box id="outerwall_591" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.1293,11.9467,0" orientation="5.4,0,0"/>
+    </box>
+    <box id="outerwall_592" size="0.1,0.1,0.5" movable="false">
+      <body position="-1.00413,11.9579,0" orientation="4.8,0,0"/>
+    </box>
+    <box id="outerwall_593" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.878858,11.9678,0" orientation="4.2,0,0"/>
+    </box>
+    <box id="outerwall_594" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.753486,11.9763,0" orientation="3.6,0,0"/>
+    </box>
+    <box id="outerwall_595" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.628031,11.9836,0" orientation="3,0,0"/>
+    </box>
+    <box id="outerwall_596" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.502508,11.9895,0" orientation="2.4,0,0"/>
+    </box>
+    <box id="outerwall_597" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.376929,11.9941,0" orientation="1.8,0,0"/>
+    </box>
+    <box id="outerwall_598" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.251309,11.9974,0" orientation="1.2,0,0"/>
+    </box>
+    <box id="outerwall_599" size="0.1,0.1,0.5" movable="false">
+      <body position="-0.125661,11.9993,0" orientation="0.6,0,0"/>
+    </box>
+  </arena>
+</argos-configuration>
