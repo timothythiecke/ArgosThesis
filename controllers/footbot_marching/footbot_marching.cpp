@@ -138,6 +138,7 @@ void CFootBotMarching::Init(TConfigurationNode& t_node) {
 	bool state = true;
     GetNodeAttribute(tRange, "probabilistic", state);
 	// ^ Note: Argos will stop working if it can't parse a node attribute, so we should move this to a try catch block
+	// THROW_ARGOSEXCEPTION_NESTED("Error with initializing s.", ex);
 	if (state)
 	{
 		mRangeDecisionState = CFootBotMarching::ERangeDecisionMakingState::Probabilistic;
@@ -146,7 +147,6 @@ void CFootBotMarching::Init(TConfigurationNode& t_node) {
 	{
 		mRangeDecisionState = CFootBotMarching::ERangeDecisionMakingState::Binary;
 	}
-
 
    m_pcRNG = CRandom::CreateRNG("argos");
    Reset();
@@ -373,25 +373,51 @@ void CFootBotMarching::Decision() {
 	{
 		f_fracLeft = f_fracLeft / (1.0 * degreeLocal + 1.0);
 		f_fracRight = (1.0 - f_fracLeft);
-	}
 
-	if (degreeLocal > 0)
-	{ 			
-		if (m_pcRNG->Uniform(CRange<Real>(0.0, 1.0)) > Abs(f_fracLeft - f_fracRight))
+		// Difference between fractions comparison with 0.5?
+		// Or is it, generate one random number, then use option one or two 
+		// Or both?
+		// Either way, probabilistic is the original code
+		// Note: duplicate code
+		if (mRangeDecisionState == CFootBotMarching::ERangeDecisionMakingState::Probabilistic)
 		{
-			b_rabChanged = true;
-			newRABRange += 0.1;
-		}
-		else if (m_pcRNG->Uniform(CRange<Real>(0.0, 1.0)) < Abs(f_fracLeft - f_fracRight))
-		{
-			b_rabChanged = true;
-			if(newRABRange > 0) // Weird, should change this piece
+			if (m_pcRNG->Uniform(CRange<Real>(0.0, 1.0)) > Abs(f_fracLeft - f_fracRight))
 			{
-				newRABRange -= 0.1;
+				b_rabChanged = true;
+				newRABRange += 0.1;
 			}
-			if(newRABRange < 0.3)
-			{ 
-				newRABRange = 0.3; 
+			else if (m_pcRNG->Uniform(CRange<Real>(0.0, 1.0)) < Abs(f_fracLeft - f_fracRight))
+			{
+				b_rabChanged = true;
+				if (newRABRange > 0.0)
+				{
+					newRABRange -= 0.1;
+				}
+				if (newRABRange < 0.3)
+				{	 
+					newRABRange = 0.3; 
+				}
+			}
+		}
+		else if (mRangeDecisionState == CFootBotMarching::ERangeDecisionMakingState::Binary)
+		{
+			Real rng = m_pcRNG->Uniform(CRange<Real>(0.0, 1.0));
+			if (Abs(f_fracLeft - f_fracRight) < rng)
+			{
+				b_rabChanged = true;
+				newRABRange += 0.1;
+			}
+			else
+			{
+				b_rabChanged = true;
+				if (newRABRange > 0.0)
+				{
+					newRABRange -= 0.1;
+				}
+				if (newRABRange < 0.3)
+				{	 
+					newRABRange = 0.3; 
+				}
 			}
 		}
 	}
