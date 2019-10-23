@@ -364,7 +364,7 @@ void CMarchingLoopFunctions::PostStep() {
       
     	degDist.push_back(cController.GetDegree());
 		
-		//cController.MarkPotentialHub(false);
+		cController.MarkPotentialHub(false);
 		controllers.push_back(&cController);
 		
     	//LOG << cController.GetDegree() << "; ";
@@ -409,7 +409,7 @@ void CMarchingLoopFunctions::PostStep() {
 		{
 			if (counter < 10)
 			{
-				//ptr->MarkPotentialHub(true);
+				ptr->MarkPotentialHub(true);
 			}
 
 			// Note, this does the same thing (hopefully) as the sort write code below out of this for loop

@@ -109,6 +109,9 @@ public:
    bool GetBreakdown();
    void SetFakeTPackets(CCI_RangeAndBearingSensor::TReadings& fakeTPackets);
    
+   void MarkPotentialHub(bool isPotentialHub) { mPotentialHub = isPotentialHub; };
+   bool IsPotentialHub() const { return mPotentialHub; }
+
    /*
     * Contains all the state information about the controller.
     */
@@ -239,6 +242,8 @@ private:
    
    Real variance_of_change_left;
    Real variance_of_change_right;
+
+   bool mPotentialHub = false;
 };
 
 #endif
