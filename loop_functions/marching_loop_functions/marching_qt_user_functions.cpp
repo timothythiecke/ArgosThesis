@@ -11,18 +11,21 @@ using namespace argos;
 /****************************************/
 
 CMarchingQTUserFunctions::CMarchingQTUserFunctions() :
-   m_cMarchLF(dynamic_cast<CMarchingLoopFunctions&>(CSimulator::GetInstance().GetLoopFunctions())) {
+   m_cMarchLF(dynamic_cast<CMarchingLoopFunctions&>(CSimulator::GetInstance().GetLoopFunctions())) 
+{
    RegisterUserFunction<CMarchingQTUserFunctions,CFootBotEntity>(&CMarchingQTUserFunctions::Draw);
 }
 
 /****************************************/
 /****************************************/
 
-void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity) {
+void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity) 
+{
    CFootBotMarching& cController = dynamic_cast<CFootBotMarching&>(c_entity.GetControllableEntity().GetController());
-    std:: string strID = c_entity.GetId().substr (2,5);
+   std:: string strID = c_entity.GetId().substr (2,5);
 	int unID = std::stoi (strID,nullptr,10);
-	/* This one is helpful for drawing the ID above the robot */
+	
+   /* This one is helpful for drawing the ID above the robot */
 	/* Alternatively, one could also use a modified DrawInfo function below */
 	//~ if(unID == 200){	
 	   //~ DrawText(CVector3(0.0, 0.0, 0.3),   // position
@@ -38,7 +41,8 @@ void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity) {
 /****************************************/
 /****************************************/
 
-void CMarchingQTUserFunctions::DrawInWorld() {
+void CMarchingQTUserFunctions::DrawInWorld() 
+{
    /* Go through all the robot neighbors and draw links to them */
    for(CMarchingLoopFunctions::TNeighborsMap::const_iterator it = m_cMarchLF.GetNeighborPositions().begin();
        it != m_cMarchLF.GetNeighborPositions().end();
@@ -50,16 +54,19 @@ void CMarchingQTUserFunctions::DrawInWorld() {
 /****************************************/
 /****************************************/
 
-void CMarchingQTUserFunctions::DrawLinks(const std::vector<CVector3>& neighborPositions) {
+void CMarchingQTUserFunctions::DrawLinks(const std::vector<CVector3>& neighborPositions) 
+{
    /* Start drawing if a footbot has at least one neighbor */
-   if(neighborPositions.size() > 1) {
+   if(neighborPositions.size() > 1) 
+   {
       size_t unStart = 0;
       size_t unEnd = 1;
       CVector3 pos0 = neighborPositions[unStart];
       pos0.SetZ(0.3f);
-      while(unEnd < neighborPositions.size()) {
-		  CVector3 pos1 = neighborPositions[unEnd];
-		  pos1.SetZ(0.3f);
+      while(unEnd < neighborPositions.size()) 
+      {
+		   CVector3 pos1 = neighborPositions[unEnd];
+		   pos1.SetZ(0.3f);
          DrawRay(CRay3(pos1,pos0), CColor::GREEN);
          ++unEnd;
       }
@@ -69,7 +76,8 @@ void CMarchingQTUserFunctions::DrawLinks(const std::vector<CVector3>& neighborPo
 /****************************************/
 /****************************************/
 
-void CMarchingQTUserFunctions::DrawInfo(CFootBotEntity& c_entity, std::vector<std::string>& info) {
+void CMarchingQTUserFunctions::DrawInfo(CFootBotEntity& c_entity, std::vector<std::string>& info)
+{
    /* The position of the text is expressed wrt the reference point of the footbot
     * For a foot-bot, the reference point is the center of its base.
     * See also the description in
