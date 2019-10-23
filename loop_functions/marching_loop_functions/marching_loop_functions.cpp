@@ -341,60 +341,96 @@ void CMarchingLoopFunctions::PreStep() {
 /****************************************/
 
 void CMarchingLoopFunctions::PostStep() {
-   Real avgRABRange = 0.0, avgDegree = 0.0;
-   int currentTime = GetSpace().GetSimulationClock();
-   std::vector<int> degDist;
-   
-   // Loop over the swarm and record the degree of every robot
-   CSpace::TMapPerType& m_cFootbots = GetSpace().GetEntitiesByType("foot-bot");
-   for(CSpace::TMapPerType::iterator it = m_cFootbots.begin();
-	   it != m_cFootbots.end();
-	   ++it) {
-	  // Create a pointer to the current foot-bot
-	  CFootBotEntity* pcFB = any_cast<CFootBotEntity*>(it->second);
-	  CFootBotEntity& cFootBot = *any_cast<CFootBotEntity*>(it->second);
+   	Real avgRABRange = 0.0, avgDegree = 0.0;
+   	int currentTime = GetSpace().GetSimulationClock();
+   	std::vector<int> degDist;
+   	std::vector<CFootBotMarching*> controllers;
+
+   	// Loop over the swarm and record the degree of every robot
+   	CSpace::TMapPerType& m_cFootbots = GetSpace().GetEntitiesByType("foot-bot");
+   	for(CSpace::TMapPerType::iterator it = m_cFootbots.begin(); it != m_cFootbots.end(); ++it)
+   	{
+		// Create a pointer to the current foot-bot
+		CFootBotEntity* pcFB = any_cast<CFootBotEntity*>(it->second);
+		CFootBotEntity& cFootBot = *any_cast<CFootBotEntity*>(it->second);
 	  
-	  // Get the foot-bot controller
-	  CFootBotMarching& cController = dynamic_cast<CFootBotMarching&>(cFootBot.GetControllableEntity().GetController());
-	  std:: string strID = cController.GetId().substr (2,5);
-	  int unID = std::stoi (strID,nullptr,10);
+		// Get the foot-bot controller
+		CFootBotMarching& cController = dynamic_cast<CFootBotMarching&>(cFootBot.GetControllableEntity().GetController());
+		std:: string strID = cController.GetId().substr (2,5);
+		int unID = std::stoi (strID,nullptr,10);
       
-      avgDegree += cController.GetDegree();
-      avgRABRange += cController.GetNewRABRange();
+    	avgDegree += cController.GetDegree();
+    	avgRABRange += cController.GetNewRABRange();
       
-      degDist.push_back(cController.GetDegree());
+    	degDist.push_back(cController.GetDegree());
+		
+		//cController.MarkPotentialHub(false);
+		controllers.push_back(&cController);
+		
+    	//LOG << cController.GetDegree() << "; ";
       
-      //LOG << cController.GetDegree() << "; ";
-      
-      // Alternative code for displaying the comm links
-	   //~ for(CSpace::TMapPerType::iterator it = m_cFootbots.begin();
-			   //~ it != m_cFootbots.end();
-			   //~ ++it) {
-			  //~ // Create a pointer to the current foot-bot
-			  //~ CFootBotEntity* pcFB = any_cast<CFootBotEntity*>(it->second);
+    	// Alternative code for displaying the comm links
+		//~ for(CSpace::TMapPerType::iterator it = m_cFootbots.begin();
+				//~ it != m_cFootbots.end();
+				//~ ++it) {
+				//~ // Create a pointer to the current foot-bot
+				//~ CFootBotEntity* pcFB = any_cast<CFootBotEntity*>(it->second);
 			  
-			  //~ // Clear the list of positions
-			  //~ m_tNeighbors[pcFB].clear();
-		   //~ }
-   }
-   //LOG << std::endl;
+				//~ // Clear the list of positions
+				//~ m_tNeighbors[pcFB].clear();
+		//~ }
+	}
+	//LOG << std::endl;
+
+	Real activeRobots = m_cFootbots.size() * 1.0;
+
+	avgRABRange = avgRABRange / activeRobots;
+	avgDegree = avgDegree / activeRobots;
+
+	// If the degree of the footbot is in the top x%, then mark it as a potential hub
+	// In order for this to work, we need the deg distribution array as is
+	// We need a mapping between the index and its degree even after sorting
+	// Sort descending by grade
+	std::sort(controllers.begin(), controllers.end(), [](CFootBotMarching* lhs, CFootBotMarching* rhs)
+	{
+		if (lhs != nullptr && rhs != nullptr)
+		{
+			return lhs->GetDegree() > rhs->GetDegree();
+		}
+		return false;
+	});
+	
+	// Then for the top x, mark them as being a potential hub
+	int i = controllers.size() - 1;
+	int counter = 0;
+	for (CFootBotMarching* ptr : controllers)
+	{
+		if (ptr != nullptr)
+		{
+			if (counter < 10)
+			{
+				//ptr->MarkPotentialHub(true);
+			}
+
+			// Note, this does the same thing (hopefully) as the sort write code below out of this for loop
+			// But will avoid another sort call
+			degDistTot[controllers.size() - 1 - i] += controllers[i]->GetDegree();
+			i--;
+		}
+	}
+
+	// Avoid sorting a second time
+	/*std::sort (degDist.begin(), degDist.end());
    
-   Real activeRobots = m_cFootbots.size()*1.0;
+	for(int i = 0; i < degDist.size(); i++)
+   	{
+		degDistTot[i] += degDist[i]; 
+	}*/
    
-   avgRABRange = avgRABRange / activeRobots;
-   avgDegree = avgDegree / activeRobots;
-   
-   std::sort (degDist.begin(), degDist.end());
-   
-   for(int i = 0; i < degDist.size(); i++){
-	   degDistTot[i] += degDist[i]; 
-   }
-   
-   if(currentTime % 50 == 0)
-   { 
-	   LOG << GetSpace().GetSimulationClock() << "\t" << avgDegree << std::endl; 
-   }  
-   
+	if(currentTime % 50 == 0)
+	{ 
+		LOG << GetSpace().GetSimulationClock() << "\t" << avgDegree << std::endl; 
+	}
 }
 
 /****************************************/
