@@ -24,27 +24,38 @@ void CMarchingQTUserFunctions::Init(TConfigurationNode& t_tree)
 	GetNodeAttribute(tDrawingInfo, "isEnabled", mIsEnabled);
 	GetNodeAttribute(tDrawingInfo, "useID", mUseIDs);
 	GetNodeAttribute(tDrawingInfo, "useDegrees", mUseDegrees);
+	
+	std::string text_color;
+	GetNodeAttribute(tDrawingInfo, "textColor", text_color);
+
+	if (text_color == "orange")
+	{
+		mColorForText = CColor::ORANGE;
+	}
 }
 
 
 
 void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity) 
 {
-   CFootBotMarching& cController = dynamic_cast<CFootBotMarching&>(c_entity.GetControllableEntity().GetController());
-   std:: string strID = c_entity.GetId().substr (2,5);
-	int unID = std::stoi (strID,nullptr,10);
+	if (mIsEnabled)
+	{
+		CFootBotMarching& cController = dynamic_cast<CFootBotMarching&>(c_entity.GetControllableEntity().GetController());
+		std:: string strID = c_entity.GetId().substr (2,5);
+		int unID = std::stoi (strID,nullptr,10);
+   		/* This one is helpful for drawing the ID above the robot */
+		/* Alternatively, one could also use a modified DrawInfo function below */
+		//~ if(unID == 200){	
+	   	//~ DrawText(CVector3(0.0, 0.0, 0.3),   // position
+			//~ c_entity.GetId().substr (2,5)); // text
+		//~ }
 	
-   /* This one is helpful for drawing the ID above the robot */
-	/* Alternatively, one could also use a modified DrawInfo function below */
-	//~ if(unID == 200){	
-	   //~ DrawText(CVector3(0.0, 0.0, 0.3),   // position
-				//~ c_entity.GetId().substr (2,5)); // text
-	//~ }
-	
-	std::vector<std::string> info;
-	info.push_back(std::to_string(cController.GetDegree()));
-	
-	DrawInfo(c_entity, info);
+		std::vector<std::string> info;
+		info.push_back(std::to_string(unID));
+		info.push_back(std::to_string(cController.GetDegree()));
+
+		DrawInfo(c_entity, info);
+	}
 }
 
 
@@ -89,7 +100,7 @@ void CMarchingQTUserFunctions::DrawInfo(CFootBotEntity& c_entity, std::vector<st
     * See also the description in
     * $ argos3 -q foot-bot
     */
-   if (info.size() > 0) 
+   /*if (info.size() > 0) 
    {
       size_t unEnd = 1;
       std::string infoToDraw = info[unEnd-1];
@@ -100,7 +111,18 @@ void CMarchingQTUserFunctions::DrawInfo(CFootBotEntity& c_entity, std::vector<st
       }
 	   //~ DrawText(c_entity.GetEmbodiedEntity().GetOriginAnchor().Position,   // position
 	   DrawText(CVector3(0.0, 0.0, 0.3), infoToDraw); // position, text, color
+   }*/
+
+   std::string infoToDraw;
+   if (mUseIDs)
+   {
+	   infoToDraw.append("[").append(info[0]).append("] ");
    }
+   if (mUseDegrees)
+   {
+	   infoToDraw.append(info[1]);
+   }
+   DrawText(CVector3(0.0, 0.0, 0.3), infoToDraw, mColorForText);
 }
 
 

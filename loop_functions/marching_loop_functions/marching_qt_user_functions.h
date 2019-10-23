@@ -36,6 +36,8 @@ private:
    bool mIsEnabled   = false;
    bool mUseIDs      = false;
    bool mUseDegrees  = false;
+
+   CColor mColorForText = CColor::BLACK;
 };
 
 #endif
