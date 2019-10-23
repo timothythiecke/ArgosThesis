@@ -138,6 +138,11 @@ void CFootBotMarching::Init(TConfigurationNode& t_node) {
 	}
 
     GetNodeAttribute(tRange, "upper_bound", mRangeUpperBound);
+	if (mRangeUpperBound < 0.0)
+	{
+		mRangeUpperBound = std::numeric_limits<Real>::max();
+	}
+
     GetNodeAttribute(tRange, "step", mRangeStep);
 
 	bool state = true;
@@ -384,52 +389,35 @@ void CFootBotMarching::Decision() {
 		// Or both?
 		// Either way, probabilistic is the original code
 		// Note: duplicate code
+
+		Real fraction_difference = Abs(f_fracLeft - f_fracRight);
 		if (mRangeDecisionState == CFootBotMarching::ERangeDecisionMakingState::Probabilistic)
 		{
-			if (m_pcRNG->Uniform(CRange<Real>(0.0, 1.0)) > Abs(f_fracLeft - f_fracRight))
+			if (m_pcRNG->Uniform(CRange<Real>(0.0, 1.0)) > fraction_difference)
 			{
-				b_rabChanged = true;
-				newRABRange += mRangeStep;
+				IncreaseRange();
 			}
-			else if (m_pcRNG->Uniform(CRange<Real>(0.0, 1.0)) < Abs(f_fracLeft - f_fracRight))
+			else if (m_pcRNG->Uniform(CRange<Real>(0.0, 1.0)) < fraction_difference)
 			{
-				b_rabChanged = true;
-				if (newRABRange > mRangeLowerBound) // Could be simplified with a clamp
-				{
-					newRABRange -= mRangeStep;
-				}
-				if (newRABRange < mRangeLowerBound)
-				{	 
-					newRABRange = mRangeLowerBound; 
-				}
+				DecreaseRange();
 			}
 		}
 		else if (mRangeDecisionState == CFootBotMarching::ERangeDecisionMakingState::Binary)
 		{
 			Real rng = m_pcRNG->Uniform(CRange<Real>(0.0, 1.0));
-			if (Abs(f_fracLeft - f_fracRight) < rng)
+			if (fraction_difference < rng)
 			{
-				b_rabChanged = true;
-				newRABRange += mRangeStep;
+				IncreaseRange();
 			}
 			else
 			{
-				b_rabChanged = true;
-				if (newRABRange > mRangeLowerBound)
-				{
-					newRABRange -= mRangeStep;
-				}
-				if (newRABRange < mRangeLowerBound)
-				{	 
-					newRABRange = mRangeLowerBound; 
-				}
+				DecreaseRange();
 			}
 		}
 	}
 	else if (b_breakdown)
 	{ 
-		b_rabChanged = true;
-		newRABRange += mRangeStep;
+		IncreaseRange();
 	}
 
 	f_fracLeft_Change = Abs(f_fracLeft - f_fracLeft_Old);
@@ -629,6 +617,48 @@ void CFootBotMarching::ControlStep() {
 	else{ m_pcLEDs->SetAllColors(CColor::BLACK); }
 	
 }
+
+
+// Can't get CMake to compile with -std=c++17 flag, requires reinstall and I;m too tired for this
+void Clamp(Real& value, const Real l, const Real u)
+{
+	if (l > u)
+	{
+		LOG << "Calling Clamp with wrong parameters";
+	}
+
+	if (value < l)
+	{
+		value = l;
+	}
+
+	if (value > u)
+	{
+		value = u;
+	}
+}
+
+void CFootBotMarching::IncreaseRange()
+{
+	b_rabChanged = true;
+	
+	newRABRange += mRangeStep;
+	//std::clamp(newRABRange, mRangeLowerBound, mRangeUpperBound); TODO
+	Clamp(newRABRange, mRangeLowerBound, mRangeUpperBound);
+}
+
+
+
+void CFootBotMarching::DecreaseRange()
+{
+	b_rabChanged = true;
+
+	newRABRange -= mRangeStep;
+	//std::clamp(newRABRange, mRangeLowerBound, mRangeUpperBound); TODO
+	Clamp(newRABRange, mRangeLowerBound, mRangeUpperBound);
+}
+
+
 
 /****************************************/
 /****************************************/

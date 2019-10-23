@@ -1,6 +1,7 @@
 # Ignore folders
 .vscode/
 build/
+build_2/
 cmake/
 controllers/epuck_obstacleavoidance/
 controllers/eyebot_circle/

@@ -169,6 +169,10 @@ public:
 	   void ReSetWheelsVelocity();
    };
 
+protected:
+   virtual void IncreaseRange();
+   virtual void DecreaseRange();
+
 private:
 
    /* Pointer to the differential steering actuator */
