@@ -17,6 +17,8 @@ public:
 
    virtual ~CMarchingQTUserFunctions() {}
 
+   virtual void Init(TConfigurationNode& t_tree) override;
+
    virtual void DrawInWorld();
 
    void Draw(CFootBotEntity& c_entity);

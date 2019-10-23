@@ -13,11 +13,17 @@ using namespace argos;
 CMarchingQTUserFunctions::CMarchingQTUserFunctions() :
    m_cMarchLF(dynamic_cast<CMarchingLoopFunctions&>(CSimulator::GetInstance().GetLoopFunctions())) 
 {
-   RegisterUserFunction<CMarchingQTUserFunctions,CFootBotEntity>(&CMarchingQTUserFunctions::Draw);
+	RegisterUserFunction<CMarchingQTUserFunctions,CFootBotEntity>(&CMarchingQTUserFunctions::Draw);
 }
 
-/****************************************/
-/****************************************/
+
+
+void CMarchingQTUserFunctions::Init(TConfigurationNode& t_tree)
+{
+
+}
+
+
 
 void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity) 
 {
@@ -38,8 +44,7 @@ void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity)
 	DrawInfo(c_entity, info);
 }
 
-/****************************************/
-/****************************************/
+
 
 void CMarchingQTUserFunctions::DrawInWorld() 
 {
@@ -51,8 +56,7 @@ void CMarchingQTUserFunctions::DrawInWorld()
    }
 }
 
-/****************************************/
-/****************************************/
+
 
 void CMarchingQTUserFunctions::DrawLinks(const std::vector<CVector3>& neighborPositions) 
 {
@@ -73,8 +77,7 @@ void CMarchingQTUserFunctions::DrawLinks(const std::vector<CVector3>& neighborPo
    }
 }
 
-/****************************************/
-/****************************************/
+
 
 void CMarchingQTUserFunctions::DrawInfo(CFootBotEntity& c_entity, std::vector<std::string>& info)
 {
@@ -97,7 +100,6 @@ void CMarchingQTUserFunctions::DrawInfo(CFootBotEntity& c_entity, std::vector<st
    }
 }
 
-/****************************************/
-/****************************************/
+
 
 REGISTER_QTOPENGL_USER_FUNCTIONS(CMarchingQTUserFunctions, "marching_qt_user_functions")
