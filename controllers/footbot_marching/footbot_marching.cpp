@@ -317,6 +317,7 @@ void CFootBotMarching::Decision() {
 		avgVelocity = avgVelocity / (1.0*degreeLocal); 
 	}
 
+	// Ilja explained the dividing of this value as making it so that the values do not fluctuate around zero but stay better in the range
 	if (avgVelocity > 0)
 	{
 		avgVelocity++;
@@ -325,7 +326,7 @@ void CFootBotMarching::Decision() {
 	else if (avgVelocity < 0)
 	{
 		avgVelocity--;
-		avgVelocity = avgVelocity/2;
+		avgVelocity = avgVelocity / 2;
 	}
 
 	avgVelocity += m_pcRNG->Uniform(CRange<Real>(0.0, 1.0)) * 2.0 - 1.0;
