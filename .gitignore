@@ -1,0 +1,31 @@
+# Ignore folders
+.vscode/
+build/
+cmake/
+controllers/epuck_obstacleavoidance/
+controllers/eyebot_circle/
+controllers/eyebot_flocking/
+controllers/footbot_diffusion/
+controllers/footbot_foraging/
+controllers/footbot_flocking/
+controllers/footbot_gripping/
+controllers/footbot_manualcontrol/
+controllers/footbot_nn/
+controllers/footbot_synchronization/
+
+loop_functions/custom_distributions_loop_functions/
+loop_functions/foraging_loop_functions/
+loop_functions/galib_phototaxis_loop_functions/
+loop_functions/id_loop_functions/
+loop_functions/manualcontrol_loop_functions/
+loop_functions/mpga_loop_functions/
+loop_functions/trajectory_loop_functions/
+
+embedding/
+experiments/results/
+
+# Ignore files
+LICENSE
+CMakeLists.txt
+foraging.txt
+README
