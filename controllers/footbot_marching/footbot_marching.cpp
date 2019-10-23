@@ -129,9 +129,14 @@ void CFootBotMarching::Init(TConfigurationNode& t_node) {
     * have to recompile if we want to try other settings.
     */
 
-   // Do the same for the range parameters
-   TConfigurationNode& tRange = GetNode(t_node, "range");
+   	// Do the same for the range parameters
+   	TConfigurationNode& tRange = GetNode(t_node, "range");
     GetNodeAttribute(tRange, "lower_bound", mRangeLowerBound);
+	if (mRangeLowerBound < 0.0)
+	{
+		LOG << "Range lower bound is less than zero, this may lead to undefined behaviour!";
+	}
+
     GetNodeAttribute(tRange, "upper_bound", mRangeUpperBound);
     GetNodeAttribute(tRange, "step", mRangeStep);
 
@@ -384,18 +389,18 @@ void CFootBotMarching::Decision() {
 			if (m_pcRNG->Uniform(CRange<Real>(0.0, 1.0)) > Abs(f_fracLeft - f_fracRight))
 			{
 				b_rabChanged = true;
-				newRABRange += 0.1;
+				newRABRange += mRangeStep;
 			}
 			else if (m_pcRNG->Uniform(CRange<Real>(0.0, 1.0)) < Abs(f_fracLeft - f_fracRight))
 			{
 				b_rabChanged = true;
-				if (newRABRange > 0.0)
+				if (newRABRange > mRangeLowerBound) // Could be simplified with a clamp
 				{
-					newRABRange -= 0.1;
+					newRABRange -= mRangeStep;
 				}
-				if (newRABRange < 0.3)
+				if (newRABRange < mRangeLowerBound)
 				{	 
-					newRABRange = 0.3; 
+					newRABRange = mRangeLowerBound; 
 				}
 			}
 		}
@@ -405,18 +410,18 @@ void CFootBotMarching::Decision() {
 			if (Abs(f_fracLeft - f_fracRight) < rng)
 			{
 				b_rabChanged = true;
-				newRABRange += 0.1;
+				newRABRange += mRangeStep;
 			}
 			else
 			{
 				b_rabChanged = true;
-				if (newRABRange > 0.0)
+				if (newRABRange > mRangeLowerBound)
 				{
-					newRABRange -= 0.1;
+					newRABRange -= mRangeStep;
 				}
-				if (newRABRange < 0.3)
+				if (newRABRange < mRangeLowerBound)
 				{	 
-					newRABRange = 0.3; 
+					newRABRange = mRangeLowerBound; 
 				}
 			}
 		}
@@ -424,7 +429,7 @@ void CFootBotMarching::Decision() {
 	else if (b_breakdown)
 	{ 
 		b_rabChanged = true;
-		newRABRange += 0.1;
+		newRABRange += mRangeStep;
 	}
 
 	f_fracLeft_Change = Abs(f_fracLeft - f_fracLeft_Old);
