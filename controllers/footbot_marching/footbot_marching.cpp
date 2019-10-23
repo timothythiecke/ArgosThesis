@@ -128,6 +128,26 @@ void CFootBotMarching::Init(TConfigurationNode& t_node) {
     * parameters and it's nice to put them in the config file so we don't
     * have to recompile if we want to try other settings.
     */
+
+   // Do the same for the range parameters
+   TConfigurationNode& tRange = GetNode(t_node, "range");
+    GetNodeAttribute(tRange, "lower_bound", mRangeLowerBound);
+    GetNodeAttribute(tRange, "upper_bound", mRangeUpperBound);
+    GetNodeAttribute(tRange, "step", mRangeStep);
+
+	bool state = true;
+    GetNodeAttribute(tRange, "probabilistic", state);
+	// ^ Note: Argos will stop working if it can't parse a node attribute, so we should move this to a try catch block
+	if (state)
+	{
+		mRangeDecisionState = CFootBotMarching::ERangeDecisionMakingState::Probabilistic;
+	}
+	else
+	{
+		mRangeDecisionState = CFootBotMarching::ERangeDecisionMakingState::Binary;
+	}
+
+
    m_pcRNG = CRandom::CreateRNG("argos");
    Reset();
 }

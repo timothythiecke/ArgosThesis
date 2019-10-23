@@ -243,7 +243,24 @@ private:
    Real variance_of_change_left;
    Real variance_of_change_right;
 
+   // Marks the node as being a potential hub in order to spot it better in the visualization
    bool mPotentialHub = false;
+
+   ///////
+   // Range parameters
+   double mRangeLowerBound = -1.0;
+   double mRangeUpperBound = -1.0;
+   double mRangeStep       = -1.0;
+   
+   // Does the range adjustment code use a probabilistic decision making model or does it use a binary state
+   enum class ERangeDecisionMakingState
+   {
+      Invalid = -1,
+      Probabilistic = 0,
+      Binary
+   };
+   ERangeDecisionMakingState mRangeDecisionState = ERangeDecisionMakingState::Invalid;
+   ///////
 };
 
 #endif
