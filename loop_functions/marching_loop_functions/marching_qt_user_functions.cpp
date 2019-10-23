@@ -20,7 +20,10 @@ CMarchingQTUserFunctions::CMarchingQTUserFunctions() :
 
 void CMarchingQTUserFunctions::Init(TConfigurationNode& t_tree)
 {
-
+	TConfigurationNode& tDrawingInfo = GetNode(t_tree, "drawing");
+	GetNodeAttribute(tDrawingInfo, "isEnabled", mIsEnabled);
+	GetNodeAttribute(tDrawingInfo, "useID", mUseIDs);
+	GetNodeAttribute(tDrawingInfo, "useDegrees", mUseDegrees);
 }
 
 

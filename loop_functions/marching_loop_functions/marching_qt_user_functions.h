@@ -32,6 +32,10 @@ private:
 private: 
 	
    CMarchingLoopFunctions& m_cMarchLF;
+
+   bool mIsEnabled   = false;
+   bool mUseIDs      = false;
+   bool mUseDegrees  = false;
 };
 
 #endif
