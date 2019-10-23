@@ -53,6 +53,7 @@ void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity)
 		std::vector<std::string> info;
 		info.push_back(std::to_string(unID));
 		info.push_back(std::to_string(cController.GetDegree()));
+		info.push_back(cController.IsPotentialHub() ? "hub" : "nohub");
 
 		DrawInfo(c_entity, info);
 	}
@@ -113,16 +114,24 @@ void CMarchingQTUserFunctions::DrawInfo(CFootBotEntity& c_entity, std::vector<st
 	   DrawText(CVector3(0.0, 0.0, 0.3), infoToDraw); // position, text, color
    }*/
 
-   std::string infoToDraw;
-   if (mUseIDs)
-   {
-	   infoToDraw.append("[").append(info[0]).append("] ");
-   }
-   if (mUseDegrees)
-   {
-	   infoToDraw.append(info[1]);
-   }
-   DrawText(CVector3(0.0, 0.0, 0.3), infoToDraw, mColorForText);
+   	std::string infoToDraw;
+   	if (mUseIDs)
+   	{
+		infoToDraw.append("[").append(info[0]).append("] ");
+   	}
+   	if (mUseDegrees)
+   	{
+		infoToDraw.append(info[1]);
+   	}
+
+	// If it has been marked as a potential hub, we wish to make them pop out more
+	CColor color = CColor::BLACK;
+	if (info[2] == "hub")
+	{
+		color = mColorForText;
+	}
+
+	DrawText(CVector3(0.0, 0.0, 0.3), infoToDraw, color);
 }
 
 

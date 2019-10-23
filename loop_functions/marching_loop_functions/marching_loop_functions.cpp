@@ -410,6 +410,7 @@ void CMarchingLoopFunctions::PostStep() {
 			if (counter < 10)
 			{
 				ptr->MarkPotentialHub(true);
+				counter++;
 			}
 
 			// Note, this does the same thing (hopefully) as the sort write code below out of this for loop
