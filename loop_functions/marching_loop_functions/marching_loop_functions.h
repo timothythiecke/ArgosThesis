@@ -64,6 +64,8 @@ private:
    bool finished;
    bool m_bShowLinks;
    
+   int mOutputTimer = 50;
+
    int timer;
 };
 

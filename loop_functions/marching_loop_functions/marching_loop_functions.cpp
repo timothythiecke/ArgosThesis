@@ -31,6 +31,9 @@ void CMarchingLoopFunctions::Init(TConfigurationNode& t_node) {
       GetNodeAttribute(tDir, "name", str_dirName);
       GetNodeAttribute(tDir, "randID", s_randID);
       
+	  	TConfigurationNode& tOutput = GetNode(t_node, "output");
+		GetNodeAttribute(tOutput, "timer", mOutputTimer);
+
 	   OpenOutFilesID();
 	   finished = false;
 	   timer = 0;
@@ -263,6 +266,8 @@ void CMarchingLoopFunctions::PreStep() {
 		
 		// First clear the old list of network connections
 		G[unID].clear();
+
+		// TODO: need to clear G2
 	}
 	
 	for(CSpace::TMapPerType::iterator it = m_cFootbots.begin();
@@ -368,7 +373,10 @@ void CMarchingLoopFunctions::PostStep() {
 		controllers.push_back(&cController);
 		
     	//LOG << cController.GetDegree() << "; ";
-      
+		
+		// This will output the directed information
+		// degDist.push_back(G2[unID].size());
+
     	// Alternative code for displaying the comm links
 		//~ for(CSpace::TMapPerType::iterator it = m_cFootbots.begin();
 				//~ it != m_cFootbots.end();
@@ -422,13 +430,12 @@ void CMarchingLoopFunctions::PostStep() {
 
 	// Avoid sorting a second time
 	/*std::sort (degDist.begin(), degDist.end());
-   
 	for(int i = 0; i < degDist.size(); i++)
    	{
 		degDistTot[i] += degDist[i]; 
 	}*/
    
-	if(currentTime % 50 == 0)
+	if(currentTime % mOutputTimer == 0)
 	{ 
 		LOG << GetSpace().GetSimulationClock() << "\t" << avgDegree << std::endl; 
 	}
