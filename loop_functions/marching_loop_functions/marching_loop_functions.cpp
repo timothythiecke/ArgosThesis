@@ -34,6 +34,9 @@ void CMarchingLoopFunctions::Init(TConfigurationNode& t_node) {
 	  	TConfigurationNode& tOutput = GetNode(t_node, "output");
 		GetNodeAttribute(tOutput, "timer", mOutputTimer);
 
+		TConfigurationNode& tHubs = GetNode(t_node, "hubs");
+		GetNodeAttribute(tHubs, "fraction", mHubMarkingFraction);
+
 	   OpenOutFilesID();
 	   finished = false;
 	   timer = 0;
@@ -415,7 +418,7 @@ void CMarchingLoopFunctions::PostStep() {
 	{
 		if (ptr != nullptr)
 		{
-			if (counter < 10)
+			if (counter < (controllers.size() * mHubMarkingFraction))
 			{
 				ptr->MarkPotentialHub(true);
 				counter++;

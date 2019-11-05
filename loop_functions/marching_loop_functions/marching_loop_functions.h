@@ -65,6 +65,8 @@ private:
    bool m_bShowLinks;
    
    int mOutputTimer = 50;
+   // The fraction of the total amount of robots that will be marked as a potential hub
+   double mHubMarkingFraction = 0.0;
 
    int timer;
 };
