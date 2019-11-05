@@ -75,6 +75,8 @@ void CMarchingLoopFunctions::Destroy() {
 	std::ofstream fDegreesTotGC;
 	std::ofstream fDegreesUnsorted;
 	std::ofstream fDegreesTotUnsorted;
+	std::ofstream fRanges;
+	std::ofstream fRangesTot;
 
 	// TODO: this should use the function that Ilja provided, but has been rewritten for convenience
 	fDegrees.open("/mnt/c/argos/pl_check_kit/pl_check_kit/degDistribution.dat", std::ofstream::trunc | std::ofstream::out);
@@ -85,6 +87,8 @@ void CMarchingLoopFunctions::Destroy() {
 	fDegreesTotGC.open("/mnt/c/argos/pl_check_kit/pl_check_kit/degDistribution_totGiant.dat", std::ofstream::trunc | std::ofstream::out);
 	fDegreesUnsorted.open("/mnt/c/argos/pl_check_kit/pl_check_kit/degDistributionUnsorted.dat", std::ofstream::trunc | std::ofstream::out);
 	fDegreesTotUnsorted.open("/mnt/c/argos/pl_check_kit/pl_check_kit/degDistribution_totUnsorted.dat", std::ofstream::trunc | std::ofstream::out);
+	fRanges.open("/mnt/c/argos/pl_check_kit/pl_check_kit/ranges.dat", std::ofstream::trunc | std::ofstream::out);
+	fRangesTot.open("/mnt/c/argos/pl_check_kit/pl_check_kit/ranges_tot.dat", std::ofstream::trunc | std::ofstream::out);
 
 	if (!fDegrees.is_open() || !fDegreesTot.is_open() || !fMetaData.is_open() || !fLog.is_open()) // TODO
 	{
@@ -94,6 +98,9 @@ void CMarchingLoopFunctions::Destroy() {
 
 	std::vector<int> degrees(m_cFootbots.size());
    	std::vector<Real> degrees_tot(m_cFootbots.size());
+
+	std::vector<Real> ranges(m_cFootbots.size());
+	std::vector<Real> ranges_tot(m_cFootbots.size());
 #endif
 	// Export the degree distribution from degDistTot
  
@@ -110,6 +117,9 @@ void CMarchingLoopFunctions::Destroy() {
 		//degrees_tot.push_back(degDistTot[unID] * 1.0 / (timer*1.0));
 		degrees[unID] = cController.GetDegree();
 		degrees_tot[unID] = degDistTot[unID] * 1.0 / (timer*1.0);
+
+		ranges[unID] = cController.GetNewRABRange();
+		ranges_tot[unID] = mRangeDistTot[unID] * 1.0 / (timer*1.0);
 #else
 		os_degD << cController.GetDegree() << std::endl;
 		os_degD_Tot << degDistTot[unID]*1.0/(timer*1.0) << std::endl;
@@ -169,6 +179,13 @@ void CMarchingLoopFunctions::Destroy() {
 		{
 			mHighestAverageDegreeCount.value = degrees_tot[i];
 			mHighestAverageDegreeCount.index = i;
+			mHighestAverageDegreeCount.timeFrame = timer;
+		}
+		if (ranges_tot[i] > mHighestAverageRange.value)
+		{
+			mHighestAverageRange.value = ranges_tot[i];
+			mHighestAverageRange.index = i;
+			mHighestAverageRange.timeFrame = timer;
 		}
 	}
 
@@ -184,10 +201,12 @@ void CMarchingLoopFunctions::Destroy() {
 	});
 
 	// Populate the degree distribution files, omitting any zero values and sorted
+	// Do the same for the range distribution files
 	int degrees_omitted = 0;
 	int degrees_tot_omitted = 0;	
 	for (int i = 0; i < max; i++)
 	{
+		// Degrees
 		if (degrees[i] > 0)
 		{
 			fDegrees << degrees[i] << std::endl;
@@ -204,16 +223,27 @@ void CMarchingLoopFunctions::Destroy() {
 		{
 			degrees_tot_omitted++;
 		}
+
+		// Ranges
+		if (ranges[i] > 0.0)
+		{
+			fRanges << ranges[i] << std::endl;
+		}
+		if (ranges_tot[i] > 0.0)
+		{
+			fRangesTot << ranges_tot[i] << std::endl;
+		}
 	}
 
 	// Populate metadata file
 	fMetaData << "Simulation ran for " << timer << "s with population of size " << degrees.size() << std::endl;
-	fMetaData << "Highest degree count: " << mHighestDegreeCount.value << " from robot " << mHighestDegreeCount.index << " at timeframe " << mHighestDegreeCount.timeFrame << std::endl;
-	fMetaData << "Highest average degree registered: " << mHighestAverageDegreeCount.value << " at timeframe " << mHighestAverageDegreeCount.timeFrame << std::endl;
-	fMetaData << "Highest range: " << mHighestRange.value << " from robot " << mHighestRange.index << " at timeframe " << mHighestRange.timeFrame << std::endl;
-	fMetaData << "Highest average degree registered: " << mHighestAverageRange.value << " at timeframe " << mHighestAverageRange.timeFrame << std::endl;
 	fMetaData << "Omitted " << degrees_omitted << " zeroed degree counts\nOmitted " << degrees_tot_omitted << " zeroed average degree counts" << std::endl;
 	fMetaData << "Largest component contained " << components[0].size() << " elements (" << components[0].size() / (double)(degrees.size()) << ")" << std::endl;
+	fMetaData << "Highest registered degree count: " << mHighestDegreeCount.value << " from robot " << mHighestDegreeCount.index << " at timeframe " << mHighestDegreeCount.timeFrame << std::endl;
+	fMetaData << "Highest registered average degree: " << mHighestAverageDegreeCount.value << " from robot " << mHighestAverageDegreeCount.value <<  " at timeframe " << mHighestAverageDegreeCount.timeFrame << std::endl;
+	fMetaData << "Highest registered range: " << mHighestRange.value << " from robot " << mHighestRange.index << " at timeframe " << mHighestRange.timeFrame << std::endl;
+	fMetaData << "Highest registered average range: " << mHighestAverageRange.value << " from robot " << mHighestAverageRange.index << " at timeframe " << mHighestAverageRange.timeFrame << std::endl;
+	
 
 	fLog << "Done with writing, closing all file handles..." << std::endl;
 
@@ -226,6 +256,8 @@ void CMarchingLoopFunctions::Destroy() {
 	fDegreesTotGC.close();
 	fDegreesUnsorted.close();
 	fDegreesTotUnsorted.close();
+	fRanges.close();
+	fRangesTot.close();
 #endif
 	// The file handles should be closed regardless, as they are created at the start
 	os_degD.close();
@@ -448,6 +480,7 @@ void CMarchingLoopFunctions::PostStep()
 		}*/
 
 		degDistTot[unID] += cController.GetDegree();
+		mRangeDistTot[unID] += cController.GetNewRABRange();
 
 		//LOG << unID << " ";
     	//LOG << cController.GetDegree() << "; ";

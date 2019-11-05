@@ -29,6 +29,20 @@ struct IndexValuePair
    int timeFrame = -1;
    T value;
 };
+template <>
+struct IndexValuePair<int>
+{
+   int index = -1;
+   int timeFrame = -1;
+   int value = -1;
+};
+template <>
+struct IndexValuePair<Real>
+{
+   int index = -1;
+   int timeFrame = -1;
+   Real value = -1.0;
+};
 
 
 class CMarchingLoopFunctions : public CLoopFunctions 
