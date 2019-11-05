@@ -53,7 +53,7 @@ void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity)
 		std::vector<std::string> info;
 		info.push_back(std::to_string(unID));
 		info.push_back(std::to_string(cController.GetDegree()));
-		info.push_back(cController.IsPotentialHub() ? "hub" : "nohub");
+		info.push_back((cController.IsPotentialHub() || (unID == 0)) ? "hub" : "nohub");
 
 		DrawInfo(c_entity, info);
 	}

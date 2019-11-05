@@ -163,6 +163,13 @@ void CMarchingLoopFunctions::Destroy() {
 	{
 		fDegreesUnsorted << degrees[i] << std::endl;
 		fDegreesTotUnsorted << degrees_tot[i] << std::endl;
+
+		// Update metadata information about the highest average degree count
+		if (degrees_tot[i] > mHighestAverageDegreeCount.value)
+		{
+			mHighestAverageDegreeCount.value = degrees_tot[i];
+			mHighestAverageDegreeCount.index = i;
+		}
 	}
 
 	// Prepare data for files and close file handles
@@ -201,7 +208,11 @@ void CMarchingLoopFunctions::Destroy() {
 
 	// Populate metadata file
 	fMetaData << "Simulation ran for " << timer << "s with population of size " << degrees.size() << std::endl;
-	fMetaData << "Omitted " << degrees_omitted << " degree counts\nOmitted " << degrees_tot_omitted << " average degree counts" << std::endl;
+	fMetaData << "Highest degree count: " << mHighestDegreeCount.value << " from robot " << mHighestDegreeCount.index << " at timeframe " << mHighestDegreeCount.timeFrame << std::endl;
+	fMetaData << "Highest average degree registered: " << mHighestAverageDegreeCount.value << " at timeframe " << mHighestAverageDegreeCount.timeFrame << std::endl;
+	fMetaData << "Highest range: " << mHighestRange.value << " from robot " << mHighestRange.index << " at timeframe " << mHighestRange.timeFrame << std::endl;
+	fMetaData << "Highest average degree registered: " << mHighestAverageRange.value << " at timeframe " << mHighestAverageRange.timeFrame << std::endl;
+	fMetaData << "Omitted " << degrees_omitted << " zeroed degree counts\nOmitted " << degrees_tot_omitted << " zeroed average degree counts" << std::endl;
 	fMetaData << "Largest component contained " << components[0].size() << " elements (" << components[0].size() / (double)(degrees.size()) << ")" << std::endl;
 
 	fLog << "Done with writing, closing all file handles..." << std::endl;
@@ -285,28 +296,46 @@ void CMarchingLoopFunctions::PreStep() {
 		// TODO: need to clear G2
 	}
 	
-	for(CSpace::TMapPerType::iterator it = m_cFootbots.begin();
-		   it != m_cFootbots.end();
-		   ++it) {
-		  // Create a pointer to the current foot-bot 
-		  CFootBotEntity& cFootBot = *any_cast<CFootBotEntity*>(it->second);
-		  CFootBotMarching& cController = dynamic_cast<CFootBotMarching&>(cFootBot.GetControllableEntity().GetController());
-		  std:: string strID = cController.GetId().substr (2,5);
-		  int unID = std::stoi (strID,nullptr,10);
+	for (CSpace::TMapPerType::iterator it = m_cFootbots.begin(); it != m_cFootbots.end(); ++it)
+	{
+		// Create a pointer to the current foot-bot 
+		CFootBotEntity& cFootBot = *any_cast<CFootBotEntity*>(it->second);
+		CFootBotMarching& cController = dynamic_cast<CFootBotMarching&>(cFootBot.GetControllableEntity().GetController());
+		std:: string strID = cController.GetId().substr (2,5);
+		int unID = std::stoi (strID, nullptr, 10);
 		
 		// Copy the list of network connections from the data of the range-and-bearing sensor into G
 		// Add local links from range-and-bearing sensors			
 		CCI_RangeAndBearingSensor::TReadings tPackets = cController.GetTPackets();
-		for(size_t i = 0; i < tPackets.size(); ++i) {
-			newNode = tPackets[i].Data[0]*255 + tPackets[i].Data[1];
-			if(std::find(G[unID].begin(), G[unID].end(), newNode) == G[unID].end() 
-			&& std::find(G[newNode].begin(), G[newNode].end(), unID) == G[newNode].end()
-			){
+		
+		/*if (unID == 0)
+		{
+			LOG << "Packets: " << cController.GetTPackets().size() << " <> " << tPackets.size() << std::endl;
+		}*/
+
+		int count = 0;
+		for (size_t i = 0; i < tPackets.size(); ++i)
+		{
+			newNode = tPackets[i].Data[0] * 255 + tPackets[i].Data[1];
+			if (newNode == 0)
+			{
+				count++;
+			}
+			
+			if (std::find(G[unID].begin(), G[unID].end(), newNode) == G[unID].end() 
+					&& std::find(G[newNode].begin(), G[newNode].end(), unID) == G[newNode].end())
+			{
+				// Hacky workaround!!!!!!
+				// Ignores populating the connections to the 0th node, as this seems to be some form of unintented behaviour?
+				if (GetSpace().GetSimulationClock() == 2 && newNode == 0)
+					continue;
+
 				G[unID].push_back(newNode);
 				G[newNode].push_back(unID); // Comment out this line to have directed
 				// Dummy graph along with the G, where you have both lines, don't use that other graph for the communication of the T packets
 			}
 		}
+		//LOG << "NewNode was 0 " << count << " times!" << std::endl;
 	}
 	
 		
@@ -322,6 +351,11 @@ void CMarchingLoopFunctions::PreStep() {
 		CCI_RangeAndBearingSensor::TReadings newTPackets;
 		CCI_RangeAndBearingSensor::SPacket newSPacket;
 		
+		if (unID == 0)
+		{
+			LOG << "G[unID].size() == " << G[unID].size() << std::endl;
+		}
+
 		for(int j = 0; j < G[unID].size(); j++)
 		{
 			newSPacket.Data.Resize(5);
@@ -383,13 +417,36 @@ void CMarchingLoopFunctions::PostStep()
       
     	avgDegree += cController.GetDegree();
     	avgRABRange += cController.GetNewRABRange();
-      
-    	degDist.push_back(cController.GetDegree());
-		rangeDist.push_back(cController.GetNewRABRange());
+
+		const int deg = cController.GetDegree();
+		// Update meta data information about the highest degree detected
+		if (deg > mHighestDegreeCount.value)
+		{
+			mHighestDegreeCount.value = deg;
+			mHighestDegreeCount.index = unID;
+			mHighestDegreeCount.timeFrame = currentTime;
+		}
+		degDist.push_back(cController.GetDegree());
+
+		// Update meta data information about the highest range detected
+		const Real range = cController.GetNewRABRange();
+		if (range > mHighestRange.value)
+		{
+			mHighestRange.value = range;
+			mHighestRange.index = unID;
+			mHighestRange.timeFrame = currentTime;
+		}
+		rangeDist.push_back(range);
 		
+		// Update controllers vector in order to sort by degrees later on
 		cController.MarkPotentialHub(false);
 		controllers.push_back(&cController);
 		
+		/*if (unID == 0)
+		{
+			LOG << "Current degree count: " << cController.GetDegree() << " Total over time: " << degDistTot[unID] << std::endl;
+		}*/
+
 		degDistTot[unID] += cController.GetDegree();
 
 		//LOG << unID << " ";

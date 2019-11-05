@@ -12,12 +12,24 @@
 
 using namespace argos;
 
+// Helper struct to use for DFS traversal in order to determine the components
 struct Node
 {
    std::vector<int> connections;
    int index = -1;
    bool visited = false;
 };
+
+
+// Helper struct for metadata mapping between robot index and associated value, less overhead than std::pair
+template <typename T>
+struct IndexValuePair
+{
+   int index = -1;
+   int timeFrame = -1;
+   T value;
+};
+
 
 class CMarchingLoopFunctions : public CLoopFunctions 
 {
@@ -69,6 +81,11 @@ private:
    double mHubMarkingFraction = 0.0;
 
    std::vector<Real> mRangeDistTot;
+   
+   IndexValuePair<int> mHighestDegreeCount;
+   IndexValuePair<Real> mHighestAverageDegreeCount;
+   IndexValuePair<Real> mHighestRange;
+   IndexValuePair<Real> mHighestAverageRange;
 
    int timer;
 };
