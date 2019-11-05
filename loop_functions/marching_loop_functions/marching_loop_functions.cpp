@@ -383,10 +383,10 @@ void CMarchingLoopFunctions::PreStep() {
 		CCI_RangeAndBearingSensor::TReadings newTPackets;
 		CCI_RangeAndBearingSensor::SPacket newSPacket;
 		
-		if (unID == 0)
+		/*if (unID == 0)
 		{
 			LOG << "G[unID].size() == " << G[unID].size() << std::endl;
-		}
+		}*/
 
 		for(int j = 0; j < G[unID].size(); j++)
 		{
