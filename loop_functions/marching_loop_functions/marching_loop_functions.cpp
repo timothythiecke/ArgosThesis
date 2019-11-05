@@ -73,6 +73,8 @@ void CMarchingLoopFunctions::Destroy() {
 	std::ofstream fLog; // I believe ARGoS does not output anything to log files, so this helps to debug
 	std::ofstream fDegreesGC;
 	std::ofstream fDegreesTotGC;
+	std::ofstream fDegreesUnsorted;
+	std::ofstream fDegreesTotUnsorted;
 
 	// TODO: this should use the function that Ilja provided, but has been rewritten for convenience
 	fDegrees.open("/mnt/c/argos/pl_check_kit/pl_check_kit/degDistribution.dat", std::ofstream::trunc | std::ofstream::out);
@@ -81,6 +83,8 @@ void CMarchingLoopFunctions::Destroy() {
 	fLog.open("/mnt/c/argos/pl_check_kit/pl_check_kit/log.log", std::ofstream::trunc | std::ofstream::out);
 	fDegreesGC.open("/mnt/c/argos/pl_check_kit/pl_check_kit/degDistributionGiant.dat", std::ofstream::trunc | std::ofstream::out);
 	fDegreesTotGC.open("/mnt/c/argos/pl_check_kit/pl_check_kit/degDistribution_totGiant.dat", std::ofstream::trunc | std::ofstream::out);
+	fDegreesUnsorted.open("/mnt/c/argos/pl_check_kit/pl_check_kit/degDistributionUnsorted.dat", std::ofstream::trunc | std::ofstream::out);
+	fDegreesTotUnsorted.open("/mnt/c/argos/pl_check_kit/pl_check_kit/degDistribution_totUnsorted.dat", std::ofstream::trunc | std::ofstream::out);
 
 	if (!fDegrees.is_open() || !fDegreesTot.is_open() || !fMetaData.is_open() || !fLog.is_open()) // TODO
 	{
@@ -153,6 +157,14 @@ void CMarchingLoopFunctions::Destroy() {
 		// Note, this assumes that both files will not have zeroes, this should be the case considering a node part of the component should have at LEAST 1 connection 
 	}
 
+	// Output unsorted, unsanitized info
+	int max = degrees.size(); // Note that this should be the same for both!
+	for (int i = 0; i < max; i++)
+	{
+		fDegreesUnsorted << degrees[i] << std::endl;
+		fDegreesTotUnsorted << degrees_tot[i] << std::endl;
+	}
+
 	// Prepare data for files and close file handles
 	std::sort(degrees.begin(), degrees.end(), [](const int i, const int j)
 	{
@@ -163,29 +175,25 @@ void CMarchingLoopFunctions::Destroy() {
 	{
 		return i < j;
 	});
-		
-	// Populate the degree distribution files
+
+	// Populate the degree distribution files, omitting any zero values and sorted
 	int degrees_omitted = 0;
-	for (const int i : degrees)
+	int degrees_tot_omitted = 0;	
+	for (int i = 0; i < max; i++)
 	{
-		if (i > 0)
+		if (degrees[i] > 0)
 		{
-			fDegrees << i << std::endl;
+			fDegrees << degrees[i] << std::endl;
 		}
 		else
 		{
 			degrees_omitted++;
 		}
-	}
-
-	int degrees_tot_omitted = 0;
-	for (const double d : degrees_tot)
-	{
-		if (d > 0.0) // Floating point warning!
+		if (degrees_tot[i] > 0.0)
 		{
-			fDegreesTot << d << std::endl;
+			fDegreesTot << degrees_tot[i] << std::endl;
 		}
-		else
+		else 
 		{
 			degrees_tot_omitted++;
 		}
@@ -205,6 +213,8 @@ void CMarchingLoopFunctions::Destroy() {
 	fLog.close();
 	fDegreesGC.close();
 	fDegreesTotGC.close();
+	fDegreesUnsorted.close();
+	fDegreesTotUnsorted.close();
 #endif
 	// The file handles should be closed regardless, as they are created at the start
 	os_degD.close();
