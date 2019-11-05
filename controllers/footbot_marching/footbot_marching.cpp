@@ -158,6 +158,8 @@ void CFootBotMarching::Init(TConfigurationNode& t_node) {
 		mRangeDecisionState = CFootBotMarching::ERangeDecisionMakingState::Binary;
 	}
 
+	GetNodeAttribute(tRange, "symmetric", mRangeSymmetric);
+
    m_pcRNG = CRandom::CreateRNG("argos");
    Reset();
 }
@@ -419,6 +421,12 @@ void CFootBotMarching::Decision() {
 	{ 
 		IncreaseRange();
 	}
+	// Need to test this if this affects the isolated nodes
+	// Otherwise asymmetry
+	else if (mRangeSymmetric)
+	{
+		DecreaseRange();
+	}
 
 	f_fracLeft_Change = Abs(f_fracLeft - f_fracLeft_Old);
 	f_fracRight_Change = Abs(f_fracRight - f_fracRight_Old);
@@ -490,7 +498,8 @@ void CFootBotMarching::ControlStep() {
     variance_of_change_right /= (1.0 * timer);
 	
 	// BREAKDOWN?
-	if(variance_of_change_left_old < variance_of_change_left || variance_of_change_right_old < variance_of_change_right){
+	if(variance_of_change_left_old < variance_of_change_left || variance_of_change_right_old < variance_of_change_right)
+	{
 		b_breakdown = true;
 	}
 	/* ==================================================================== */

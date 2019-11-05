@@ -255,6 +255,8 @@ private:
    double mRangeLowerBound = -1.0;
    double mRangeUpperBound = -1.0;
    double mRangeStep       = -1.0;
+   // In the original implementation, the code did not have a symmetric DecreaseRange() call and got overshadowed by IncreaseRange() calls, setting this to true will balance these calls
+   bool mRangeSymmetric = false;
    
    // Does the range adjustment code use a probabilistic decision making model or does it use a binary state
    enum class ERangeDecisionMakingState
