@@ -68,6 +68,8 @@ private:
    // The fraction of the total amount of robots that will be marked as a potential hub
    double mHubMarkingFraction = 0.0;
 
+   std::vector<Real> mRangeDistTot;
+
    int timer;
 };
 

@@ -63,6 +63,8 @@ void CMarchingLoopFunctions::Reset() {
 void CMarchingLoopFunctions::Destroy() {   
 	timer = GetSpace().GetSimulationClock();
 	
+	CSpace::TMapPerType& m_cFootbots = GetSpace().GetEntitiesByType("foot-bot");
+
 #define DIRECT_OUTPUT // If defined, outputs files directly to the pl_check_kit folder
 #ifdef DIRECT_OUTPUT
 	std::ofstream fDegrees;
@@ -86,12 +88,10 @@ void CMarchingLoopFunctions::Destroy() {
 		LOG << "One of the files could not be opened! Fix me first" << std::endl;
 	}
 
-	std::vector<int> degrees;
-   	std::vector<double> degrees_tot;
+	std::vector<int> degrees(m_cFootbots.size());
+   	std::vector<Real> degrees_tot(m_cFootbots.size());
 #endif
 	// Export the degree distribution from degDistTot
-	CSpace::TMapPerType& m_cFootbots = GetSpace().GetEntitiesByType("foot-bot");
-
  
 	for(CSpace::TMapPerType::iterator it = m_cFootbots.begin(); it != m_cFootbots.end(); ++it) 
 	{
@@ -102,8 +102,10 @@ void CMarchingLoopFunctions::Destroy() {
 		int unID = std::stoi (strID,nullptr,10);
 		
 #ifdef DIRECT_OUTPUT
-		degrees.push_back(cController.GetDegree());
-		degrees_tot.push_back(degDistTot[unID] * 1.0 / (timer*1.0));
+		//degrees.push_back(cController.GetDegree());
+		//degrees_tot.push_back(degDistTot[unID] * 1.0 / (timer*1.0));
+		degrees[unID] = cController.GetDegree();
+		degrees_tot[unID] = degDistTot[unID] * 1.0 / (timer*1.0);
 #else
 		os_degD << cController.GetDegree() << std::endl;
 		os_degD_Tot << degDistTot[unID]*1.0/(timer*1.0) << std::endl;
@@ -348,10 +350,12 @@ void CMarchingLoopFunctions::PreStep() {
 /****************************************/
 /****************************************/
 
-void CMarchingLoopFunctions::PostStep() {
+void CMarchingLoopFunctions::PostStep() 
+{
    	Real avgRABRange = 0.0, avgDegree = 0.0;
    	int currentTime = GetSpace().GetSimulationClock();
    	std::vector<int> degDist;
+	std::vector<Real> rangeDist;
    	std::vector<CFootBotMarching*> controllers;
 
    	// Loop over the swarm and record the degree of every robot
@@ -371,10 +375,14 @@ void CMarchingLoopFunctions::PostStep() {
     	avgRABRange += cController.GetNewRABRange();
       
     	degDist.push_back(cController.GetDegree());
+		rangeDist.push_back(cController.GetNewRABRange());
 		
 		cController.MarkPotentialHub(false);
 		controllers.push_back(&cController);
 		
+		degDistTot[unID] += cController.GetDegree();
+
+		//LOG << unID << " ";
     	//LOG << cController.GetDegree() << "; ";
 		
 		// This will output the directed information
@@ -426,8 +434,9 @@ void CMarchingLoopFunctions::PostStep() {
 
 			// Note, this does the same thing (hopefully) as the sort write code below out of this for loop
 			// But will avoid another sort call
-			degDistTot[controllers.size() - 1 - i] += controllers[i]->GetDegree();
-			i--;
+			/*degDistTot[controllers.size() - 1 - i] += controllers[i]->GetDegree(); // < this creates a mismatch between
+			mRangeDistTot[controllers.size() - 1 - i] += controllers[i]->GetNewRABRange();
+			i--;*/
 		}
 	}
 
@@ -481,6 +490,7 @@ void CMarchingLoopFunctions::OpenOutFilesID() {
     
     CSpace::TMapPerType& m_cFootbots = GetSpace().GetEntitiesByType("foot-bot");
     degDistTot.resize(m_cFootbots.size());
+	mRangeDistTot.resize(m_cFootbots.size());
     G.resize(m_cFootbots.size());
     
     // Initialize the controller with the correct range-and-bearing setting and set all elements of degDistTot to 0
@@ -498,6 +508,7 @@ void CMarchingLoopFunctions::OpenOutFilesID() {
 		  int unID = std::stoi (strID,nullptr,10);
 		  
 		  degDistTot[unID] = 0;
+		  mRangeDistTot[unID] = 0.0;
 		  G[unID].resize(0);
 	}
 }
