@@ -37,6 +37,10 @@ void CMarchingLoopFunctions::Init(TConfigurationNode& t_node) {
 		TConfigurationNode& tHubs = GetNode(t_node, "hubs");
 		GetNodeAttribute(tHubs, "fraction", mHubMarkingFraction);
 
+		TConfigurationNode& tNode = GetNode(t_node, "node");
+		GetNodeAttribute(tNode, "zeroWorkAround", mZeroWorkAround);
+		GetNodeAttribute(tNode, "output", mOutputInformationAboutZeroWorkAround);
+
 	   OpenOutFilesID();
 	   finished = false;
 	   timer = 0;
@@ -340,10 +344,13 @@ void CMarchingLoopFunctions::PreStep() {
 		// Add local links from range-and-bearing sensors			
 		CCI_RangeAndBearingSensor::TReadings tPackets = cController.GetTPackets();
 		
-		/*if (unID == 0)
-		{
-			LOG << "Packets: " << cController.GetTPackets().size() << " <> " << tPackets.size() << std::endl;
-		}*/
+		if (mOutputInformationAboutZeroWorkAround)
+		{	
+			if (unID == 0)
+			{
+				LOG << "Packets: " << cController.GetTPackets().size() << " <> " << tPackets.size() << std::endl;
+			}
+		}
 
 		int count = 0;
 		for (size_t i = 0; i < tPackets.size(); ++i)
@@ -359,15 +366,17 @@ void CMarchingLoopFunctions::PreStep() {
 			{
 				// Hacky workaround!!!!!!
 				// Ignores populating the connections to the 0th node, as this seems to be some form of unintented behaviour?
-				if (GetSpace().GetSimulationClock() == 2 && newNode == 0)
-					continue;
+				if (mZeroWorkAround)
+				{
+					if (GetSpace().GetSimulationClock() == 2 && newNode == 0)
+						continue;
+				}
 
 				G[unID].push_back(newNode);
 				G[newNode].push_back(unID); // Comment out this line to have directed
 				// Dummy graph along with the G, where you have both lines, don't use that other graph for the communication of the T packets
 			}
 		}
-		//LOG << "NewNode was 0 " << count << " times!" << std::endl;
 	}
 	
 		
@@ -383,10 +392,13 @@ void CMarchingLoopFunctions::PreStep() {
 		CCI_RangeAndBearingSensor::TReadings newTPackets;
 		CCI_RangeAndBearingSensor::SPacket newSPacket;
 		
-		/*if (unID == 0)
+		if (mOutputInformationAboutZeroWorkAround)
 		{
-			LOG << "G[unID].size() == " << G[unID].size() << std::endl;
-		}*/
+			if (unID == 0)
+			{
+				LOG << "G[unID].size() == " << G[unID].size() << std::endl;
+			}
+		}
 
 		for(int j = 0; j < G[unID].size(); j++)
 		{

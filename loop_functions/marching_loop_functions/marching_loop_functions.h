@@ -102,6 +102,9 @@ private:
    IndexValuePair<Real> mHighestAverageRange;
 
    int timer;
+
+   bool mZeroWorkAround = false;
+   bool mOutputInformationAboutZeroWorkAround = false;
 };
 
 #endif
