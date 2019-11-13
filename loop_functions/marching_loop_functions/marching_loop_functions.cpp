@@ -554,7 +554,7 @@ void CMarchingLoopFunctions::PostStep()
 	}
 
 	// TODO: additional sort call, wasteful?
-	std::sort(controller.begin(), controllers.end(), [](CFootBotMarching* lhs, CFootBotMarching* rhs)
+	std::sort(controllers.begin(), controllers.end(), [](CFootBotMarching* lhs, CFootBotMarching* rhs)
 	{
 		if (lhs != nullptr && rhs != nullptr)
 		{
@@ -563,7 +563,7 @@ void CMarchingLoopFunctions::PostStep()
 		return false;
 	});
 
-	int counter = 0;
+	counter = 0;
 	for (CFootBotMarching* ptr : controllers)
 	{
 		assert(ptr != nullptr);
