@@ -491,8 +491,8 @@ void CMarchingLoopFunctions::PostStep()
 			LOG << "Current degree count: " << cController.GetDegree() << " Total over time: " << degDistTot[unID] << std::endl;
 		}*/
 
-		degDistTot[unID] += cController.GetDegree();
-		mRangeDistTot[unID] += cController.GetNewRABRange();
+		/*degDistTot[unID] += cController.GetDegree();
+		mRangeDistTot[unID] += cController.GetNewRABRange();*/
 
 		//LOG << unID << " ";
     	//LOG << cController.GetDegree() << "; ";
@@ -521,8 +521,8 @@ void CMarchingLoopFunctions::PostStep()
 	// If the degree of the footbot is in the top x%, then mark it as a potential hub
 	// In order for this to work, we need the deg distribution array as is
 	// We need a mapping between the index and its degree even after sorting
-	// Sort descending by grade
-	std::sort(controllers.begin(), controllers.end(), [](CFootBotMarching* lhs, CFootBotMarching* rhs)
+	// Sort descending by grade (largest to smallest)
+	std::sort(controllers.begin(), controllers.end(), [](/*const*/ CFootBotMarching* lhs, CFootBotMarching* rhs)
 	{
 		if (lhs != nullptr && rhs != nullptr)
 		{
@@ -545,10 +545,10 @@ void CMarchingLoopFunctions::PostStep()
 			}
 
 			// Note, this does the same thing (hopefully) as the sort write code below out of this for loop
-			// But will avoid another sort call
-			/*degDistTot[controllers.size() - 1 - i] += controllers[i]->GetDegree(); // < this creates a mismatch between
+			// But will avoid another (expensive) sort call
+			degDistTot[controllers.size() - 1 - i] += controllers[i]->GetDegree(); // index 0 gets smallest/last element, index 1 gets ...
 			mRangeDistTot[controllers.size() - 1 - i] += controllers[i]->GetNewRABRange();
-			i--;*/
+			i--;
 		}
 	}
 
