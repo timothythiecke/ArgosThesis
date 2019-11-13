@@ -17,6 +17,13 @@ CMarchingQTUserFunctions::CMarchingQTUserFunctions() :
 }
 
 
+CColor CMarchingQTUserFunctions::DetermineTextColor(const std::string& color)
+{
+	CColor result = CColor::BLACK;
+	result.Set(color);
+	return result;
+}
+
 
 void CMarchingQTUserFunctions::Init(TConfigurationNode& t_tree)
 {
@@ -24,14 +31,17 @@ void CMarchingQTUserFunctions::Init(TConfigurationNode& t_tree)
 	GetNodeAttribute(tDrawingInfo, "isEnabled", mIsEnabled);
 	GetNodeAttribute(tDrawingInfo, "useID", mUseIDs);
 	GetNodeAttribute(tDrawingInfo, "useDegrees", mUseDegrees);
-	
-	std::string text_color;
-	GetNodeAttribute(tDrawingInfo, "textColor", text_color);
+	GetNodeAttribute(tDrawingInfo, "useRanges", mUseRanges);
 
-	if (text_color == "orange")
-	{
-		mColorForText = CColor::ORANGE;
-	}
+	std::string text_color;
+	GetNodeAttribute(tDrawingInfo, "hubColor", text_color);
+	mColorForHubs = DetermineTextColor(text_color);
+
+	GetNodeAttribute(tDrawingInfo, "highRangeColor", text_color);
+	mColorForHighRange = DetermineTextColor(text_color);
+
+	GetNodeAttribute(tDrawingInfo, "lowRangeColor", text_color);
+	mColorForLowRange = DetermineTextColor(text_color);
 }
 
 
@@ -53,7 +63,7 @@ void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity)
 		std::vector<std::string> info;
 		info.push_back(std::to_string(unID));
 		info.push_back(std::to_string(cController.GetDegree()));
-		info.push_back((cController.IsPotentialHub() /*|| (unID == 0)*/) ? "hub" : "nohub"); // uncomment unID check if the bug happens again
+		info.push_back((cController.IsPotentialHub() /*|| (unID == 0)*/) ? "hub" : "nohub"); // uncomment unID check if the zero node bug happens again
 		if (cController.IsPotentialHighRange())
 		{
 			info.push_back("high");
@@ -137,10 +147,41 @@ void CMarchingQTUserFunctions::DrawInfo(CFootBotEntity& c_entity, std::vector<st
    	}
 
 	// If it has been marked as a potential hub, we wish to make them pop out more
-	CColor color = CColor::BLACK;
-	if (info[2] == "hub")
+	CColor color = mColorForText;
+	
+	bool isHub = info[2] == "hub";
+	bool isHighRange = info[3] == "high";
+	bool isLowRange = info[3] == "low";  
+	
+	if (isHub)
 	{
-		color = mColorForText;
+		if (isHighRange)
+		{
+			color = CColor::RED;
+		}
+		else if (isLowRange)
+		{
+			color = CColor::YELLOW;
+		}
+		else
+		{
+			color = CColor::ORANGE;
+		}
+	}
+	else
+	{
+		if (isHighRange)
+		{
+			color = CColor::BLUE;
+		}
+		else if (isLowRange)
+		{
+			color = CColor::GREEN;
+		}
+		else
+		{
+			color = CColor::CYAN;
+		}
 	}
 
 	DrawText(CVector3(0.0, 0.0, 0.3), infoToDraw, color);

@@ -23,6 +23,9 @@ public:
 
    void Draw(CFootBotEntity& c_entity);
    
+protected:
+   CColor DetermineTextColor(const std::string& color);
+
 private:
 
    void DrawLinks(const std::vector<CVector3>& neighborPositions);
@@ -36,8 +39,12 @@ private:
    bool mIsEnabled   = false;
    bool mUseIDs      = false;
    bool mUseDegrees  = false;
+   bool mUseRanges   = false;
 
    CColor mColorForText = CColor::BLACK;
+   CColor mColorForHubs;
+   CColor mColorForHighRange;
+   CColor mColorForLowRange;
 };
 
 #endif
