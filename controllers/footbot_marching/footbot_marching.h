@@ -113,7 +113,17 @@ public:
    bool IsPotentialHub() const { return mPotentialHub; }
 
    void MarkPotentialHighRange(bool isPotentialHighRange) { mPotentialHighRange = isPotentialHighRange; }
-   bool IsPotentialHightRange() const { return mPotentialHighRange; }
+   bool IsPotentialHighRange() const { return mPotentialHighRange; }
+
+   void MarkPotentialLowRange(bool isPotentialLowRange) { mPotentialLowRange = isPotentialLowRange; }
+   bool IsPotentialLowRange() const { return mPotentialLowRange; }
+
+   void ResetVisualizationParameters()
+   {
+      mPotentialHub = false;
+      mPotentialHighRange = false;
+      mPotentialLowRange = false;
+   }
 
    /*
     * Contains all the state information about the controller.
@@ -253,6 +263,7 @@ private:
    // Marks the node as being a potential hub in order to spot it better in the visualization
    bool mPotentialHub = false;
    bool mPotentialHighRange = false;
+   bool mPotentialLowRange = false;
 
    ///////
    // Range parameters
