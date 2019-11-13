@@ -41,6 +41,8 @@ void CMarchingLoopFunctions::Init(TConfigurationNode& t_node) {
 		GetNodeAttribute(tNode, "zeroWorkAround", mZeroWorkAround);
 		GetNodeAttribute(tNode, "output", mOutputInformationAboutZeroWorkAround);
 
+		LOG << CSimulator::GetInstance().GetRandomSeed();
+
 	   OpenOutFilesID();
 	   finished = false;
 	   timer = 0;
@@ -307,8 +309,9 @@ void CMarchingLoopFunctions::DetermineComponents(std::vector<Node>& decoratedGra
 /****************************************/
 
 void CMarchingLoopFunctions::PreStep() {
-	int newNode;
-	
+	int newNode = -1;
+	int timeStep = GetSpace().GetSimulationClock();
+
 	// Loop over the swarm and update the RAB range for every robot
 	CSpace::TMapPerType& m_cFootbots = GetSpace().GetEntitiesByType("foot-bot");
 	for(CSpace::TMapPerType::iterator it = m_cFootbots.begin();
@@ -368,7 +371,7 @@ void CMarchingLoopFunctions::PreStep() {
 				// Ignores populating the connections to the 0th node, as this seems to be some form of unintented behaviour?
 				if (mZeroWorkAround)
 				{
-					if (GetSpace().GetSimulationClock() == 2 && newNode == 0)
+					if (timeStep == 2 && newNode == 0)
 						continue;
 				}
 
