@@ -487,6 +487,7 @@ void CMarchingLoopFunctions::PostStep()
 		
 		// Update controllers vector in order to sort by degrees later on
 		cController.MarkPotentialHub(false);
+		cController.MarkPotentialHighRange(false);
 		controllers.push_back(&cController);
 		
 		/*if (unID == 0)
@@ -522,8 +523,6 @@ void CMarchingLoopFunctions::PostStep()
 	avgDegree = avgDegree / activeRobots;
 
 	// If the degree of the footbot is in the top x%, then mark it as a potential hub
-	// In order for this to work, we need the deg distribution array as is
-	// We need a mapping between the index and its degree even after sorting
 	// Sort descending by grade (largest to smallest)
 	std::sort(controllers.begin(), controllers.end(), [](/*const*/ CFootBotMarching* lhs, CFootBotMarching* rhs)
 	{
@@ -555,6 +554,29 @@ void CMarchingLoopFunctions::PostStep()
 		}
 	}
 
+	// TODO: additional sort call, wasteful?
+	std::sort(controller.begin(), controllers.end(), [](CFootBotMarching* lhs, CFootBotMarching* rhs)
+	{
+		if (lhs != nullptr && rhs != nullptr)
+		{
+			return lhs->GetNewRABRange() > rhs->GetNewRABRange();
+		}
+		return false;
+	});
+
+	int counter = 0;
+	for (CFootBotMarching* ptr : controllers)
+	{
+		if (ptr != nullptr)
+		{
+			if (counter < (controllers.size() * mHubMarkingFraction))
+			{
+				ptr->MarkPotentialHighRange(true);
+				counter++;
+			}
+		}
+	}
+
 	// Avoid sorting a second time
 	/*std::sort (degDist.begin(), degDist.end());
 	for(int i = 0; i < degDist.size(); i++)
@@ -564,7 +586,7 @@ void CMarchingLoopFunctions::PostStep()
    
 	if(currentTime % mOutputTimer == 0)
 	{ 
-		LOG << GetSpace().GetSimulationClock() << "\t" << avgDegree << std::endl; 
+		LOG << GetSpace().GetSimulationClock() << "\t" << "AvgDeg: " << avgDegree << std::endl; 
 	}
 }
 
