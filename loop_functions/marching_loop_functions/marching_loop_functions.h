@@ -105,6 +105,8 @@ private:
 
    bool mZeroWorkAround = false;
    bool mOutputInformationAboutZeroWorkAround = false;
+
+   int mNodeOfInterest = -1;
 };
 
 #endif

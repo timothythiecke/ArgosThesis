@@ -34,6 +34,7 @@ void CMarchingLoopFunctions::Init(TConfigurationNode& t_node) {
       
 	  	TConfigurationNode& tOutput = GetNode(t_node, "output");
 		GetNodeAttribute(tOutput, "timer", mOutputTimer);
+		GetNodeAttribute(tOutput, "nodeOfInterest", mNodeOfInterest);
 
 		TConfigurationNode& tHubs = GetNode(t_node, "hubs");
 		GetNodeAttribute(tHubs, "fraction", mHubMarkingFraction);
@@ -42,8 +43,6 @@ void CMarchingLoopFunctions::Init(TConfigurationNode& t_node) {
 		GetNodeAttribute(tNode, "zeroWorkAround", mZeroWorkAround);
 		GetNodeAttribute(tNode, "output", mOutputInformationAboutZeroWorkAround);
 
-		LOG << CSimulator::GetInstance().GetRandomSeed();
-
 	   OpenOutFilesID();
 	   finished = false;
 	   timer = 0;
@@ -51,6 +50,8 @@ void CMarchingLoopFunctions::Init(TConfigurationNode& t_node) {
    catch(CARGoSException& ex) {
       THROW_ARGOSEXCEPTION_NESTED("Error parsing loop functions!", ex);
    }
+
+   //os_interest << "Starting run for seed " << CSimulator::GetInstance().GetRandomSeed() << " with focus on node " << mNodeOfInterest << std::endl;
 }
 
 /****************************************/
@@ -269,6 +270,8 @@ void CMarchingLoopFunctions::Destroy() {
 	// The file handles should be closed regardless, as they are created at the start
 	os_degD.close();
 	os_degD_Tot.close();
+
+	//os_interest.close();
 }
 
 
@@ -391,7 +394,13 @@ void CMarchingLoopFunctions::PreStep() {
 		CFootBotMarching& cController = dynamic_cast<CFootBotMarching&>(cFootBot.GetControllableEntity().GetController());
 		std::string strID = cController.GetId().substr (2,5);
 		int unID = std::stoi (strID,nullptr,10);
-		  
+		
+		if (unID == mNodeOfInterest)
+		{
+			cController.SetInterestNode(true);
+			cController.MarkPotentialHub(true);
+		}
+		
 		// --- UPDATE INFORMATION RECEIVED FROM NEIGHBORS ---
 		CCI_RangeAndBearingSensor::TReadings newTPackets;
 		CCI_RangeAndBearingSensor::SPacket newSPacket;
@@ -611,6 +620,9 @@ bool CMarchingLoopFunctions::IsExperimentFinished() {
 /****************************************/
 
 void CMarchingLoopFunctions::OpenOutFilesID() {
+	// TODO: file init should be better done	
+	//os_interest.open("/mnt/c/argos/pl_check_kit/pl_check_kit/nodeinfo.log", std::ofstream::trunc | std::ofstream::out);
+
     // This method automatically detects the current working directory and opens the output files
     std::string filename = "";
     std::string dirID = GetCurrentWorkingDir();

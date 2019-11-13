@@ -7,6 +7,7 @@
 /* Logging */
 #include <argos3/core/utility/logging/argos_log.h>
 #include <algorithm>
+#include <argos3/core/simulator/simulator.h>
 
 
 /****************************************/
@@ -397,10 +398,14 @@ void CFootBotMarching::Decision() {
 		{
 			if (m_pcRNG->Uniform(CRange<Real>(0.0, 1.0)) > fraction_difference)
 			{
+				mInterestFile << timer <<  ": Increasing range due to RNG > fraction_difference(" << fraction_difference << ")\n";
+				
 				IncreaseRange();
 			}
 			else if (m_pcRNG->Uniform(CRange<Real>(0.0, 1.0)) < fraction_difference)
 			{
+				mInterestFile << timer <<  ": Decreasing range due to RNG < fraction_difference(" << fraction_difference << ")\n";
+				
 				DecreaseRange();
 			}
 		}
@@ -419,6 +424,8 @@ void CFootBotMarching::Decision() {
 	}
 	else if (b_breakdown)
 	{ 
+		mInterestFile << timer <<  ": Increasing range due to detected breakdown (no neighbours)\n";
+		
 		IncreaseRange();
 	}
 	// Need to test this if this affects the isolated nodes
@@ -440,6 +447,8 @@ void CFootBotMarching::Decision() {
 	// At random a footbot may decide to move in the other direction
 	if(m_pcRNG->Uniform(m_sStateData.ProbRange) < m_sStateData.SpontSwitchingProb)
 	{
+		mInterestFile << timer <<  ": Spontaneous switch of direction\n";
+
 		SwitchState();
 	}
 	/* =================================================================== */
@@ -456,6 +465,12 @@ CCI_DifferentialSteeringActuator* CFootBotMarching::GetWheels() {
 /****************************************/
 
 void CFootBotMarching::ControlStep() {
+  	if (mIsNodeOfInterest && !mInterestFile.is_open())
+	{
+		mInterestFile.open("/mnt/c/argos/pl_check_kit/pl_check_kit/nodeinfo.log", std::ofstream::trunc | std::ofstream::out);
+		mInterestFile << "Starting interest ouput for node " << m_unID << std::endl;
+	}
+   
    /*
     * ATTENTION: m_pcRABA->SetData(size_t,UInt8)
     * That means, in order to make fbID = m_unCounter which are > 255

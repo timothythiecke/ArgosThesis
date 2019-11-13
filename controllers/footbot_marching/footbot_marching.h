@@ -42,6 +42,8 @@
  */
 using namespace argos;
 
+#include <fstream>
+
 /*
  * A controller is simply an implementation of the CCI_Controller class.
  */
@@ -93,7 +95,10 @@ public:
     * so the function could have been omitted. It's here just for
     * completeness.
     */
-   virtual void Destroy() {}
+   virtual void Destroy() 
+   {
+      mInterestFile.close();
+   }
    
    CCI_RangeAndBearingSensor::TReadings GetTPackets();
    
@@ -124,6 +129,9 @@ public:
       mPotentialHighRange = false;
       mPotentialLowRange = false;
    }
+
+   void SetInterestNode(bool interestingNode) { mIsNodeOfInterest = interestingNode; }
+   bool IsInterestingNode() const { return mIsNodeOfInterest; }
 
    /*
     * Contains all the state information about the controller.
@@ -245,6 +253,10 @@ private:
    int m_unID;
    int degree;
    
+   // True if we are interested in which events happend for this node
+   bool mIsNodeOfInterest = false; 
+   std::ofstream mInterestFile;
+
    Real f_fracLeft;
    Real f_fracRight;
    

@@ -37,7 +37,7 @@
   <!-- ****************** -->
   <loop_functions library="build/loop_functions/marching_loop_functions/libmarching_loop_functions" label="marching_loop_functions">
     <folder name="marching" randID="1"/>
-    <output timer="10"/>
+    <output timer="10" nodeOfInterest="3"/>
     <hubs fraction="0.1"/>
     <node zeroWorkAround="true" output="false"/>
   </loop_functions>
