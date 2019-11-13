@@ -53,8 +53,20 @@ void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity)
 		std::vector<std::string> info;
 		info.push_back(std::to_string(unID));
 		info.push_back(std::to_string(cController.GetDegree()));
-		info.push_back((cController.IsPotentialHub() || (unID == 0)) ? "hub" : "nohub");
-
+		info.push_back((cController.IsPotentialHub() /*|| (unID == 0)*/) ? "hub" : "nohub"); // uncomment unID check if the bug happens again
+		if (cController.IsPotentialHighRange())
+		{
+			info.push_back("high");
+		}
+		else if (cController.IsPotentialLowRange())
+		{
+			info.push_back("low");
+		}
+		else
+		{
+			info.push_back("avg");
+		}
+		
 		DrawInfo(c_entity, info);
 	}
 }

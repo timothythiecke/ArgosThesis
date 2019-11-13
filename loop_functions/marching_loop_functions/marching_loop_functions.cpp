@@ -5,6 +5,7 @@
 #include <argos3/plugins/simulator/entities/rab_equipped_entity.h>
 #include <controllers/footbot_marching/footbot_marching.h>
 #include <stdio.h>  /* defines FILENAME_MAX */
+#include <assert.h>
 #include <unistd.h>
 #define GetCurrentDir getcwd
 
@@ -486,8 +487,7 @@ void CMarchingLoopFunctions::PostStep()
 		rangeDist.push_back(range);
 		
 		// Update controllers vector in order to sort by degrees later on
-		cController.MarkPotentialHub(false);
-		cController.MarkPotentialHighRange(false);
+		cController.ResetVisualizationParameters();
 		controllers.push_back(&cController);
 		
 		/*if (unID == 0)
@@ -538,20 +538,19 @@ void CMarchingLoopFunctions::PostStep()
 	int counter = 0;
 	for (CFootBotMarching* ptr : controllers)
 	{
-		if (ptr != nullptr)
-		{
-			if (counter < (controllers.size() * mHubMarkingFraction))
-			{
-				ptr->MarkPotentialHub(true);
-				counter++;
-			}
+		assert(ptr != nullptr);
 
-			// Note, this does the same thing (hopefully) as the sort write code below out of this for loop
-			// But will avoid another (expensive) sort call
-			degDistTot[controllers.size() - 1 - i] += controllers[i]->GetDegree(); // index 0 gets smallest/last element, index 1 gets ...
-			mRangeDistTot[controllers.size() - 1 - i] += controllers[i]->GetNewRABRange();
-			i--;
+		if (counter < (controllers.size() * mHubMarkingFraction))
+		{
+			ptr->MarkPotentialHub(true);
 		}
+		counter++;
+
+		// Note, this does the same thing (hopefully) as the sort write code below out of this for loop
+		// But will avoid another (expensive) sort call
+		degDistTot[controllers.size() - 1 - i] += controllers[i]->GetDegree(); // index 0 gets smallest/last element, index 1 gets ...
+		mRangeDistTot[controllers.size() - 1 - i] += controllers[i]->GetNewRABRange();
+		i--;
 	}
 
 	// TODO: additional sort call, wasteful?
@@ -567,14 +566,18 @@ void CMarchingLoopFunctions::PostStep()
 	int counter = 0;
 	for (CFootBotMarching* ptr : controllers)
 	{
-		if (ptr != nullptr)
+		assert(ptr != nullptr);
+
+		if (counter < (controllers.size() * mHubMarkingFraction))
 		{
-			if (counter < (controllers.size() * mHubMarkingFraction))
-			{
-				ptr->MarkPotentialHighRange(true);
-				counter++;
-			}
+			ptr->MarkPotentialHighRange(true);
 		}
+		else if (counter > (controllers.size() - (controllers.size() * mHubMarkingFraction)))
+		{
+			ptr->MarkPotentialLowRange(true);
+		}
+			
+		counter++;
 	}
 
 	// Avoid sorting a second time
