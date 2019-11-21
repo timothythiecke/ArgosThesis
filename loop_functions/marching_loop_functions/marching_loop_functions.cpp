@@ -3,6 +3,7 @@
 #include <argos3/core/utility/configuration/argos_configuration.h>
 #include <argos3/plugins/robots/foot-bot/simulator/footbot_entity.h>
 #include <argos3/plugins/simulator/entities/rab_equipped_entity.h>
+#include <argos3/core/simulator/entity/embodied_entity.h>
 #include <controllers/footbot_marching/footbot_marching.h>
 #include <stdio.h>  /* defines FILENAME_MAX */
 #include <assert.h>
@@ -479,18 +480,27 @@ void CMarchingLoopFunctions::PostStep()
 		// Create a pointer to the current foot-bot
 		CFootBotEntity* pcFB = any_cast<CFootBotEntity*>(it->second);
 		CFootBotEntity& cFootBot = *any_cast<CFootBotEntity*>(it->second);
-	  
+	
+		// Get the foot-bot controller
+		CFootBotMarching& cController = dynamic_cast<CFootBotMarching&>(cFootBot.GetControllableEntity().GetController());
+		std:: string strID = cController.GetId().substr (2,5);
+		int unID = std::stoi (strID,nullptr,10);
+
 		// TODO: through the footbotentity class we can reach the sensor class, and we can get the absolute position of the ground sensor class
 		// In that case we can calculate the square magnitude of these distances
 		// And sort by this distance
 		// We can save that distance in the controller
 		// If we want to output we can do the 
+		CEmbodiedEntity& entity = cFootBot.GetEmbodiedEntity();
+		if (unID == 0 && currentTime < 10)
+		{
+			//LOG << currentTime << " Entity position: ";
+			const SAnchor& anchor = entity.GetOriginAnchor();
+			LOG << anchor.Position;
+			LOG << anchor.OffsetPosition;
+			LOG << std::endl;
+		}
 
-		// Get the foot-bot controller
-		CFootBotMarching& cController = dynamic_cast<CFootBotMarching&>(cFootBot.GetControllableEntity().GetController());
-		std:: string strID = cController.GetId().substr (2,5);
-		int unID = std::stoi (strID,nullptr,10);
-      
     	avgDegree += cController.GetDegree();
     	avgRABRange += cController.GetNewRABRange();
 
