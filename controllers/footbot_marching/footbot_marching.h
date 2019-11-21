@@ -123,6 +123,9 @@ public:
    void MarkPotentialLowRange(bool isPotentialLowRange) { mPotentialLowRange = isPotentialLowRange; }
    bool IsPotentialLowRange() const { return mPotentialLowRange; }
 
+   void SetWorldPosition(const CVector3& worldPosition) { mWorldPosition = worldPosition; }
+   CVector3 GetWorldPosition() const { return mWorldPosition; }
+
    int GetID() const { return m_unID; }
 
    void ResetVisualizationParameters()
@@ -296,6 +299,8 @@ private:
    };
    ERangeDecisionMakingState mRangeDecisionState = ERangeDecisionMakingState::Invalid;
    ///////
+
+   CVector3 mWorldPosition;
 };
 
 #endif

@@ -486,20 +486,19 @@ void CMarchingLoopFunctions::PostStep()
 		std:: string strID = cController.GetId().substr (2,5);
 		int unID = std::stoi (strID,nullptr,10);
 
-		// TODO: through the footbotentity class we can reach the sensor class, and we can get the absolute position of the ground sensor class
-		// In that case we can calculate the square magnitude of these distances
-		// And sort by this distance
-		// We can save that distance in the controller
-		// If we want to output we can do the 
+		// Get the embodied entity as this allows us to access the world position of the actual robot
+		// Then set it on the footbot
 		CEmbodiedEntity& entity = cFootBot.GetEmbodiedEntity();
-		if (unID == 0 && currentTime < 10)
+		const SAnchor& anchor = entity.GetOriginAnchor();
+		cController.SetWorldPosition(anchor.Position);
+		/*if (unID == 0 && currentTime < 10)
 		{
 			//LOG << currentTime << " Entity position: ";
 			const SAnchor& anchor = entity.GetOriginAnchor();
 			LOG << anchor.Position;
 			LOG << anchor.OffsetPosition;
 			LOG << std::endl;
-		}
+		}*/
 
     	avgDegree += cController.GetDegree();
     	avgRABRange += cController.GetNewRABRange();
