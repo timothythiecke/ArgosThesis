@@ -556,6 +556,9 @@ void CMarchingLoopFunctions::PostStep()
 	// Determine the distance to the closest neighbour
 	// O(n^2) evaluation, could be simplified with spatial localization
 	// Only keep track of square magnitude as this saves overhead
+	if (mNNSquaredDistanceDistribution.empty())
+		mNNSquaredDistanceDistribution.reserve(controllers.size());
+
 	for (CFootBotMarching* footbot : controllers)
 	{
 		Real nearest = std::numeric_limits<Real>::max();
@@ -570,6 +573,7 @@ void CMarchingLoopFunctions::PostStep()
 		}
 
 		footbot->SetNNSquaredDistance(nearest);
+		mNNSquaredDistanceDistribution.push_back(nearest);
 	}
 
 
@@ -638,9 +642,14 @@ void CMarchingLoopFunctions::PostStep()
 		degDistTot[i] += degDist[i]; 
 	}*/
    
-	if(currentTime % mOutputTimer == 0)
+	if (currentTime % mOutputTimer == 0)
 	{ 
 		LOG << GetSpace().GetSimulationClock() << "\t" << "AvgDeg: " << avgDegree << std::endl; 
+	}
+
+	if (currentTime == 1)
+	{
+		OutputNNDistanceDistribution();
 	}
 }
 
@@ -719,5 +728,25 @@ std::string CMarchingLoopFunctions::GetCurrentWorkingDir() {
 
 /****************************************/
 /****************************************/
+
+
+void CMarchingLoopFunctions::OutputNNDistanceDistribution()
+{
+	// Sorted
+	std::sort(mNNSquaredDistanceDistribution.begin(), mNNSquaredDistanceDistribution.end());
+
+	std::ofstream fNNDistr;
+	fNNDistr.open("/mnt/c/argos/pl_check_kit/pl_check_kit/nnDistribution.dat", std::ofstream::trunc | std::ofstream::out);
+	
+	for (const Real sqDist : mNNSquaredDistanceDistribution)
+	{
+		// TODO: what if dist == 0.0?
+		fNNDistr << sqrt(sqDist) << "\n";
+	}
+	fNNDistr << std::endl;
+	
+	fNNDistr.close();
+}
+
 
 REGISTER_LOOP_FUNCTIONS(CMarchingLoopFunctions, "marching_loop_functions")

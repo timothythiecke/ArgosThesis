@@ -107,6 +107,10 @@ private:
    bool mOutputInformationAboutZeroWorkAround = false;
 
    int mNodeOfInterest = -1;
+
+   std::vector<Real> mNNSquaredDistanceDistribution;
+
+   void OutputNNDistanceDistribution();
 };
 
 #endif
