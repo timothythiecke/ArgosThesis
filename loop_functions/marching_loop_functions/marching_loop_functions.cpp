@@ -465,12 +465,15 @@ void CMarchingLoopFunctions::PostStep()
 {
    	Real avgRABRange = 0.0, avgDegree = 0.0;
    	int currentTime = GetSpace().GetSimulationClock();
-   	std::vector<int> degDist;
+   	
+	// We could speed up the poststep by making these members and resizing them once
+	std::vector<int> degDist;
 	std::vector<Real> rangeDist;
-   	std::vector<CFootBotMarching*> controllers;
+   	std::vector<CFootBotMarching*> controllers; 
 
    	// Loop over the swarm and record the degree of every robot
    	CSpace::TMapPerType& m_cFootbots = GetSpace().GetEntitiesByType("foot-bot");
+	controllers.resize(m_cFootbots.size());
    	for(CSpace::TMapPerType::iterator it = m_cFootbots.begin(); it != m_cFootbots.end(); ++it)
    	{
 		// Create a pointer to the current foot-bot
@@ -513,12 +516,10 @@ void CMarchingLoopFunctions::PostStep()
 		
 		// Update controllers vector in order to sort by degrees later on
 		cController.ResetVisualizationParameters();
-		controllers.push_back(&cController);
+		//controllers.push_back(&cController);
 		
-
-		// controllers[unID] = &cController;
+		controllers[unID] = &cController;
 		// TODO: check if this affects the output files! I believe it shouldnt
-
 
 		/*if (unID == 0)
 		{
