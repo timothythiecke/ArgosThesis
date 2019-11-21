@@ -289,9 +289,19 @@ CCI_RangeAndBearingSensor::TReadings CFootBotMarching::GetTPackets(){
 
 void CFootBotMarching::SetFakeTPackets(CCI_RangeAndBearingSensor::TReadings& fakeTPackets)
 {
+	if (mIsNodeOfInterest)
+	{
+		LOG << "Deg: " << degree << " TPackets size: " << tPackets.size() << std::endl;
+	}
+
 	degree = fakeTPackets.size();
 	tPackets = m_pcRABS->GetReadings();
 	
+	if (mIsNodeOfInterest)
+	{
+		LOG << "Deg: " << degree << " TPackets size: " << tPackets.size() << std::endl;
+	}
+
 	/*tPackets.clear();
 	tPackets = std::move(fakeTPackets);
 	/*for(size_t i = 0; i < degree; i++)
@@ -320,11 +330,30 @@ int CFootBotMarching::GetDegree(){
 
 void CFootBotMarching::Decision() {
 	int degreeLocal = tPackets.size();
+
 	/* ======================= LISTEN TO NEIGHBORS ======================= */
 	/* ======================= + UPDATE THE SPEED ======================== */
 	/* =================================================================== */
-	//~ const CCI_RangeAndBearingSensor::TReadings& tPackets = m_pcRABS->GetReadings();
-	//~ degree = tPackets.size();
+	/*	
+	const CCI_RangeAndBearingSensor::TReadings& tPackets = m_pcRABS->GetReadings();
+	int degreeLocal = tPackets.size();
+	*/
+
+	/*if (degreeLocal > 0)
+	{
+		LOG << "Degreelocal: " << degreeLocal << " ID: " << m_unID << std::endl;
+	}*/
+
+	/*if (m_unID == 3)
+	{
+		LOG << "Degreelocal: " << degreeLocal << " Degree: " << this->GetDegree() << std::endl;
+	}*/
+	if (degreeLocal == 0 && GetDegree() > 0)
+	{
+		LOG << m_unID << " ";
+	}
+	//degreeLocal = this->GetDegree();
+
 
 	Real velocity = 0.0, avgVelocity = 0.0;
 	f_fracLeft = 0.0;
@@ -351,7 +380,8 @@ void CFootBotMarching::Decision() {
 	}
 
 	// Ilja explained the dividing of this value as making it so that the values do not fluctuate around zero but stay better in the range
-	if (avgVelocity > 0)
+	//if (avgVelocity > 0)
+	if (avgVelocity > 0.0) // Equivalent to line above
 	{
 		avgVelocity++;
 		avgVelocity = avgVelocity / 2;
@@ -362,7 +392,8 @@ void CFootBotMarching::Decision() {
 		avgVelocity = avgVelocity / 2;
 	}
 
-	avgVelocity += m_pcRNG->Uniform(CRange<Real>(0.0, 1.0)) * 2.0 - 1.0;
+	// ???? relation to spontanenous switching?
+	avgVelocity += m_pcRNG->Uniform(CRange<Real>(0.0, 1.0)) * 2.0 - 1.0; // -1.0 -> 1.0
 
 	if(!m_sMotionParams.b_isStopped)
 	{ 

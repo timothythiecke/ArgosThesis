@@ -123,6 +123,8 @@ public:
    void MarkPotentialLowRange(bool isPotentialLowRange) { mPotentialLowRange = isPotentialLowRange; }
    bool IsPotentialLowRange() const { return mPotentialLowRange; }
 
+   int GetID() const { return m_unID; }
+
    void ResetVisualizationParameters()
    {
       mPotentialHub = false;

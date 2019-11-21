@@ -359,6 +359,11 @@ void CMarchingLoopFunctions::PreStep() {
 			}
 		}
 
+		if (unID == mNodeOfInterest)
+		{
+			LOG << "Node: " << unID << " Packets: " << cController.GetTPackets().size() << " <> " << tPackets.size() << std::endl;
+		}
+
 		int count = 0;
 		for (size_t i = 0; i < tPackets.size(); ++i)
 		{
@@ -411,6 +416,11 @@ void CMarchingLoopFunctions::PreStep() {
 			{
 				LOG << "G[unID].size() == " << G[unID].size() << std::endl;
 			}
+		}
+
+		if (unID == mNodeOfInterest)
+		{
+			LOG << "G[unID].size() == " << G[unID].size() << std::endl;
 		}
 
 		for(int j = 0; j < G[unID].size(); j++)
@@ -467,6 +477,12 @@ void CMarchingLoopFunctions::PostStep()
 		CFootBotEntity* pcFB = any_cast<CFootBotEntity*>(it->second);
 		CFootBotEntity& cFootBot = *any_cast<CFootBotEntity*>(it->second);
 	  
+		// TODO: through the footbotentity class we can reach the sensor class, and we can get the absolute position of the ground sensor class
+		// In that case we can calculate the square magnitude of these distances
+		// And sort by this distance
+		// We can save that distance in the controller
+		// If we want to output we can do the 
+
 		// Get the foot-bot controller
 		CFootBotMarching& cController = dynamic_cast<CFootBotMarching&>(cFootBot.GetControllableEntity().GetController());
 		std:: string strID = cController.GetId().substr (2,5);
@@ -499,6 +515,11 @@ void CMarchingLoopFunctions::PostStep()
 		cController.ResetVisualizationParameters();
 		controllers.push_back(&cController);
 		
+
+		// controllers[unID] = &cController;
+		// TODO: check if this affects the output files! I believe it shouldnt
+
+
 		/*if (unID == 0)
 		{
 			LOG << "Current degree count: " << cController.GetDegree() << " Total over time: " << degDistTot[unID] << std::endl;

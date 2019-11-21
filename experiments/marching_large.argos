@@ -5,7 +5,7 @@
   <!-- ************************* -->
   <framework>
     <system threads="0"/>
-    <experiment length="100" ticks_per_second="1" random_seed="10"/>
+    <experiment length="200" ticks_per_second="1" random_seed="10"/>
   </framework>
   <!-- *************** -->
   <!-- * Controllers * -->
@@ -37,7 +37,7 @@
   <!-- ****************** -->
   <loop_functions library="build/loop_functions/marching_loop_functions/libmarching_loop_functions" label="marching_loop_functions">
     <folder name="marching" randID="1"/>
-    <output timer="10" nodeOfInterest="3"/>
+    <output timer="10" nodeOfInterest="192"/>
     <hubs fraction="0.1"/>
     <node zeroWorkAround="true" output="false"/>
   </loop_functions>
@@ -69,7 +69,7 @@
         <placement idx="2" position="0,0,5" look_at="0,0,0" lens_focal_length="2"/>
       </camera>
       <user_functions label="marching_qt_user_functions">
-        <drawing isEnabled="true" useID="true" useDegrees="false" useRanges="false" hubColor="orange" highRangeColor="red" lowRangeColor="magenta"/>
+        <drawing isEnabled="true" useID="true" useDegrees="true" useRanges="false" hubColor="orange" highRangeColor="red" lowRangeColor="magenta"/>
       </user_functions>
     </qt-opengl>
   </visualization>

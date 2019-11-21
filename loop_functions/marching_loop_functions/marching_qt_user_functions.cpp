@@ -60,6 +60,8 @@ void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity)
 			//~ c_entity.GetId().substr (2,5)); // text
 		//~ }
 	
+		//assert(unID == cController.GetID());
+
 		std::vector<std::string> info;
 		info.push_back(std::to_string(unID));
 		info.push_back(std::to_string(cController.GetDegree()));
