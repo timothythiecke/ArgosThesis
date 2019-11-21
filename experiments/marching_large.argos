@@ -5,7 +5,7 @@
   <!-- ************************* -->
   <framework>
     <system threads="0"/>
-    <experiment length="200" ticks_per_second="1" random_seed="10"/>
+    <experiment length="200" ticks_per_second="1" random_seed="0"/>
   </framework>
   <!-- *************** -->
   <!-- * Controllers * -->
@@ -60,7 +60,7 @@
   
   <!-- ****************** -->
   <!-- * Visualization * -->
-  <!-- ****************** --> 
+  <!-- ******************  
   <visualization>
     <qt-opengl>
       <camera>
@@ -72,7 +72,7 @@
         <drawing isEnabled="true" useID="true" useDegrees="true" useRanges="false" hubColor="orange" highRangeColor="red" lowRangeColor="magenta"/>
       </user_functions>
     </qt-opengl>
-  </visualization>
+  </visualization>-->
 
   <!-- *********************** -->
   <!-- * Arena configuration * -->

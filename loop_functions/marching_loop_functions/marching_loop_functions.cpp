@@ -741,9 +741,8 @@ void CMarchingLoopFunctions::OutputNNDistanceDistribution()
 	for (const Real sqDist : mNNSquaredDistanceDistribution)
 	{
 		// TODO: what if dist == 0.0?
-		fNNDistr << sqrt(sqDist) << "\n";
+		fNNDistr << sqrt(sqDist) << std::endl;
 	}
-	fNNDistr << std::endl;
 	
 	fNNDistr.close();
 }
