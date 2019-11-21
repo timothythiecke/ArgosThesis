@@ -339,21 +339,10 @@ void CFootBotMarching::Decision() {
 	int degreeLocal = tPackets.size();
 	*/
 
-	/*if (degreeLocal > 0)
-	{
-		LOG << "Degreelocal: " << degreeLocal << " ID: " << m_unID << std::endl;
-	}*/
-
-	/*if (m_unID == 3)
-	{
-		LOG << "Degreelocal: " << degreeLocal << " Degree: " << this->GetDegree() << std::endl;
-	}*/
 	if (degreeLocal == 0 && GetDegree() > 0)
 	{
 		LOG << m_unID << " ";
 	}
-	//degreeLocal = this->GetDegree();
-
 
 	Real velocity = 0.0, avgVelocity = 0.0;
 	f_fracLeft = 0.0;
@@ -424,6 +413,7 @@ void CFootBotMarching::Decision() {
 		// Either way, probabilistic is the original code
 		// Note: duplicate code
 
+		// TODO: revert back to default probabilistic
 		Real fraction_difference = Abs(f_fracLeft - f_fracRight);
 		if (mRangeDecisionState == CFootBotMarching::ERangeDecisionMakingState::Probabilistic)
 		{

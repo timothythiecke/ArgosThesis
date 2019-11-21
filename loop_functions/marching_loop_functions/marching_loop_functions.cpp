@@ -491,14 +491,6 @@ void CMarchingLoopFunctions::PostStep()
 		CEmbodiedEntity& entity = cFootBot.GetEmbodiedEntity();
 		const SAnchor& anchor = entity.GetOriginAnchor();
 		cController.SetWorldPosition(anchor.Position);
-		/*if (unID == 0 && currentTime < 10)
-		{
-			//LOG << currentTime << " Entity position: ";
-			const SAnchor& anchor = entity.GetOriginAnchor();
-			LOG << anchor.Position;
-			LOG << anchor.OffsetPosition;
-			LOG << std::endl;
-		}*/
 
     	avgDegree += cController.GetDegree();
     	avgRABRange += cController.GetNewRABRange();
@@ -555,12 +547,31 @@ void CMarchingLoopFunctions::PostStep()
 				//~ m_tNeighbors[pcFB].clear();
 		//~ }
 	}
-	//LOG << std::endl;
 
 	Real activeRobots = m_cFootbots.size() * 1.0;
 
 	avgRABRange = avgRABRange / activeRobots;
 	avgDegree = avgDegree / activeRobots;
+
+	// Determine the distance to the closest neighbour
+	// O(n^2) evaluation, could be simplified with spatial localization
+	// Only keep track of square magnitude as this saves overhead
+	for (CFootBotMarching* footbot : controllers)
+	{
+		Real nearest = std::numeric_limits<Real>::max();
+
+		for (CFootBotMarching* other : controllers)
+		{
+			if (footbot != other) // otherwise nearest will be zero
+			{
+				Real squareDist = SquareDistance(footbot->GetWorldPosition(), other->GetWorldPosition());
+				nearest = std::min(nearest, squareDist);
+			}
+		}
+
+		footbot->SetNNSquaredDistance(nearest);
+	}
+
 
 	// If the degree of the footbot is in the top x%, then mark it as a potential hub
 	// Sort descending by grade (largest to smallest)

@@ -126,6 +126,9 @@ public:
    void SetWorldPosition(const CVector3& worldPosition) { mWorldPosition = worldPosition; }
    CVector3 GetWorldPosition() const { return mWorldPosition; }
 
+   void SetNNSquaredDistance(const Real nearestSquaredDistance) { mSquaredDistanceToNN = nearestSquaredDistance; }
+   Real GetNNSquaredDistance() const { return mSquaredDistanceToNN; }
+
    int GetID() const { return m_unID; }
 
    void ResetVisualizationParameters()
@@ -300,7 +303,8 @@ private:
    ERangeDecisionMakingState mRangeDecisionState = ERangeDecisionMakingState::Invalid;
    ///////
 
-   CVector3 mWorldPosition;
+   CVector3 mWorldPosition = CVector3();
+   Real mSquaredDistanceToNN;
 };
 
 #endif

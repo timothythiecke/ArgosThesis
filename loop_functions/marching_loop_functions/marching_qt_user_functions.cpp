@@ -62,10 +62,12 @@ void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity)
 	
 		//assert(unID == cController.GetID());
 
-		std::vector<std::string> info;
+
+		// Draw debug info
+		/*std::vector<std::string> info;
 		info.push_back(std::to_string(unID));
 		info.push_back(std::to_string(cController.GetDegree()));
-		info.push_back((cController.IsPotentialHub() /*|| (unID == 3)*/) ? "hub" : "nohub"); // uncomment unID check if the zero node bug happens again
+		info.push_back((cController.IsPotentialHub()) ? "hub" : "nohub"); //  || (unID == 3)uncomment unID check if the zero node bug happens again
 		if (cController.IsPotentialHighRange())
 		{
 			info.push_back("high");
@@ -79,7 +81,22 @@ void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity)
 			info.push_back("avg");
 		}
 		
-		DrawInfo(c_entity, info);
+		DrawInfo(c_entity, info);*/
+		/////
+
+
+		// Draw world position of entity
+		/*std::string infoToDraw;
+		infoToDraw.append(std::to_string(cController.GetWorldPosition().GetX()));
+		infoToDraw.append(", ");
+		infoToDraw.append(std::to_string(cController.GetWorldPosition().GetY()));
+		DrawText(CVector3(0.0, 0.0, 0.3), infoToDraw, CColor::BLACK);*/
+		/////
+
+
+		// Draw circle of neighbourhood
+		DrawCircle(CVector3(0.0, 0.0, 0.02), CQuaternion(), sqrt(cController.GetNNSquaredDistance()), CColor::YELLOW, false);
+		/////
 	}
 }
 
