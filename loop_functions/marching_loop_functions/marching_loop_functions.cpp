@@ -44,6 +44,10 @@ void CMarchingLoopFunctions::Init(TConfigurationNode& t_node) {
 		GetNodeAttribute(tNode, "zeroWorkAround", mZeroWorkAround);
 		GetNodeAttribute(tNode, "output", mOutputInformationAboutZeroWorkAround);
 
+		//  <nearestNeighbour drawLinks="true"/>
+		TConfigurationNode& tNN = GetNode(t_node, "nearestNeighbour");
+		GetNodeAttribute(tNN, "drawLinks", mDrawNNLinks);
+
 	   OpenOutFilesID();
 	   finished = false;
 	   timer = 0;
@@ -573,7 +577,6 @@ void CMarchingLoopFunctions::PostStep()
 			if (footbot != other) // otherwise nearest will be zero
 			{
 				Real squareDist = SquareDistance(footbot->GetWorldPosition(), other->GetWorldPosition());
-				//nearest = std::min(nearest, squareDist);
 				if (squareDist < nearest)
 				{
 					nearest = squareDist;
@@ -583,17 +586,20 @@ void CMarchingLoopFunctions::PostStep()
 		}
 
 		footbot->SetNNSquaredDistance(nearest);
-		//footbot->SetNNWorldPosition(nearestWorld);
 		mNNSquaredDistanceDistribution.push_back(nearest);
 
-		// Draw line between nearest physical neighbour and footbot, cant be done in QT function due to rotation shenanigans
-		CFootBotEntity* entity = entities[entity_i];
-		assert(entity != nullptr);
-		CControllableEntity& controllable_entity = entity->GetControllableEntity();
-		Real z = 0.05;
-		controllable_entity.AddCheckedRay(false, CRay3(footbot->GetWorldPosition() + CVector3(0.0, 0.0, z), nearestWorld + CVector3(0.0, 0.0, z)));
+		// Draw line between nearest physical neighbour and footbot, cant be done in Qt function due to rotation shenanigans
+		// Note that these rays are used by the Qt widget in order to draw communication links
+		if (mDrawNNLinks)
+		{
+			CFootBotEntity* entity = entities[entity_i];
+			assert(entity != nullptr);
+			CControllableEntity& controllable_entity = entity->GetControllableEntity();
+			Real z = 0.05;
+			controllable_entity.AddCheckedRay(false, CRay3(footbot->GetWorldPosition() + CVector3(0.0, 0.0, z), nearestWorld + CVector3(0.0, 0.0, z)));
 
-		entity_i++;
+			entity_i++;
+		}
 	}
 
 

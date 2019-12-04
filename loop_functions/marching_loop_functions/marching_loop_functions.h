@@ -111,6 +111,7 @@ private:
    std::vector<Real> mNNSquaredDistanceDistribution;
 
    void OutputNNDistanceDistribution();
+   bool mDrawNNLinks = false;
 };
 
 #endif
