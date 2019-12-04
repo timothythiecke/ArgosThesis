@@ -471,10 +471,12 @@ void CMarchingLoopFunctions::PostStep()
 	std::vector<int> degDist;
 	std::vector<Real> rangeDist;
    	std::vector<CFootBotMarching*> controllers; 
+	std::vector<CFootBotEntity*> entities;
 
    	// Loop over the swarm and record the degree of every robot
    	CSpace::TMapPerType& m_cFootbots = GetSpace().GetEntitiesByType("foot-bot");
 	controllers.resize(m_cFootbots.size());
+	entities.resize(m_cFootbots.size());
    	for(CSpace::TMapPerType::iterator it = m_cFootbots.begin(); it != m_cFootbots.end(); ++it)
    	{
 		// Create a pointer to the current foot-bot
@@ -491,6 +493,8 @@ void CMarchingLoopFunctions::PostStep()
 		CEmbodiedEntity& entity = cFootBot.GetEmbodiedEntity();
 		const SAnchor& anchor = entity.GetOriginAnchor();
 		cController.SetWorldPosition(anchor.Position);
+
+		entities[unID] = pcFB;
 
     	avgDegree += cController.GetDegree();
     	avgRABRange += cController.GetNewRABRange();
@@ -559,21 +563,37 @@ void CMarchingLoopFunctions::PostStep()
 	if (mNNSquaredDistanceDistribution.empty())
 		mNNSquaredDistanceDistribution.reserve(controllers.size());
 
+	int entity_i = 0;
 	for (CFootBotMarching* footbot : controllers)
 	{
 		Real nearest = std::numeric_limits<Real>::max();
-
+		CVector3 nearestWorld = CVector3();
 		for (CFootBotMarching* other : controllers)
 		{
 			if (footbot != other) // otherwise nearest will be zero
 			{
 				Real squareDist = SquareDistance(footbot->GetWorldPosition(), other->GetWorldPosition());
-				nearest = std::min(nearest, squareDist);
+				//nearest = std::min(nearest, squareDist);
+				if (squareDist < nearest)
+				{
+					nearest = squareDist;
+					nearestWorld = other->GetWorldPosition();
+				}
 			}
 		}
 
 		footbot->SetNNSquaredDistance(nearest);
+		//footbot->SetNNWorldPosition(nearestWorld);
 		mNNSquaredDistanceDistribution.push_back(nearest);
+
+		// Draw line between nearest physical neighbour and footbot, cant be done in QT function due to rotation shenanigans
+		CFootBotEntity* entity = entities[entity_i];
+		assert(entity != nullptr);
+		CControllableEntity& controllable_entity = entity->GetControllableEntity();
+		Real z = 0.05;
+		controllable_entity.AddCheckedRay(false, CRay3(footbot->GetWorldPosition() + CVector3(0.0, 0.0, z), nearestWorld + CVector3(0.0, 0.0, z)));
+
+		entity_i++;
 	}
 
 

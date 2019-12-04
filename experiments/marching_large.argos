@@ -5,7 +5,7 @@
   <!-- ************************* -->
   <framework>
     <system threads="0"/>
-    <experiment length="200" ticks_per_second="1" random_seed="0"/>
+    <experiment length="200" ticks_per_second="1" random_seed="10"/>
   </framework>
   <!-- *************** -->
   <!-- * Controllers * -->
@@ -60,7 +60,7 @@
   
   <!-- ****************** -->
   <!-- * Visualization * -->
-  <!-- ******************  
+  <!-- ******************  -->
   <visualization>
     <qt-opengl>
       <camera>
@@ -72,7 +72,7 @@
         <drawing isEnabled="true" useID="true" useDegrees="true" useRanges="false" hubColor="orange" highRangeColor="red" lowRangeColor="magenta"/>
       </user_functions>
     </qt-opengl>
-  </visualization>-->
+  </visualization>
 
   <!-- *********************** -->
   <!-- * Arena configuration * -->
@@ -83,7 +83,7 @@
       <!--<position method="ring" center="0,0,0" quantity="150" z_value="0" segment_diameter="0.26" />-->
       <!--<position method="uniform" min="-5,-5,0" max="5,5,0" />-->
       <orientation method="uniform" min="0,0,0" max="360,0,0"/>
-      <entity quantity="200" max_trials="100">
+      <entity quantity="50" max_trials="100">
         <foot-bot id="fb" rab_range="1.0">
           <controller config="fdc"/>
         </foot-bot>
