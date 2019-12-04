@@ -94,18 +94,10 @@ void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity)
 		/////
 
 
-		// Draw circle of neighbourhood + link to NN
+		// Draw circle of neighbourhood
 		Real distance = sqrt(cController.GetNNSquaredDistance());
 		Real z = 0.05;
 		DrawCircle(CVector3(0.0, 0.0, z), CQuaternion(), distance, CColor::YELLOW, false);
-		//DrawRay(CRay3(cController.GetWorldPosition(), cController.GetNNWorldPosition()), CColor::GREEN, 2.0);
-		//CVector3 dir = (cController.GetWorldPosition() - cController.GetNNWorldPosition()).Normalize();
-		//dir *= distance;
-		//dir.SetZ(dir.GetZ() + z);
-		//dir.RotateZ(-CRadians::PI/2.0);
-		//DrawRay(CRay3(CVector3(0.0, 0.0, z), dir), CColor::GREEN, 1.0);
-		//DrawRay(CRay3(cController.GetWorldPosition() + CVector3(0.0,0.0,z), cController.GetNNWorldPosition() + CVector3(0.0,0.0,z)), CColor::GREEN, 1.0);
-		//DrawRay(CRay3(CVector3(0.0, 0.0, z), CVector3(10.0, 0.0, z)), CColor::GREEN, 1.0);
 		/////
 	}
 }
