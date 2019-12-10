@@ -665,6 +665,13 @@ void CFootBotMarching::ControlStep()
 	else if(velOfMotion < 0){m_pcLEDs->SetAllColors(CColor::RED); }
 	else{ m_pcLEDs->SetAllColors(CColor::BLACK); }
 	
+	// Keep track of state at this timestep
+	mCurrentHistoryState.Degree = this->GetDegree(); // Need to check if this is recalculated between ControlStep and PostStep
+	mCurrentHistoryState.DirectionDecision = this->GetVelocity() > 0.0;
+	mCurrentHistoryState.Range = this->GetNewRABRange();
+    mCurrentHistoryState.NearestNeighbourDistance = this->GetNNSquaredDistance();
+
+	mHistoryData.push_back(mCurrentHistoryState);
 }
 
 
