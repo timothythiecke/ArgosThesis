@@ -179,6 +179,17 @@ public:
    }
 
    /*
+   // Temp function: REMOVEME
+   int GetLatestDegreeFromHistory() const
+   {
+      if (mHistoryData.size() > 0)
+      {
+         return mHistoryData.back().Degree;
+      }
+      return -1;
+   }*/
+
+   /*
     * Contains all the state information about the controller.
     */
    struct SStateData {
