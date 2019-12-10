@@ -71,7 +71,10 @@
         <placement idx="2" position="0,0,5" look_at="0,0,0" lens_focal_length="2"/>
       </camera>
       <user_functions label="marching_qt_user_functions">
-        <drawing isEnabled="true" useID="true" useDegrees="true" useRanges="false" hubColor="orange" highRangeColor="red" lowRangeColor="magenta"/>
+        <drawing isEnabled="true"/>
+        <general isEnabled="true" useID="true" useDegrees="true" useRanges="false" hubColor="orange" highRangeColor="red" lowRangeColor="magenta"/>
+        <position isEnabled="false"/>
+        <nn isEnabled="true"/>
       </user_functions>
     </qt-opengl>
   </visualization>

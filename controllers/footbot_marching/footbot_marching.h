@@ -180,16 +180,23 @@ public:
    }
    EDistanceState GetDistanceState() const { return mDistanceState; }
    
+   // TODO: check why using this method does not work
    void CalulateDistanceStateRatios()
    {
       for (const SHistoryData& data : mHistoryData)
       {
          if (data.DistanceState == EDistanceState::ISOLATED)
+         {
             mIsolatedFraction++;
+         }
          else if (data.DistanceState == EDistanceState::CLUSTERED)
+         {
             mClusteredFraction++;
+         }
          else if (data.DistanceState == EDistanceState::OTHER)
+         {
             mBetweenFraction++;
+         }
       }
 
       mIsolatedFraction /= mHistoryData.size();
@@ -200,9 +207,22 @@ public:
       //mBetweenFraction = 1.0 - (mIsolatedFraction + mClusteredFraction);
    }
 
+   void CalculateAverageNNDistance()
+   {
+      for (const SHistoryData& data : mHistoryData)
+      {
+         mAverageNNDistance += data.NearestNeighbourDistance;
+      }
+
+      mAverageNNDistance /= mHistoryData.size();
+   }
+   Real mAverageNNDistance = 0.0;
+
    Real GetIsolatedFraction() const { return mIsolatedFraction; }
    Real GetClusteredFraction() const { return mClusteredFraction; }
    Real GetBetweenFraction() const { return mBetweenFraction; }
+
+   const vector<SHistoryData>& GetHistory() const { return mHistoryData; }
 
    /*
    // Temp function: REMOVEME

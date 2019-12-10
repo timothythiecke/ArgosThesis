@@ -141,6 +141,7 @@ void CMarchingLoopFunctions::Destroy() {
 #endif
 
 		cController.CalulateDistanceStateRatios();
+		cController.CalculateAverageNNDistance();
 		controllers[unID] = &cController;
 	}
    
@@ -255,18 +256,56 @@ void CMarchingLoopFunctions::Destroy() {
 
 	// What about k-means clustering over 
 	// Determine representative for most isolated during entire run
+	// Current heuristic uses averaged NN distances over time, this should offer a reliable way of searching for the most
+	// isolated node, and maybe the most clustered node but this should be discussed with Ilja
+	// Fraction based evaluation seems broken somehow
 	std::sort(controllers.begin(), controllers.end(), [](CFootBotMarching* lhs, CFootBotMarching* rhs)
 	{
 		assert(lhs != nullptr);
 		assert(rhs != nullptr);
 
-		return lhs->GetIsolatedFraction() > rhs->GetIsolatedFraction();
+		//return lhs->GetIsolatedFraction() > rhs->GetIsolatedFraction(); // see todo in footbot_marching.h
+		return lhs->mAverageNNDistance > rhs->mAverageNNDistance;
 	});
-	//controllers[0]
-	// File handles openen 5
-	
 
-	// Determine representative for most clustered during entire run
+	vector<std::ofstream> files(5);
+	vector<std::string> file_names = { "0range", "1nn", "2dstate", "3dirdec" , "4deg"};
+
+	int c = 0;
+	for (std::ofstream& file : files)
+	{
+		std::string filename;
+		filename.append("/mnt/c/argos/pl_check_kit/pl_check_kit/");
+		filename.append("0_isolated_");
+		filename.append(file_names[c]);
+		filename.append(".dat");
+		file.open(filename);
+		
+		c++;
+	}
+	
+	assert(controllers[0] != nullptr);
+	std::ofstream isolatedMeta;
+	isolatedMeta.open("/mnt/c/argos/pl_check_kit/pl_check_kit/0_isolated_meta.dat");
+	isolatedMeta << controllers[0]->GetID();
+	isolatedMeta.close();
+	
+	const vector<CFootBotMarching::SHistoryData>& history = controllers[0]->GetHistory();
+	for (const CFootBotMarching::SHistoryData& history_element : history)
+	{
+		files[0] << history_element.Range << std::endl;		
+		files[1] << sqrt(history_element.NearestNeighbourDistance) << std::endl;
+		files[2] << (int)(history_element.DistanceState) << std::endl;
+		files[3] << history_element.DirectionDecision << std::endl;
+		files[4] << history_element.Degree << std::endl;
+	}
+
+	for (std::ofstream& file : files)
+	{
+		file.close();
+	}
+
+	/*// Determine representative for most clustered during entire run
 	std::sort(controllers.begin(), controllers.end(), [](CFootBotMarching* lhs, CFootBotMarching* rhs)
 	{
 		assert(lhs != nullptr);
@@ -282,7 +321,7 @@ void CMarchingLoopFunctions::Destroy() {
 		assert(rhs != nullptr);
 
 		return lhs->GetIsolatedFraction() > rhs->GetIsolatedFraction();
-	});
+	});*/
 
 	// Populate metadata file
 	fMetaData << "Simulation ran for " << timer << "s with population of size " << degrees.size() << std::endl;
