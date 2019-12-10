@@ -674,11 +674,11 @@ void CMarchingLoopFunctions::PostStep()
 	{
 		assert(ptr != nullptr);
 		
-		const int history_degree = ptr->GetLatestDegreeFromHistory();
+		/*const int history_degree = ptr->GetLatestDegreeFromHistory();
 		if (history_degree != -1)
 		{
 			assert(history_degree == ptr->GetDegree());
-		}
+		}*/
 
 		ptr->SetDistanceState(CFootBotMarching::EDistanceState::ISOLATED);
 	}
