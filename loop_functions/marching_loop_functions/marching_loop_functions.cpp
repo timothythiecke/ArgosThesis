@@ -253,6 +253,37 @@ void CMarchingLoopFunctions::Destroy() {
 		}
 	}
 
+	// What about k-means clustering over 
+	// Determine representative for most isolated during entire run
+	std::sort(controllers.begin(), controllers.end(), [](CFootBotMarching* lhs, CFootBotMarching* rhs)
+	{
+		assert(lhs != nullptr);
+		assert(rhs != nullptr);
+
+		return lhs->GetIsolatedFraction() > rhs->GetIsolatedFraction();
+	});
+	//controllers[0]
+	// File handles openen 5
+	
+
+	// Determine representative for most clustered during entire run
+	std::sort(controllers.begin(), controllers.end(), [](CFootBotMarching* lhs, CFootBotMarching* rhs)
+	{
+		assert(lhs != nullptr);
+		assert(rhs != nullptr);
+
+		return lhs->GetClusteredFraction() > rhs->GetClusteredFraction();
+	});
+
+	// Determine representative for most average during entire run
+	std::sort(controllers.begin(), controllers.end(), [](CFootBotMarching* lhs, CFootBotMarching* rhs)
+	{
+		assert(lhs != nullptr);
+		assert(rhs != nullptr);
+
+		return lhs->GetIsolatedFraction() > rhs->GetIsolatedFraction();
+	});
+
 	// Populate metadata file
 	fMetaData << "Simulation ran for " << timer << "s with population of size " << degrees.size() << std::endl;
 	fMetaData << "Omitted " << degrees_omitted << " zeroed degree counts\nOmitted " << degrees_tot_omitted << " zeroed average degree counts" << std::endl;
