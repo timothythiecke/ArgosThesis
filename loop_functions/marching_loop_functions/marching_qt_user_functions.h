@@ -41,6 +41,10 @@ private:
    bool mUseDegrees  = false;
    bool mUseRanges   = false;
 
+   bool mIsGeneralEnabled = false;
+   bool mIsPositionEnabled = false;
+   bool mIsNNEnabled = false;
+
    CColor mColorForText = CColor::BLACK;
    CColor mColorForHubs;
    CColor mColorForHighRange;

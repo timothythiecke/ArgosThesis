@@ -29,19 +29,28 @@ void CMarchingQTUserFunctions::Init(TConfigurationNode& t_tree)
 {
 	TConfigurationNode& tDrawingInfo = GetNode(t_tree, "drawing");
 	GetNodeAttribute(tDrawingInfo, "isEnabled", mIsEnabled);
-	GetNodeAttribute(tDrawingInfo, "useID", mUseIDs);
-	GetNodeAttribute(tDrawingInfo, "useDegrees", mUseDegrees);
-	GetNodeAttribute(tDrawingInfo, "useRanges", mUseRanges);
+	
+	TConfigurationNode& tGeneral = GetNode(t_tree, "general");
+	GetNodeAttribute(tGeneral, "isEnabled", mIsGeneralEnabled);
+	GetNodeAttribute(tGeneral, "useID", mUseIDs);
+	GetNodeAttribute(tGeneral, "useDegrees", mUseDegrees);
+	GetNodeAttribute(tGeneral, "useRanges", mUseRanges);
 
 	std::string text_color;
-	GetNodeAttribute(tDrawingInfo, "hubColor", text_color);
+	GetNodeAttribute(tGeneral, "hubColor", text_color);
 	mColorForHubs = DetermineTextColor(text_color);
 
-	GetNodeAttribute(tDrawingInfo, "highRangeColor", text_color);
+	GetNodeAttribute(tGeneral, "highRangeColor", text_color);
 	mColorForHighRange = DetermineTextColor(text_color);
 
-	GetNodeAttribute(tDrawingInfo, "lowRangeColor", text_color);
+	GetNodeAttribute(tGeneral, "lowRangeColor", text_color);
 	mColorForLowRange = DetermineTextColor(text_color);
+
+	TConfigurationNode& tPosition = GetNode(t_tree, "position");
+	GetNodeAttribute(tPosition, "isEnabled", mIsPositionEnabled);
+
+	TConfigurationNode& tNN = GetNode(t_tree, "nn");
+	GetNodeAttribute(tNN, "isEnabled", mIsNNEnabled);
 }
 
 
@@ -62,55 +71,61 @@ void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity)
 	
 		//assert(unID == cController.GetID());
 
+		if (mIsGeneralEnabled)
+		{
+			// Draw debug info
+			std::vector<std::string> info;
+			info.push_back(std::to_string(unID));
+			info.push_back(std::to_string(cController.GetDegree()));
+			info.push_back((cController.IsPotentialHub() || (unID == 38)) ? "hub" : "nohub"); //  || (unID == 3)uncomment unID check if the zero node bug happens again
+			if (cController.IsPotentialHighRange())
+			{
+				info.push_back("high");
+			}
+			else if (cController.IsPotentialLowRange())
+			{
+				info.push_back("low");
+			}
+			else
+			{
+				info.push_back("avg");
+			}
+		
+			DrawInfo(c_entity, info);
+			/////
+		}
 
-		// Draw debug info
-		/*std::vector<std::string> info;
-		info.push_back(std::to_string(unID));
-		info.push_back(std::to_string(cController.GetDegree()));
-		info.push_back((cController.IsPotentialHub()) ? "hub" : "nohub"); //  || (unID == 3)uncomment unID check if the zero node bug happens again
-		if (cController.IsPotentialHighRange())
+		if (mIsPositionEnabled)
 		{
-			info.push_back("high");
-		}
-		else if (cController.IsPotentialLowRange())
-		{
-			info.push_back("low");
-		}
-		else
-		{
-			info.push_back("avg");
+			// Draw world position of entity
+			std::string infoToDraw;
+			infoToDraw.append(std::to_string(cController.GetWorldPosition().GetX()));
+			infoToDraw.append(", ");
+			infoToDraw.append(std::to_string(cController.GetWorldPosition().GetY()));
+			DrawText(CVector3(0.0, 0.0, 0.3), infoToDraw, CColor::BLACK);
+			/////
 		}
 		
-		DrawInfo(c_entity, info);*/
-		/////
+		if (mIsNNEnabled)
+		{
+			// Draw circle of neighbourhood
+			Real distance = sqrt(cController.GetNNSquaredDistance());
+			Real z = 0.05;
+			DrawCircle(CVector3(0.0, 0.0, z), CQuaternion()/*.FromEulerAngles(CRadians::ZERO, CRadians::PI_OVER_TWO, CRadians::ZERO)*/, distance, CColor::YELLOW, false);
+			DrawCircle(CVector3(0.0, 0.0, z), CQuaternion(), cController.GetNewRABRange(), CColor::RED, false);
+			/////
 
+			Real diameter = 0.25;
+			CColor color = CColor::BLACK;
+			CFootBotMarching::EDistanceState distance_state = cController.GetDistanceState();
+			if (distance_state == CFootBotMarching::EDistanceState::ISOLATED)
+				color = CColor::ORANGE;
+			else if (distance_state == CFootBotMarching::EDistanceState::CLUSTERED)
+				color = CColor::BLUE;
 
-		// Draw world position of entity
-		/*std::string infoToDraw;
-		infoToDraw.append(std::to_string(cController.GetWorldPosition().GetX()));
-		infoToDraw.append(", ");
-		infoToDraw.append(std::to_string(cController.GetWorldPosition().GetY()));
-		DrawText(CVector3(0.0, 0.0, 0.3), infoToDraw, CColor::BLACK);*/
-		/////
-
-
-		// Draw circle of neighbourhood
-		Real distance = sqrt(cController.GetNNSquaredDistance());
-		Real z = 0.05;
-		DrawCircle(CVector3(0.0, 0.0, z), CQuaternion()/*.FromEulerAngles(CRadians::ZERO, CRadians::PI_OVER_TWO, CRadians::ZERO)*/, distance, CColor::YELLOW, false);
-		DrawCircle(CVector3(0.0, 0.0, z), CQuaternion(), cController.GetNewRABRange(), CColor::RED, false);
-		/////
-
-		Real diameter = 0.25;
-		CColor color = CColor::BLACK;
-		CFootBotMarching::EDistanceState distance_state = cController.GetDistanceState();
-		if (distance_state == CFootBotMarching::EDistanceState::ISOLATED)
-			color = CColor::ORANGE;
-		else if (distance_state == CFootBotMarching::EDistanceState::CLUSTERED)
-			color = CColor::BLUE;
-
-		//DrawPoint(CVector3(0.0, 0.0, z), color, diameter);
-		DrawCircle(CVector3(0.0, 0.0, z), CQuaternion(), diameter, color, true);
+			//DrawPoint(CVector3(0.0, 0.0, z), color, diameter);
+			DrawCircle(CVector3(0.0, 0.0, z), CQuaternion(), diameter, color, true);
+		}	
 	}
 }
 
