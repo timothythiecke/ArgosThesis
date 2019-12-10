@@ -5,7 +5,7 @@
   <!-- ************************* -->
   <framework>
     <system threads="0"/>
-    <experiment length="200" ticks_per_second="1" random_seed="10"/>
+    <experiment length="200" ticks_per_second="1" random_seed="0"/>
   </framework>
   <!-- *************** -->
   <!-- * Controllers * -->

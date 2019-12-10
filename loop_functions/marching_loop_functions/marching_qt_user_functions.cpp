@@ -98,6 +98,7 @@ void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity)
 		Real distance = sqrt(cController.GetNNSquaredDistance());
 		Real z = 0.05;
 		DrawCircle(CVector3(0.0, 0.0, z), CQuaternion(), distance, CColor::YELLOW, false);
+		DrawCircle(CVector3(0.0, 0.0, z), CQuaternion(), cController.GetNewRABRange(), CColor::RED, false);
 		/////
 	}
 }
