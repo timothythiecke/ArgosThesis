@@ -112,6 +112,8 @@ private:
 
    void OutputNNDistanceDistribution();
    bool mDrawNNLinks = false;
+
+   Real mRepresentativeFraction;
 };
 
 #endif

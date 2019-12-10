@@ -44,9 +44,11 @@ void CMarchingLoopFunctions::Init(TConfigurationNode& t_node) {
 		GetNodeAttribute(tNode, "zeroWorkAround", mZeroWorkAround);
 		GetNodeAttribute(tNode, "output", mOutputInformationAboutZeroWorkAround);
 
-		//  <nearestNeighbour drawLinks="true"/>
 		TConfigurationNode& tNN = GetNode(t_node, "nearestNeighbour");
 		GetNodeAttribute(tNN, "drawLinks", mDrawNNLinks);
+
+		TConfigurationNode& tRepresentative = GetNode(t_node, "representative");
+		GetNodeAttribute(tRepresentative, "fraction", mRepresentativeFraction);
 
 	   OpenOutFilesID();
 	   finished = false;
@@ -680,9 +682,25 @@ void CMarchingLoopFunctions::PostStep()
 			assert(history_degree == ptr->GetDegree());
 		}*/
 
-		ptr->SetDistanceState(CFootBotMarching::EDistanceState::ISOLATED);
+		// Separate the robots into different categories depending on the distance 
+		// of their nearest neighbours using the fraction parameter mRepresentativeFraction
+		CFootBotMarching::EDistanceState state = CFootBotMarching::EDistanceState::INVALID;
+		if (counter < (controllers.size() * mRepresentativeFraction))
+		{
+			state = CFootBotMarching::EDistanceState::ISOLATED;
+		}
+		else if (counter > controllers.size() - (controllers.size() * mRepresentativeFraction))
+		{
+			state = CFootBotMarching::EDistanceState::CLUSTERED;
+		}
+		else
+		{
+			state = CFootBotMarching::EDistanceState::OTHER;
+		}
+		ptr->SetDistanceState(state);
+		
+		counter++;
 	}
-
 
 	// Avoid sorting a second time
 	/*std::sort (degDist.begin(), degDist.end());

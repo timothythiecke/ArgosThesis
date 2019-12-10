@@ -41,6 +41,7 @@
     <hubs fraction="0.1"/>
     <node zeroWorkAround="true" output="false"/>
     <nearestNeighbour drawLinks="true"/>
+    <representative fraction="0.2"/>
   </loop_functions>
   
   <!-- ******************* -->
