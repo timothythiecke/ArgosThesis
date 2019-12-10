@@ -485,12 +485,16 @@ CCI_DifferentialSteeringActuator* CFootBotMarching::GetWheels() {
 /****************************************/
 /****************************************/
 
-void CFootBotMarching::ControlStep() {
+void CFootBotMarching::ControlStep() 
+{
   	if (mIsNodeOfInterest && !mInterestFile.is_open())
 	{
 		mInterestFile.open("/mnt/c/argos/pl_check_kit/pl_check_kit/nodeinfo.log", std::ofstream::trunc | std::ofstream::out);
 		mInterestFile << "Starting interest ouput for node " << m_unID << std::endl;
 	}
+
+	// Reinitialize the current history state
+	mCurrentHistoryState.Reset();
    
    /*
     * ATTENTION: m_pcRABA->SetData(size_t,UInt8)

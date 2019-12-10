@@ -42,7 +42,11 @@
  */
 using namespace argos;
 
+// STL includes
 #include <fstream>
+#include <vector>
+
+using std::vector;
 
 /*
  * A controller is simply an implementation of the CCI_Controller class.
@@ -140,6 +144,39 @@ public:
 
    void SetInterestNode(bool interestingNode) { mIsNodeOfInterest = interestingNode; }
    bool IsInterestingNode() const { return mIsNodeOfInterest; }
+
+   // Based on the distance to the nearest neighbour, a robot has a certain state
+   enum class EDistanceState
+   {
+      ISOLATED = 0,
+      CLUSTERED,
+      OTHER,
+      INVALID
+   };
+
+   // Used to keep track of data at timestep t
+   struct SHistoryData
+   {
+      Real Range = -1.0;
+      Real NearestNeighbourDistance = -1.0;
+      EDistanceState DistanceState = EDistanceState::INVALID;
+      bool DirectionDecision = false; // true cw, false = ccw
+      int Degree = -1;
+
+      void Reset()
+      {
+         Range = -1.0;
+         NearestNeighbourDistance = -1.0;
+         DistanceState = EDistanceState::INVALID;
+         DirectionDecision = false;
+         Degree = -1;
+      }
+   };
+
+   void SetDistanceState(EDistanceState state) 
+   {
+      mCurrentHistoryState.DistanceState = state;
+   }
 
    /*
     * Contains all the state information about the controller.
@@ -305,6 +342,9 @@ private:
 
    CVector3 mWorldPosition = CVector3();
    Real mSquaredDistanceToNN;
+
+   SHistoryData mCurrentHistoryState;
+   vector<SHistoryData> mHistoryData;
 };
 
 #endif

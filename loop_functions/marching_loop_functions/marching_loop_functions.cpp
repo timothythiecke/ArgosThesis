@@ -673,6 +673,8 @@ void CMarchingLoopFunctions::PostStep()
 	for (CFootBotMarching* ptr : controllers)
 	{
 		assert(ptr != nullptr);
+
+		ptr->SetDistanceState(CFootBotMarching::EDistanceState::ISOLATED);
 	}
 
 
