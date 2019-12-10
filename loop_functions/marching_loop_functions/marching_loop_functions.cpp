@@ -118,7 +118,7 @@ void CMarchingLoopFunctions::Destroy() {
 	std::vector<Real> ranges_tot(m_cFootbots.size());
 #endif
 	// Export the degree distribution from degDistTot
- 
+	std::vector<CFootBotMarching*> controllers(m_cFootbots.size());
 	for(CSpace::TMapPerType::iterator it = m_cFootbots.begin(); it != m_cFootbots.end(); ++it) 
 	{
 		// Create a pointer to the current foot-bot 
@@ -139,6 +139,9 @@ void CMarchingLoopFunctions::Destroy() {
 		os_degD << cController.GetDegree() << std::endl;
 		os_degD_Tot << degDistTot[unID]*1.0/(timer*1.0) << std::endl;
 #endif
+
+		cController.CalulateDistanceStateRatios();
+		controllers[unID] = &cController;
 	}
    
 #ifdef DIRECT_OUTPUT

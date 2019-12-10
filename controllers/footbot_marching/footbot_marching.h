@@ -179,6 +179,30 @@ public:
       mDistanceState = state;
    }
    EDistanceState GetDistanceState() const { return mDistanceState; }
+   
+   void CalulateDistanceStateRatios()
+   {
+      for (const SHistoryData& data : mHistoryData)
+      {
+         if (data.DistanceState == EDistanceState::ISOLATED)
+            mIsolatedFraction++;
+         else if (data.DistanceState == EDistanceState::CLUSTERED)
+            mClusteredFraction++;
+         else if (data.DistanceState == EDistanceState::OTHER)
+            mBetweenFraction++;
+      }
+
+      mIsolatedFraction /= mHistoryData.size();
+      mClusteredFraction /= mHistoryData.size();
+      mBetweenFraction /= mHistoryData.size();
+      
+      // These fractions should add up to 1.0, but due to rounding errors, an assert may not be the best idea here
+      //mBetweenFraction = 1.0 - (mIsolatedFraction + mClusteredFraction);
+   }
+
+   Real GetIsolatedFraction() const { return mIsolatedFraction; }
+   Real GetClusteredFraction() const { return mClusteredFraction; }
+   Real GetBetweenFraction() const { return mBetweenFraction; }
 
    /*
    // Temp function: REMOVEME
@@ -359,6 +383,10 @@ private:
    EDistanceState mDistanceState = EDistanceState::INVALID;
    SHistoryData mCurrentHistoryState;
    vector<SHistoryData> mHistoryData;
+
+   Real mIsolatedFraction = 0.0;
+   Real mClusteredFraction = 0.0;
+   Real mBetweenFraction = 0.0;
 };
 
 #endif
