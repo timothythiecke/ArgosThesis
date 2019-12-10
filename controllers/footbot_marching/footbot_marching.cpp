@@ -161,6 +161,8 @@ void CFootBotMarching::Init(TConfigurationNode& t_node) {
 
 	GetNodeAttribute(tRange, "symmetric", mRangeSymmetric);
 
+	mHistoryData.reserve(200);
+
    m_pcRNG = CRandom::CreateRNG("argos");
    Reset();
 }

@@ -97,9 +97,20 @@ void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity)
 		// Draw circle of neighbourhood
 		Real distance = sqrt(cController.GetNNSquaredDistance());
 		Real z = 0.05;
-		DrawCircle(CVector3(0.0, 0.0, z), CQuaternion(), distance, CColor::YELLOW, false);
+		DrawCircle(CVector3(0.0, 0.0, z), CQuaternion()/*.FromEulerAngles(CRadians::ZERO, CRadians::PI_OVER_TWO, CRadians::ZERO)*/, distance, CColor::YELLOW, false);
 		DrawCircle(CVector3(0.0, 0.0, z), CQuaternion(), cController.GetNewRABRange(), CColor::RED, false);
 		/////
+
+		Real diameter = 0.25;
+		CColor color = CColor::BLACK;
+		CFootBotMarching::EDistanceState distance_state = cController.GetDistanceState();
+		if (distance_state == CFootBotMarching::EDistanceState::ISOLATED)
+			color = CColor::ORANGE;
+		else if (distance_state == CFootBotMarching::EDistanceState::CLUSTERED)
+			color = CColor::BLUE;
+
+		//DrawPoint(CVector3(0.0, 0.0, z), color, diameter);
+		DrawCircle(CVector3(0.0, 0.0, z), CQuaternion(), diameter, color, true);
 	}
 }
 

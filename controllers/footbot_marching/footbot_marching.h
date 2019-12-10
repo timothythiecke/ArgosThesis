@@ -176,7 +176,9 @@ public:
    void SetDistanceState(EDistanceState state) 
    {
       mCurrentHistoryState.DistanceState = state;
+      mDistanceState = state;
    }
+   EDistanceState GetDistanceState() const { return mDistanceState; }
 
    /*
    // Temp function: REMOVEME
@@ -354,6 +356,7 @@ private:
    CVector3 mWorldPosition = CVector3();
    Real mSquaredDistanceToNN;
 
+   EDistanceState mDistanceState = EDistanceState::INVALID;
    SHistoryData mCurrentHistoryState;
    vector<SHistoryData> mHistoryData;
 };
