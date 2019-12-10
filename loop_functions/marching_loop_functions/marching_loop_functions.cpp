@@ -661,6 +661,21 @@ void CMarchingLoopFunctions::PostStep()
 		counter++;
 	}
 
+	// Sort based on nearest neighbour distances
+	std::sort(controllers.begin(), controllers.end(), [](CFootBotMarching* lhs, CFootBotMarching* rhs)
+	{
+		assert(lhs != nullptr);
+		assert(rhs != nullptr);
+
+		return lhs->GetNNSquaredDistance() > rhs->GetNNSquaredDistance();
+	});
+	counter = 0;
+	for (CFootBotMarching* ptr : controllers)
+	{
+		assert(ptr != nullptr);
+	}
+
+
 	// Avoid sorting a second time
 	/*std::sort (degDist.begin(), degDist.end());
 	for(int i = 0; i < degDist.size(); i++)
