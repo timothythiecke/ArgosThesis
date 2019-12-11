@@ -5,7 +5,7 @@
   <!-- ************************* -->
   <framework>
     <system threads="0"/>
-    <experiment length="200" ticks_per_second="1" random_seed="0"/>
+    <experiment length="100" ticks_per_second="1" random_seed="0"/>
   </framework>
   <!-- *************** -->
   <!-- * Controllers * -->
@@ -62,7 +62,7 @@
   
   <!-- ****************** -->
   <!-- * Visualization * -->
-  <!-- ******************  -->
+  <!-- ******************  
   <visualization>
     <qt-opengl>
       <camera>
@@ -77,7 +77,7 @@
         <nn isEnabled="true"/>
       </user_functions>
     </qt-opengl>
-  </visualization>
+  </visualization>-->
 
   <!-- *********************** -->
   <!-- * Arena configuration * -->
