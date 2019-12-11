@@ -77,7 +77,7 @@ void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity)
 			std::vector<std::string> info;
 			info.push_back(std::to_string(unID));
 			info.push_back(std::to_string(cController.GetDegree()));
-			info.push_back((cController.IsPotentialHub() || (unID == 38)) ? "hub" : "nohub"); //  || (unID == 3)uncomment unID check if the zero node bug happens again
+			info.push_back((cController.IsPotentialHub() || (unID == 7)) ? "hub" : "nohub"); //  || (unID == 3)uncomment unID check if the zero node bug happens again
 			if (cController.IsPotentialHighRange())
 			{
 				info.push_back("high");

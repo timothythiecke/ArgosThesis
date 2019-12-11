@@ -207,16 +207,38 @@ public:
       //mBetweenFraction = 1.0 - (mIsolatedFraction + mClusteredFraction);
    }
 
-   void CalculateAverageNNDistance()
+protected:
+   void CalculateAverageNNDistanceOverTime()
    {
       for (const SHistoryData& data : mHistoryData)
       {
-         mAverageNNDistance += data.NearestNeighbourDistance;
+         mAverageNNDistanceOverTime += data.NearestNeighbourDistance;
       }
 
-      mAverageNNDistance /= mHistoryData.size();
+      mAverageNNDistanceOverTime /= mHistoryData.size();
    }
-   Real mAverageNNDistance = 0.0;
+   Real mAverageNNDistanceOverTime = 0.0;
+
+   void CalculateAverageRangeOverTime()
+   {
+      for (const SHistoryData& data : mHistoryData)
+      {
+         mAverageRangeOverTime += data.Range;
+      }
+
+      mAverageRangeOverTime /= mHistoryData.size();
+   }
+   Real mAverageRangeOverTime = 0.0;
+
+public:
+   void CalculateHistoryAverages()
+   {
+      CalculateAverageRangeOverTime();
+      CalculateAverageNNDistanceOverTime();
+   }
+
+   Real GetAverageRangeOverTime() const { return mAverageRangeOverTime;}
+   Real GetAverageNNDistanceOverTime() const { return mAverageNNDistanceOverTime; }
 
    Real GetIsolatedFraction() const { return mIsolatedFraction; }
    Real GetClusteredFraction() const { return mClusteredFraction; }

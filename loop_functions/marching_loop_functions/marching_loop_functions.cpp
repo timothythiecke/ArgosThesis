@@ -140,8 +140,7 @@ void CMarchingLoopFunctions::Destroy() {
 		os_degD_Tot << degDistTot[unID]*1.0/(timer*1.0) << std::endl;
 #endif
 
-		cController.CalulateDistanceStateRatios();
-		cController.CalculateAverageNNDistance();
+		cController.CalculateHistoryAverages();
 		controllers[unID] = &cController;
 	}
    
@@ -265,7 +264,7 @@ void CMarchingLoopFunctions::Destroy() {
 		assert(rhs != nullptr);
 
 		//return lhs->GetIsolatedFraction() > rhs->GetIsolatedFraction(); // see todo in footbot_marching.h
-		return lhs->mAverageNNDistance > rhs->mAverageNNDistance;
+		return lhs->GetAverageNNDistanceOverTime() > rhs->GetAverageNNDistanceOverTime();
 	});
 
 	vector<std::ofstream> files(5);
@@ -287,7 +286,11 @@ void CMarchingLoopFunctions::Destroy() {
 	assert(controllers[0] != nullptr);
 	std::ofstream isolatedMeta;
 	isolatedMeta.open("/mnt/c/argos/pl_check_kit/pl_check_kit/0_isolated_meta.dat");
-	isolatedMeta << controllers[0]->GetID();
+	isolatedMeta << controllers[0]->GetID() << std::endl;
+	for (CFootBotMarching* ptr : controllers)
+	{
+		isolatedMeta << ptr->GetAverageNNDistanceOverTime() << std::endl;
+	}
 	isolatedMeta.close();
 	
 	const vector<CFootBotMarching::SHistoryData>& history = controllers[0]->GetHistory();
