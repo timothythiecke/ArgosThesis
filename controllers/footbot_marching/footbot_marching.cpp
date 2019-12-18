@@ -343,7 +343,7 @@ void CFootBotMarching::Decision() {
 
 	if (degreeLocal == 0 && GetDegree() > 0)
 	{
-		LOG << m_unID << " ";
+		//LOG << m_unID << " ";
 	}
 
 	Real velocity = 0.0, avgVelocity = 0.0;

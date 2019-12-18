@@ -76,9 +76,11 @@ void CMarchingLoopFunctions::Reset() {
 /****************************************/
 
 void CMarchingLoopFunctions::Destroy() {   
-	timer = GetSpace().GetSimulationClock();
-	
 	CSpace::TMapPerType& m_cFootbots = GetSpace().GetEntitiesByType("foot-bot");
+
+	timer = GetSpace().GetSimulationClock();
+	int seed = CSimulator::GetInstance().GetRandomSeed();
+	int pop_size = m_cFootbots.size();
 
 #define DIRECT_OUTPUT // If defined, outputs files directly to the pl_check_kit folder
 #ifdef DIRECT_OUTPUT
@@ -331,6 +333,51 @@ void CMarchingLoopFunctions::Destroy() {
 
 		return lhs->GetIsolatedFraction() > rhs->GetIsolatedFraction();
 	});*/
+
+
+	std::sort(controllers.begin(), controllers.end(), [](CFootBotMarching* lhs, CFootBotMarching* rhs)
+	{
+		assert(lhs != nullptr);
+		assert(rhs != nullptr);
+
+		return lhs->GetNewRABRange() > rhs->GetNewRABRange();
+	});
+
+	std::ofstream shiefefl;
+	std::string filename;
+	filename.append("/mnt/c/argos/pl_check_kit/pl_check_kit/rangedeg").append(std::to_string(controllers.size())).append(".dat");
+	//shiefefl.open("/mnt/c/argos/pl_check_kit/pl_check_kit/rangedeg.dat");
+	shiefefl.open(filename);
+	for (CFootBotMarching* ptr : controllers)
+	{
+		assert(ptr != nullptr);
+
+		if (ptr->GetDegree() > 0)
+			shiefefl << ptr->GetNewRABRange() << "," << ptr->GetDegree() << std::endl;
+	}
+	shiefefl.close();
+
+
+	std::sort(controllers.begin(), controllers.end(), [](CFootBotMarching* lhs, CFootBotMarching* rhs)
+	{
+		assert(lhs != nullptr);
+		assert(rhs != nullptr);
+
+		return lhs->GetDegree() > rhs->GetDegree();
+	});
+
+	filename.clear();
+	filename.append("/mnt/c/argos/pl_check_kit/pl_check_kit/degrange").append(std::to_string(controllers.size())).append(".dat");
+	//shiefefl.open("/mnt/c/argos/pl_check_kit/pl_check_kit/degrange.dat");
+	shiefefl.open(filename);
+	for (CFootBotMarching* ptr : controllers)
+	{
+		assert(ptr != nullptr);
+		if (ptr->GetDegree() > 0)
+			shiefefl << ptr->GetDegree() << "," << ptr->GetNewRABRange() << std::endl;
+	}
+	shiefefl.close();
+
 
 	// Populate metadata file
 	fMetaData << "Simulation ran for " << timer << "s with population of size " << degrees.size() << std::endl;
@@ -793,7 +840,7 @@ void CMarchingLoopFunctions::PostStep()
    
 	if (currentTime % mOutputTimer == 0)
 	{ 
-		LOG << GetSpace().GetSimulationClock() << "\t" << "AvgDeg: " << avgDegree << std::endl; 
+		LOG << GetSpace().GetSimulationClock() << "  " << "AvgDeg: " << avgDegree << std::endl; 
 	}
 
 	if (currentTime == 1)
