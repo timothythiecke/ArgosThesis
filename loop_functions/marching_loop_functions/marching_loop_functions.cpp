@@ -82,8 +82,11 @@ void CMarchingLoopFunctions::Destroy() {
 	int seed = CSimulator::GetInstance().GetRandomSeed();
 	int pop_size = m_cFootbots.size();
 
+	//OutputSeedData();
+
 #define DIRECT_OUTPUT // If defined, outputs files directly to the pl_check_kit folder
 #ifdef DIRECT_OUTPUT
+	// Create file handles
 	std::ofstream fDegrees;
 	std::ofstream fDegreesTot;
 	std::ofstream fMetaData;
@@ -95,32 +98,35 @@ void CMarchingLoopFunctions::Destroy() {
 	std::ofstream fRanges;
 	std::ofstream fRangesTot;
 
-	// TODO: this should use the function that Ilja provided, but has been rewritten for convenience
-	fDegrees.open("/mnt/c/argos/pl_check_kit/pl_check_kit/degDistribution.dat", std::ofstream::trunc | std::ofstream::out);
-	fDegreesTot.open("/mnt/c/argos/pl_check_kit/pl_check_kit/degDistribution_tot.dat", std::ofstream::trunc | std::ofstream::out);
-	fMetaData.open("/mnt/c/argos/pl_check_kit/pl_check_kit/metaData.dat", std::ofstream::trunc | std::ofstream::out);
-	fLog.open("/mnt/c/argos/pl_check_kit/pl_check_kit/log.log", std::ofstream::trunc | std::ofstream::out);
-	fDegreesGC.open("/mnt/c/argos/pl_check_kit/pl_check_kit/degDistributionGiant.dat", std::ofstream::trunc | std::ofstream::out);
-	fDegreesTotGC.open("/mnt/c/argos/pl_check_kit/pl_check_kit/degDistribution_totGiant.dat", std::ofstream::trunc | std::ofstream::out);
-	fDegreesUnsorted.open("/mnt/c/argos/pl_check_kit/pl_check_kit/degDistributionUnsorted.dat", std::ofstream::trunc | std::ofstream::out);
-	fDegreesTotUnsorted.open("/mnt/c/argos/pl_check_kit/pl_check_kit/degDistribution_totUnsorted.dat", std::ofstream::trunc | std::ofstream::out);
-	fRanges.open("/mnt/c/argos/pl_check_kit/pl_check_kit/ranges.dat", std::ofstream::trunc | std::ofstream::out);
-	fRangesTot.open("/mnt/c/argos/pl_check_kit/pl_check_kit/ranges_tot.dat", std::ofstream::trunc | std::ofstream::out);
+	vector<std::ofstream*> file_handles = { &fDegrees, &fDegreesTot, &fMetaData, &fLog, &fDegreesGC, &fDegreesTotGC, &fDegreesUnsorted, &fDegreesTotUnsorted, &fRanges, &fRangesTot};
+	std::string dir = "/mnt/c/argos/pl_check_kit/pl_check_kit/";
+	vector<std::string> names = { "degDistribution.dat", "degDistribution_tot.dat", "metaData.dat", "log.log", "degDistributionGiant.dat", "degDistribution_totGiant.dat",
+									"degDistributionUnsorted.dat", "degDistribution_totUnsorted.dat","ranges.dat", "ranges_tot.dat" };
+	
+	int i = 0;
+	for (std::ofstream* file : file_handles)
+		file->open(dir + names[i++]);
 
-	if (!fDegrees.is_open() || !fDegreesTot.is_open() || !fMetaData.is_open() || !fLog.is_open()) // TODO
-	{
-		// TODO: replace with a throw
-		LOG << "One of the files could not be opened! Fix me first" << std::endl;
-	}
+	// File handles for seed data
+	i = 0;
+	dir = "/mnt/c/argos/pl_check_kit/pl_check_kit/SeedData/";
+	vector<std::ofstream> seed_based_files(7);
+	vector<std::string> seed_based_names = { "deg", "degTime", "NN", "NNTime", "range", "rangeTime", "meta"};
+	assert(seed_based_files.size() == seed_based_names.size());
+	for (std::ofstream& file : seed_based_files)
+		file.open(dir + std::to_string(seed) + "_" + std::to_string(pop_size) + "_" + std::to_string(timer)+ "_" + seed_based_names[i++]);
 
-	std::vector<int> degrees(m_cFootbots.size());
-   	std::vector<Real> degrees_tot(m_cFootbots.size());
+	std::vector<int> degrees(pop_size);
+   	std::vector<Real> degrees_tot(pop_size);
 
-	std::vector<Real> ranges(m_cFootbots.size());
-	std::vector<Real> ranges_tot(m_cFootbots.size());
+	std::vector<Real> ranges(pop_size);
+	std::vector<Real> ranges_tot(pop_size);
+
+	std::vector<Real> nn(pop_size);
+	std::vector<Real> nn_tot(pop_size);
 #endif
 	// Export the degree distribution from degDistTot
-	std::vector<CFootBotMarching*> controllers(m_cFootbots.size());
+	std::vector<CFootBotMarching*> controllers(pop_size);
 	for(CSpace::TMapPerType::iterator it = m_cFootbots.begin(); it != m_cFootbots.end(); ++it) 
 	{
 		// Create a pointer to the current foot-bot 
@@ -137,6 +143,9 @@ void CMarchingLoopFunctions::Destroy() {
 
 		ranges[unID] = cController.GetNewRABRange();
 		ranges_tot[unID] = mRangeDistTot[unID] * 1.0 / (timer*1.0);
+
+		nn[unID] = cController.GetNNSquaredDistance();
+		nn_tot[unID] = mNNDistanceDistTot[unID] / (Real)(timer);
 #else
 		os_degD << cController.GetDegree() << std::endl;
 		os_degD_Tot << degDistTot[unID]*1.0/(timer*1.0) << std::endl;
@@ -145,7 +154,7 @@ void CMarchingLoopFunctions::Destroy() {
 		cController.CalculateHistoryAverages();
 		controllers[unID] = &cController;
 	}
-   
+
 #ifdef DIRECT_OUTPUT
 	// Transform the decorated graph
 	std::vector<Node> decorated;
@@ -388,20 +397,58 @@ void CMarchingLoopFunctions::Destroy() {
 	fMetaData << "Highest registered range: " << mHighestRange.value << " from robot " << mHighestRange.index << " at timeframe " << mHighestRange.timeFrame << std::endl;
 	fMetaData << "Highest registered average range: " << mHighestAverageRange.value << " from robot " << mHighestAverageRange.index << " at timeframe " << mHighestAverageRange.timeFrame << std::endl;
 	
-
 	fLog << "Done with writing, closing all file handles..." << std::endl;
 
 	// Close file handles
-	fDegrees.close();
-	fDegreesTot.close();
-	fMetaData.close();
-	fLog.close();
-	fDegreesGC.close();
-	fDegreesTotGC.close();
-	fDegreesUnsorted.close();
-	fDegreesTotUnsorted.close();
-	fRanges.close();
-	fRangesTot.close();
+	for (std::ofstream* f : file_handles)
+		f->close();
+
+	std::sort(nn.begin(), nn.end(), [](const double i, const double j)
+	{
+		return i < j;
+	});
+
+	std::sort(nn_tot.begin(), nn_tot.end(), [](const double i, const double j)
+	{
+		return i < j;
+	});
+
+	std::sort(ranges.begin(), ranges.end(), [](const double i, const double j)
+	{
+		return i < j;
+	});
+
+	std::sort(ranges_tot.begin(), ranges_tot.end(), [](const double i, const double j)
+	{
+		return i < j;
+	});
+
+	for (int i = 0; i < m_cFootbots.size(); i++)
+	{
+		//if (degrees[i] > 0)
+		seed_based_files[0] << degrees[i] << std::endl;
+		
+		//if (degrees_tot[i] > 0)
+			seed_based_files[1] << degrees_tot[i] << std::endl;
+
+		//if (nn[i] > 0)
+			seed_based_files[2] << sqrt(nn[i]) << std::endl;
+		
+		//if (nn_tot[i] > 0)
+			seed_based_files[3] << sqrt(nn_tot[i]) << std::endl;
+
+		///if (ranges[i] > 0)
+			seed_based_files[4] << ranges[i] << std::endl;
+
+		//if (ranges_tot[i] > 0)
+			seed_based_files[5] << ranges_tot[i] << std::endl;
+	}
+
+	seed_based_files[6] << mAvgDegree << "," << mAvgNNDistance << "," << mAvgRABRange << std::endl;
+   
+	// Close other file handles
+	for (std::ofstream& file : seed_based_files)
+		file.close();
 #endif
 	// The file handles should be closed regardless, as they are created at the start
 	os_degD.close();
@@ -599,7 +646,10 @@ void CMarchingLoopFunctions::PreStep() {
 
 void CMarchingLoopFunctions::PostStep() 
 {
-   	Real avgRABRange = 0.0, avgDegree = 0.0;
+	// Unsure about resetting here
+	mAvgRABRange = 0.0;
+	mAvgDegree = 0.0;
+	mAvgNNDistance = 0.0;
    	int currentTime = GetSpace().GetSimulationClock();
    	
 	// We could speed up the poststep by making these members and resizing them once
@@ -631,8 +681,9 @@ void CMarchingLoopFunctions::PostStep()
 
 		entities[unID] = pcFB;
 
-    	avgDegree += cController.GetDegree();
-    	avgRABRange += cController.GetNewRABRange();
+    	mAvgDegree += cController.GetDegree();
+    	mAvgRABRange += cController.GetNewRABRange();
+		mAvgNNDistance += cController.GetNNSquaredDistance();
 
 		const int deg = cController.GetDegree();
 		// Update meta data information about the highest degree detected
@@ -659,6 +710,7 @@ void CMarchingLoopFunctions::PostStep()
 		//controllers.push_back(&cController);
 		
 		controllers[unID] = &cController;
+		
 		// TODO: check if this affects the output files! I believe it shouldnt
 
 		/*if (unID == 0)
@@ -687,10 +739,9 @@ void CMarchingLoopFunctions::PostStep()
 		//~ }
 	}
 
-	Real activeRobots = m_cFootbots.size() * 1.0;
-
-	avgRABRange = avgRABRange / activeRobots;
-	avgDegree = avgDegree / activeRobots;
+	mAvgRABRange /= (Real)(m_cFootbots.size());
+	mAvgDegree /= (Real)(m_cFootbots.size());
+	mAvgNNDistance /= (Real)(m_cFootbots.size());
 
 	// Determine the distance to the closest neighbour
 	// O(n^2) evaluation, could be simplified with spatial localization
@@ -761,7 +812,6 @@ void CMarchingLoopFunctions::PostStep()
 		// Note, this does the same thing (hopefully) as the sort write code below out of this for loop
 		// But will avoid another (expensive) sort call
 		degDistTot[controllers.size() - 1 - i] += controllers[i]->GetDegree(); // index 0 gets smallest/last element, index 1 gets ...
-		mRangeDistTot[controllers.size() - 1 - i] += controllers[i]->GetNewRABRange();
 		i--;
 	}
 
@@ -774,7 +824,8 @@ void CMarchingLoopFunctions::PostStep()
 		}
 		return false;
 	});
-
+	
+	i = controllers.size() - 1;
 	counter = 0;
 	for (CFootBotMarching* ptr : controllers)
 	{
@@ -788,7 +839,10 @@ void CMarchingLoopFunctions::PostStep()
 		{
 			ptr->MarkPotentialLowRange(true);
 		}
-			
+
+		mRangeDistTot[controllers.size() - 1 - i] += controllers[i]->GetNewRABRange();
+
+		i--;
 		counter++;
 	}
 
@@ -800,6 +854,8 @@ void CMarchingLoopFunctions::PostStep()
 
 		return lhs->GetNNSquaredDistance() > rhs->GetNNSquaredDistance();
 	});
+
+	i = controllers.size() - 1;
 	counter = 0;
 	for (CFootBotMarching* ptr : controllers)
 	{
@@ -828,6 +884,8 @@ void CMarchingLoopFunctions::PostStep()
 		}
 		ptr->SetDistanceState(state);
 		
+		mNNDistanceDistTot[controllers.size() - 1 - i] += controllers[i]->GetNNSquaredDistance();
+		i--;
 		counter++;
 	}
 
@@ -840,7 +898,7 @@ void CMarchingLoopFunctions::PostStep()
    
 	if (currentTime % mOutputTimer == 0)
 	{ 
-		LOG << GetSpace().GetSimulationClock() << "  " << "AvgDeg: " << avgDegree << std::endl; 
+		LOG << GetSpace().GetSimulationClock() << "  " << "AvgDeg: " << mAvgDegree << std::endl; 
 	}
 
 	if (currentTime == 1)
@@ -888,9 +946,11 @@ void CMarchingLoopFunctions::OpenOutFilesID() {
     os_degD_Tot.open(filename, std::ios_base::trunc | std::ios_base::out);
     
     CSpace::TMapPerType& m_cFootbots = GetSpace().GetEntitiesByType("foot-bot");
-    degDistTot.resize(m_cFootbots.size());
-	mRangeDistTot.resize(m_cFootbots.size());
-    G.resize(m_cFootbots.size());
+    int pop_size = m_cFootbots.size();
+	degDistTot.resize(pop_size);
+	mRangeDistTot.resize(pop_size);
+	mNNDistanceDistTot.resize(pop_size);
+    G.resize(pop_size);
     
     // Initialize the controller with the correct range-and-bearing setting and set all elements of degDistTot to 0
     for(CSpace::TMapPerType::iterator it = m_cFootbots.begin();
@@ -941,6 +1001,17 @@ void CMarchingLoopFunctions::OutputNNDistanceDistribution()
 	}
 	
 	fNNDistr.close();
+}
+
+
+// Other function as the destroy function is all over the place at the moment
+void CMarchingLoopFunctions::OutputSeedData()
+{
+	CSpace::TMapPerType& m_cFootbots = GetSpace().GetEntitiesByType("foot-bot");
+
+	timer = GetSpace().GetSimulationClock();
+	int seed = CSimulator::GetInstance().GetRandomSeed();
+	int pop_size = m_cFootbots.size();
 }
 
 

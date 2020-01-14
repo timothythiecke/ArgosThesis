@@ -62,9 +62,6 @@ public:
    std::string GetCurrentWorkingDir();
    bool sortFunction (int i,int j);
    
-   std::vector<int> degDistTot;
-   std::vector<std::vector<int>> G;
-   
    // ----------------------------------------
    // This was used to draw the links.
    // Although it is not implemented in the cpp, the qt_functions still use it, so it should not be removed.
@@ -78,6 +75,9 @@ public:
 protected:
    void DecorateGraph(std::vector<Node>& decoratedGraph); // Transforms graph G into something that allows us to DFS it in order to build components
    void DetermineComponents(std::vector<Node>& decoratedGraph, std::vector<std::vector<int>>& components, Node& nodeToVisit);
+
+   void OutputSeedData();
+   //void OutputComponentData(std::ofstream& snapshot, std::ofstream& overTime);
 private:
 
    CRandom::CRNG* m_pcRNG;
@@ -94,8 +94,6 @@ private:
    // The fraction of the total amount of robots that will be marked as a potential hub
    double mHubMarkingFraction = 0.0;
 
-   std::vector<Real> mRangeDistTot;
-   
    IndexValuePair<int> mHighestDegreeCount;
    IndexValuePair<Real> mHighestAverageDegreeCount;
    IndexValuePair<Real> mHighestRange;
@@ -114,6 +112,16 @@ private:
    bool mDrawNNLinks = false;
 
    Real mRepresentativeFraction;
+
+   std::vector<int> degDistTot;
+   std::vector<Real> mNNDistanceDistTot;
+   std::vector<Real> mRangeDistTot;
+
+   std::vector<std::vector<int>> G;
+
+   Real mAvgRABRange = 0.0;
+   Real mAvgDegree = 0.0;
+   Real mAvgNNDistance = 0.0;
 };
 
 #endif
