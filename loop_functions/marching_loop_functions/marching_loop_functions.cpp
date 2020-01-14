@@ -108,13 +108,19 @@ void CMarchingLoopFunctions::Destroy() {
 		file->open(dir + names[i++]);
 
 	// File handles for seed data
+	CFootBotEntity& bot = *any_cast<CFootBotEntity*>(m_cFootbots.begin()->second);
+	CFootBotMarching& controller = dynamic_cast<CFootBotMarching&>(bot.GetControllableEntity().GetController());
 	i = 0;
 	dir = "/mnt/c/argos/pl_check_kit/pl_check_kit/SeedData/";
 	vector<std::ofstream> seed_based_files(7);
 	vector<std::string> seed_based_names = { "deg", "degTime", "NN", "NNTime", "range", "rangeTime", "meta"};
 	assert(seed_based_files.size() == seed_based_names.size());
 	for (std::ofstream& file : seed_based_files)
-		file.open(dir + std::to_string(seed) + "_" + std::to_string(pop_size) + "_" + std::to_string(timer)+ "_" + seed_based_names[i++]);
+	{
+		int breakdown = controller.GetBreakdownEnabled() ? 1 : 0;
+		int local = controller.GetLocalNeighbourhoodCheck() ? 1 : 0;
+		file.open(dir + std::to_string(seed) + "_" + std::to_string(pop_size) + "_" + std::to_string(timer)+ "_" + std::to_string(breakdown) + std::to_string(local) + "_" + seed_based_names[i++]);
+	}
 
 	std::vector<int> degrees(pop_size);
    	std::vector<Real> degrees_tot(pop_size);

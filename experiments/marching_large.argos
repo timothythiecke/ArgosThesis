@@ -5,7 +5,7 @@
   <!-- ************************* -->
   <framework>
     <system threads="0"/>
-    <experiment length="200" ticks_per_second="1" random_seed="10"/>
+    <experiment length="100" ticks_per_second="1" random_seed="10"/>
   </framework>
   <!-- *************** -->
   <!-- * Controllers * -->
@@ -26,6 +26,7 @@
         <motion alpha="7.5" delta="0.1" velocity="5"/>
         <state spontaneous_switching_prob="0.1"/>
         <range lower_bound="0.3" upper_bound="-1.0" step="0.1" probabilistic="true" symmetric="false"/> <!-- default = 0.3, -1.0, 0.1, true, false-->
+        <dmm breakdownEnabled="false" localNeighbourhoodCheck="true"/>
         <!-- ************************* -->
         <!-- * Decision Making rules * -->
         <!-- * Default: none ********* -->
@@ -62,7 +63,7 @@
   
   <!-- ****************** -->
   <!-- * Visualization * -->
-  <!-- ******************  --> 
+  <!-- ****************** 
   <visualization>
     <qt-opengl>
       <camera>
@@ -77,7 +78,7 @@
         <nn isEnabled="true"/>
       </user_functions>
     </qt-opengl>
-  </visualization>
+  </visualization> --> 
 
   <!-- *********************** -->
   <!-- * Arena configuration * -->
@@ -88,7 +89,7 @@
       <!--<position method="ring" center="0,0,0" quantity="150" z_value="0" segment_diameter="0.26" />-->
       <!--<position method="uniform" min="-5,-5,0" max="5,5,0" />-->
       <orientation method="uniform" min="0,0,0" max="360,0,0"/>
-      <entity quantity="100" max_trials="100">
+      <entity quantity="200" max_trials="100">
         <foot-bot id="fb" rab_range="1.0">
           <controller config="fdc"/>
         </foot-bot>

@@ -161,10 +161,14 @@ void CFootBotMarching::Init(TConfigurationNode& t_node) {
 
 	GetNodeAttribute(tRange, "symmetric", mRangeSymmetric);
 
+	TConfigurationNode& tDmm = GetNode(t_node, "dmm");
+	GetNodeAttribute(tDmm, "breakdownEnabled", mBreakdownEnabled);
+	GetNodeAttribute(tDmm, "localNeighbourhoodCheck", mLocalNeighbourhoodCheck);
+
 	mHistoryData.reserve(200);
 
-   m_pcRNG = CRandom::CreateRNG("argos");
-   Reset();
+	m_pcRNG = CRandom::CreateRNG("argos");
+	Reset();
 }
 
 /****************************************/
@@ -409,47 +413,31 @@ void CFootBotMarching::Decision() {
 		f_fracLeft = f_fracLeft / (1.0 * degreeLocal + 1.0);
 		f_fracRight = (1.0 - f_fracLeft);
 
-		// Difference between fractions comparison with 0.5?
-		// Or is it, generate one random number, then use option one or two 
-		// Or both?
-		// Either way, probabilistic is the original code
-		// Note: duplicate code
-
-		// TODO: revert back to default probabilistic
-		Real fraction_difference = Abs(f_fracLeft - f_fracRight);
-		if (mRangeDecisionState == CFootBotMarching::ERangeDecisionMakingState::Probabilistic)
+		if (mLocalNeighbourhoodCheck)
 		{
+			Real fraction_difference = Abs(f_fracLeft - f_fracRight);
 			if (m_pcRNG->Uniform(CRange<Real>(0.0, 1.0)) > fraction_difference)
 			{
 				mInterestFile << timer <<  ": Increasing range due to RNG > fraction_difference(" << fraction_difference << ")\n";
-				
+			
 				IncreaseRange();
 			}
 			else if (m_pcRNG->Uniform(CRange<Real>(0.0, 1.0)) < fraction_difference)
 			{
 				mInterestFile << timer <<  ": Decreasing range due to RNG < fraction_difference(" << fraction_difference << ")\n";
-				
-				DecreaseRange();
-			}
-		}
-		else if (mRangeDecisionState == CFootBotMarching::ERangeDecisionMakingState::Binary)
-		{
-			Real rng = m_pcRNG->Uniform(CRange<Real>(0.0, 1.0));
-			if (fraction_difference < rng)
-			{
-				IncreaseRange();
-			}
-			else
-			{
+
 				DecreaseRange();
 			}
 		}
 	}
 	else if (b_breakdown)
 	{ 
-		mInterestFile << timer <<  ": Increasing range due to detected breakdown (no neighbours)\n";
-		
-		IncreaseRange();
+		if (mBreakdownEnabled)
+		{
+			mInterestFile << timer <<  ": Increasing range due to detected breakdown (no neighbours)\n";
+			
+			IncreaseRange();
+		}
 	}
 	// Need to test this if this affects the isolated nodes
 	// Otherwise asymmetry

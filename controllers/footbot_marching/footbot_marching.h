@@ -429,6 +429,13 @@ private:
    Real mIsolatedFraction = 0.0;
    Real mClusteredFraction = 0.0;
    Real mBetweenFraction = 0.0;
+
+   bool mBreakdownEnabled = false;
+   bool mLocalNeighbourhoodCheck = false;
+
+public:
+   bool GetBreakdownEnabled() const { return mBreakdownEnabled; }
+   bool GetLocalNeighbourhoodCheck() const { return mLocalNeighbourhoodCheck; }
 };
 
 #endif
