@@ -108,6 +108,11 @@ void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity)
 		
 		if (mIsNNEnabled)
 		{
+			std::string info;
+			//info.append("[").append(std::to_string(unID)).append("]");
+			info.append(std::to_string(unID));
+			DrawText(CVector3(0.0, 0.0, 0.3), info, CColor::BLACK);
+
 			// Draw circle of neighbourhood
 			Real distance = sqrt(cController.GetNNSquaredDistance());
 			Real z = 0.05;
@@ -115,7 +120,7 @@ void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity)
 			DrawCircle(CVector3(0.0, 0.0, z), CQuaternion(), cController.GetNewRABRange(), CColor::RED, false);
 			/////
 
-			Real diameter = 0.25;
+			/*Real diameter = 0.25;
 			CColor color = CColor::BLACK;
 			CFootBotMarching::EDistanceState distance_state = cController.GetDistanceState();
 			if (distance_state == CFootBotMarching::EDistanceState::ISOLATED)
@@ -124,7 +129,7 @@ void CMarchingQTUserFunctions::Draw(CFootBotEntity& c_entity)
 				color = CColor::BLUE;
 
 			//DrawPoint(CVector3(0.0, 0.0, z), color, diameter);
-			DrawCircle(CVector3(0.0, 0.0, z), CQuaternion(), diameter, color, true);
+			DrawCircle(CVector3(0.0, 0.0, z), CQuaternion(), diameter, color, true);*/
 		}	
 	}
 }

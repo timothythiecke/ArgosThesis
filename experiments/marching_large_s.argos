@@ -25,6 +25,7 @@
         <motion alpha="7.5" delta="0.1" velocity="5" />
         <state spontaneous_switching_prob="0.1" />
         <range lower_bound="0.3" probabilistic="true" step="0.1" symmetric="false" upper_bound="-1.0" /> 
+        <dmm breakdownEnabled="true" localNeighbourhoodCheck="true" />
         
         
         
@@ -59,7 +60,7 @@
   
   
   
-  
+   
 
   
   
@@ -70,7 +71,7 @@
       
       
       <orientation max="360,0,0" method="uniform" min="0,0,0" />
-      <entity max_trials="100" quantity="1000">
+      <entity max_trials="100" quantity="300">
         <foot-bot id="fb" rab_range="1.0">
           <controller config="fdc" />
         </foot-bot>
