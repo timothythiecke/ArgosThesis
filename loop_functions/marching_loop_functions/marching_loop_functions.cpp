@@ -1147,28 +1147,6 @@ void CMarchingLoopFunctions::OutputDataForHeuristic(std::vector<CFootBotMarching
 		}
 		i++;
 	}
-
-
-	/*const vector<CFootBotMarching::SHistoryData>& history = controllers[0]->GetHistory();
-	//for (const CFootBotMarching::SHistoryData& history_element : history)
-	int d = 0;
-	for (c = 0; c < history.size(); c++)
-	{
-		files[0] << history[c].Range << std::endl;		
-		if (c == 0) // Edge case hack, use the nearest neighbour distance of the first nonzero element
-			d = 1;
-		else
-			d = c;
-		files[1] << sqrt(history[d].NearestNeighbourDistance) << std::endl;
-		files[2] << (int)(history[c].DistanceState) << std::endl;
-		files[3] << history[c].DirectionDecision << std::endl;
-		files[4] << history[c].Degree << std::endl;
-	}
-
-	for (std::ofstream& file : files)
-	{
-		file.close();
-	}*/
 }
 
 
