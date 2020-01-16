@@ -774,6 +774,7 @@ void CMarchingLoopFunctions::PostStep()
 	for (CFootBotMarching* footbot : controllers)
 	{
 		Real nearest = std::numeric_limits<Real>::max();
+		Real range = -1.0;
 		CVector3 nearestWorld = CVector3();
 		for (CFootBotMarching* other : controllers)
 		{
@@ -784,11 +785,13 @@ void CMarchingLoopFunctions::PostStep()
 				{
 					nearest = squareDist;
 					nearestWorld = other->GetWorldPosition();
+					range = other->GetNewRABRange();
 				}
 			}
 		}
 
 		footbot->SetNNSquaredDistance(nearest);
+		footbot->SetNNRange(range); // For history data
 		mNNSquaredDistanceDistribution.push_back(nearest);
 
 		// Draw line between nearest physical neighbour and footbot, cant be done in Qt function due to rotation shenanigans

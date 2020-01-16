@@ -133,6 +133,9 @@ public:
    void SetNNSquaredDistance(const Real nearestSquaredDistance) { mSquaredDistanceToNN = nearestSquaredDistance; }
    Real GetNNSquaredDistance() const { return mSquaredDistanceToNN; }
 
+   void SetNNRange(const Real nearestNeighbourRange) { mNNRange = nearestNeighbourRange; }
+   Real GetNNRange() const { return mNNRange; }
+
    int GetID() const { return m_unID; }
 
    void ResetVisualizationParameters()
@@ -158,6 +161,7 @@ public:
    struct SHistoryData
    {
       Real Range = -1.0;
+      Real NearestNeighbourRange = -1.0;
       Real NearestNeighbourDistance = -1.0;
       EDistanceState DistanceState = EDistanceState::INVALID;
       bool DirectionDecision = false; // true cw, false = ccw
@@ -166,6 +170,7 @@ public:
       void Reset()
       {
          Range = -1.0;
+         NearestNeighbourRange = -1.0;
          NearestNeighbourDistance = -1.0;
          DistanceState = EDistanceState::INVALID;
          DirectionDecision = false;
@@ -421,6 +426,7 @@ private:
 
    CVector3 mWorldPosition = CVector3();
    Real mSquaredDistanceToNN;
+   Real mNNRange;
 
    EDistanceState mDistanceState = EDistanceState::INVALID;
    SHistoryData mCurrentHistoryState;

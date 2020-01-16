@@ -657,6 +657,7 @@ void CFootBotMarching::ControlStep()
 	mCurrentHistoryState.DirectionDecision = this->GetVelocity() > 0.0;
 	mCurrentHistoryState.Range = this->GetNewRABRange();
     mCurrentHistoryState.NearestNeighbourDistance = this->GetNNSquaredDistance();
+	mCurrentHistoryState.NearestNeighbourRange = this->GetNNRange();
 
 	mHistoryData.push_back(mCurrentHistoryState);
 	mCurrentHistoryState.Reset();
