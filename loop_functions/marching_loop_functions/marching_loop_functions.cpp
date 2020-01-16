@@ -387,6 +387,13 @@ void CMarchingLoopFunctions::Destroy() {
 
 		return lhs->GetDegree() > rhs->GetDegree();
 	});
+	// Output the indices of the node with the most amount of degrees, smallest and middle point
+	std::ofstream heuristicIndexFile;
+	heuristicIndexFile.open(mHeuristicFileName);
+	heuristicIndexFile << controllers[0]->GetDegree() << "\n" << controllers[controllers.size() - 1]->GetDegree() << "\n" << controllers[controllers.size() / 2]->GetDegree() << std::endl;
+	heuristicIndexFile.close();
+
+
 
 	filename.clear();
 	filename.append("/mnt/c/argos/pl_check_kit/pl_check_kit/degrange").append(std::to_string(controllers.size())).append(".dat");

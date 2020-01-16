@@ -134,12 +134,14 @@ private:
    Real mAvgDegree = 0.0;
    Real mAvgNNDistance = 0.0;
 
+   // Heuristics
    Real mRepresentativeFraction;
    int mRepresentativeHeuristicFromFile = -1;
    ERepresentativeHeuristic mRepresentativeHeuristic = ERepresentativeHeuristic::Invalid;
    int mRepresentativeOfMinID = -1;
    int mRepresentativeOfMidID = -1;
    int mRepresentativeOfMaxID = -1;
+   std::string mHeuristicFileName = "/mnt/c/argos/pl_check_kit/pl_check_kit/indexHeuristic.dat";
 
    void SetupHeuristic(std::vector<CFootBotMarching*>& controllers);
 };
