@@ -144,6 +144,7 @@ private:
    std::string mHeuristicFileName = "/mnt/c/argos/pl_check_kit/pl_check_kit/indexHeuristic.dat";
 
    void SetupHeuristic(std::vector<CFootBotMarching*>& controllers);
+   void OutputDataForHeuristic(std::vector<CFootBotMarching*>& controllers);
 };
 
 #endif

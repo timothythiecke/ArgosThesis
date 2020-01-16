@@ -378,23 +378,8 @@ void CMarchingLoopFunctions::Destroy() {
 			shiefefl << ptr->GetNewRABRange() << "," << ptr->GetDegree() << std::endl;
 	}
 	shiefefl.close();
-
-
-	std::sort(controllers.begin(), controllers.end(), [](CFootBotMarching* lhs, CFootBotMarching* rhs)
-	{
-		assert(lhs != nullptr);
-		assert(rhs != nullptr);
-
-		return lhs->GetDegree() > rhs->GetDegree();
-	});
-	// Output the indices of the node with the most amount of degrees, smallest and middle point
-	if (GetSpace().GetSimulationClock() == 100)
-	{
-		std::ofstream heuristicIndexFile;
-		heuristicIndexFile.open(mHeuristicFileName);
-		heuristicIndexFile << controllers[0]->GetID() << "\n" << controllers[controllers.size() - 1]->GetID() << "\n" << controllers[controllers.size() / 2]->GetID() << std::endl;
-		heuristicIndexFile.close();
-	}
+	
+	this->OutputDataForHeuristic(controllers);
 
 	filename.clear();
 	filename.append("/mnt/c/argos/pl_check_kit/pl_check_kit/degrange").append(std::to_string(controllers.size())).append(".dat");
@@ -1076,5 +1061,116 @@ void CMarchingLoopFunctions::SetupHeuristic(std::vector<CFootBotMarching*>& cont
 		}
 	} 	// Largely dependent on t_end!
 }
+
+
+
+void CMarchingLoopFunctions::OutputDataForHeuristic(std::vector<CFootBotMarching*>& controllers)
+{
+	std::sort(controllers.begin(), controllers.end(), [](CFootBotMarching* lhs, CFootBotMarching* rhs)
+	{
+		assert(lhs != nullptr);
+		assert(rhs != nullptr);
+
+		return lhs->GetDegree() > rhs->GetDegree();
+	});
+	// Output the indices of the node with the most amount of degrees, smallest and middle point
+	if (GetSpace().GetSimulationClock() == 100)
+	{
+		std::ofstream heuristicIndexFile;
+		heuristicIndexFile.open(mHeuristicFileName);
+		heuristicIndexFile << controllers[0]->GetID() << "\n" << controllers[controllers.size() - 1]->GetID() << "\n" << controllers[controllers.size() / 2]->GetID() << std::endl;
+		heuristicIndexFile.close();
+	}
+
+	if (mRepresentativeHeuristic == ERepresentativeHeuristic::Invalid)
+		return;
+	
+	std::vector<std::string> filenames = { "range", "nnrange", "nndist", "directiondecision", "degree" };
+	std::string folder = "/mnt/c/argos/pl_check_kit/pl_check_kit/HeuristicData/";
+	int seed = CSimulator::GetInstance().GetRandomSeed();
+	int size = controllers.size();
+	int time = GetSpace().GetSimulationClock();
+	std::vector<std::string> heuristicNames = { "extreme", "random", "postdegree"};
+	std::vector<std::string> type = { "max", "min", "mid" };
+
+	// folder/seed_swarmsize_time_heuristic_type_datatype.dat
+	// folder/seed_heuristic_type_datatype
+	std::vector<int> indices = { mRepresentativeOfMaxID, mRepresentativeOfMinID, mRepresentativeOfMidID };
+	int i = 0;
+	for (const int index : indices)
+	{
+		std::vector<CFootBotMarching*>::iterator it = std::find_if(controllers.begin(), controllers.end(), [&index](const CFootBotMarching* ptr)
+		{	
+			assert(ptr != nulltptr);
+			return ptr->GetID() == index;
+		});
+
+		if (it != controllers.end())
+		{
+			std::ofstream oRange;
+			std::ofstream oNNRange;
+			std::ofstream oNNDistance;
+			std::ofstream oDirectionDecision;
+			std::ofstream oDegree;
+
+			std::string base = folder + std::to_string(seed) + "_" + std::to_string(size) + "_" + std::to_string(time) + "_" + heuristicNames[(int)(mRepresentativeHeuristic)] + "_" + type[i] + "_";
+			oRange.open(base + filenames[0]);
+			oNNRange.open(base + filenames[1]);
+			oNNDistance.open(base + filenames[2]);
+			oDirectionDecision.open(base + filenames[3]);
+			oDegree.open(base + filenames[4]);
+
+			const vector<CFootBotMarching::SHistoryData>& history = (*it)->GetHistory();
+			int d = 0;
+			for (int c = 0; c < history.size(); c++)
+			{
+				oRange << history[c].Range << std::endl;		
+				if (c == 0) // Edge case hack, use the nearest neighbour distance of the first nonzero element
+					d = 1;
+				else
+				d = c;
+				oNNDistance << sqrt(history[d].NearestNeighbourDistance) << std::endl;
+				oNNRange << history[d].NearestNeighbourRange << std::endl;
+				oDirectionDecision << history[c].DirectionDecision << std::endl;
+				oDegree << history[c].Degree << std::endl;
+			}
+
+			oRange.close();
+			oNNRange.close();
+			oNNDistance.close();
+			oDirectionDecision.close();
+			oDegree.close();
+		}
+		else
+		{
+			throw "Index could not be found in controllers vector";
+		}
+		i++;
+	}
+
+
+	/*const vector<CFootBotMarching::SHistoryData>& history = controllers[0]->GetHistory();
+	//for (const CFootBotMarching::SHistoryData& history_element : history)
+	int d = 0;
+	for (c = 0; c < history.size(); c++)
+	{
+		files[0] << history[c].Range << std::endl;		
+		if (c == 0) // Edge case hack, use the nearest neighbour distance of the first nonzero element
+			d = 1;
+		else
+			d = c;
+		files[1] << sqrt(history[d].NearestNeighbourDistance) << std::endl;
+		files[2] << (int)(history[c].DistanceState) << std::endl;
+		files[3] << history[c].DirectionDecision << std::endl;
+		files[4] << history[c].Degree << std::endl;
+	}
+
+	for (std::ofstream& file : files)
+	{
+		file.close();
+	}*/
+}
+
+
 
 REGISTER_LOOP_FUNCTIONS(CMarchingLoopFunctions, "marching_loop_functions")
