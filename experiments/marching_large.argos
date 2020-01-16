@@ -63,7 +63,7 @@
   
   <!-- ****************** -->
   <!-- * Visualization * -->
-  <!-- ****************** -->
+  <!-- ****************** 
   <visualization>
     <qt-opengl>
       <camera>
@@ -78,7 +78,7 @@
         <nn isEnabled="true"/>
       </user_functions>
     </qt-opengl>
-  </visualization> 
+  </visualization> -->
 
   <!-- *********************** -->
   <!-- * Arena configuration * -->

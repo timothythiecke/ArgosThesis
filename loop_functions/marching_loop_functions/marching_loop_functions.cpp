@@ -388,12 +388,13 @@ void CMarchingLoopFunctions::Destroy() {
 		return lhs->GetDegree() > rhs->GetDegree();
 	});
 	// Output the indices of the node with the most amount of degrees, smallest and middle point
-	std::ofstream heuristicIndexFile;
-	heuristicIndexFile.open(mHeuristicFileName);
-	heuristicIndexFile << controllers[0]->GetDegree() << "\n" << controllers[controllers.size() - 1]->GetDegree() << "\n" << controllers[controllers.size() / 2]->GetDegree() << std::endl;
-	heuristicIndexFile.close();
-
-
+	if (GetSpace().GetSimulationClock() == 100)
+	{
+		std::ofstream heuristicIndexFile;
+		heuristicIndexFile.open(mHeuristicFileName);
+		heuristicIndexFile << controllers[0]->GetDegree() << "\n" << controllers[controllers.size() - 1]->GetDegree() << "\n" << controllers[controllers.size() / 2]->GetDegree() << std::endl;
+		heuristicIndexFile.close();
+	}
 
 	filename.clear();
 	filename.append("/mnt/c/argos/pl_check_kit/pl_check_kit/degrange").append(std::to_string(controllers.size())).append(".dat");
@@ -866,8 +867,9 @@ void CMarchingLoopFunctions::PostStep()
 	}
 
 	// Steup heuristic
-	if (currentTime == 0 && mRepresentativeHeuristic != ERepresentativeHeuristic::Invalid)
+	if (currentTime == 1 && mRepresentativeHeuristic != ERepresentativeHeuristic::Invalid)
 	{
+		LOG << "Setting up heuristic..." << std::endl;
 		this->SetupHeuristic(controllers);
 	}
 
@@ -997,7 +999,7 @@ void CMarchingLoopFunctions::OutputSeedData()
 }
 
 
-
+// Precondition: all indices are valid
 void CMarchingLoopFunctions::SetupHeuristic(std::vector<CFootBotMarching*>& controllers)
 {
 	// Sort based on nearest neighbour distances
@@ -1010,6 +1012,11 @@ void CMarchingLoopFunctions::SetupHeuristic(std::vector<CFootBotMarching*>& cont
 	});
 
 	// Do the following unless the representative ID variables have been filled in already
+	// Note then that this does not use a heuristic
+	if (mRepresentativeOfMaxID != -1 || mRepresentativeOfMidID != -1 || mRepresentativeOfMinID != -1)
+	{
+		return;
+	}
 
 	if (mRepresentativeHeuristic == ERepresentativeHeuristic::SortedExtremes)
 	{
@@ -1017,6 +1024,11 @@ void CMarchingLoopFunctions::SetupHeuristic(std::vector<CFootBotMarching*>& cont
 		// -> 0 is marked for top
 		// -> controllers.size() -1 is marked for low
 		// -> controllers.size() / 2 is marked for mid
+		mRepresentativeOfMaxID = controllers[0]->GetID();
+		mRepresentativeOfMinID = controllers[controllers.size() - 1]->GetID();
+		mRepresentativeOfMidID = controllers[controllers.size() / 2]->GetID();
+		
+		LOG << "Heuristic succesfully determined indices (extremes): " << mRepresentativeOfMaxID << " " << mRepresentativeOfMinID << " " << mRepresentativeOfMidID << std::endl;
 	}
 	else if (mRepresentativeHeuristic == ERepresentativeHeuristic::SortedRandomChoice)
 	{
@@ -1024,6 +1036,19 @@ void CMarchingLoopFunctions::SetupHeuristic(std::vector<CFootBotMarching*>& cont
 		// -> randomly select out of top fraction and mark for top
 		// -> randomly select out of low fraction and mark for low
 		// -> randomly select out of mid section and mark for mid
+		int top_l = 0;
+		int top_r = (int)(controllers.size() * mRepresentativeFraction);
+		int low_l = controllers.size() - top_r;
+		int low_r = controllers.size() - 1;
+		
+		int mid_l = top_r + 1;
+		int mid_r = low_r - 1;
+		
+		mRepresentativeOfMaxID = controllers[m_pcRNG->Uniform(CRange<UInt32>(top_l, top_r))]->GetID();
+		mRepresentativeOfMinID = controllers[m_pcRNG->Uniform(CRange<UInt32>(low_l, low_r))]->GetID();
+		mRepresentativeOfMidID = controllers[m_pcRNG->Uniform(CRange<UInt32>(mid_l, mid_r))]->GetID();
+
+		LOG << "Heuristic succesfully determined indices (random): " << mRepresentativeOfMaxID << " " << mRepresentativeOfMinID << " " << mRepresentativeOfMidID << std::endl;
 	}
 	else if (mRepresentativeHeuristic == ERepresentativeHeuristic::PostExperimentDegreeCount)
 	{
@@ -1031,7 +1056,22 @@ void CMarchingLoopFunctions::SetupHeuristic(std::vector<CFootBotMarching*>& cont
 		// File is outputted at the end of simulation in Destroy()
 		// If it doesn't exist, then mRepresentativeHeuristic is reinitialized
 		// otherwise mark the nodes for top, low and mid respectively
-	}
+		std::ifstream indexFile;
+		indexFile.open(mHeuristicFileName);
+		if (indexFile.is_open())
+		{
+			indexFile >> mRepresentativeOfMaxID >> mRepresentativeOfMinID >> mRepresentativeOfMidID;
+
+			LOG << "Heuristic succesfully determined indices (postdegree): " << mRepresentativeOfMaxID << " " << mRepresentativeOfMinID << " " << mRepresentativeOfMidID << std::endl;
+
+			indexFile.close();
+		}
+		else
+		{
+			mRepresentativeHeuristic = ERepresentativeHeuristic::Invalid;
+			LOG << "Could not find index file for heuristic!" << std::endl;
+		}
+	} 	// Largely dependent on t_end!
 }
 
 REGISTER_LOOP_FUNCTIONS(CMarchingLoopFunctions, "marching_loop_functions")
