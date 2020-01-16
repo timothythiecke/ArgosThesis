@@ -392,7 +392,7 @@ void CMarchingLoopFunctions::Destroy() {
 	{
 		std::ofstream heuristicIndexFile;
 		heuristicIndexFile.open(mHeuristicFileName);
-		heuristicIndexFile << controllers[0]->GetDegree() << "\n" << controllers[controllers.size() - 1]->GetDegree() << "\n" << controllers[controllers.size() / 2]->GetDegree() << std::endl;
+		heuristicIndexFile << controllers[0]->GetID() << "\n" << controllers[controllers.size() - 1]->GetID() << "\n" << controllers[controllers.size() / 2]->GetID() << std::endl;
 		heuristicIndexFile.close();
 	}
 
