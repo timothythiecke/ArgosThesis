@@ -858,17 +858,11 @@ void CMarchingLoopFunctions::PostStep()
 		counter++;
 	}
 
-	// Heuristics
-	// Sort based on nearest neighbour distances
-	std::sort(controllers.begin(), controllers.end(), [](CFootBotMarching* lhs, CFootBotMarching* rhs)
+	// Steup heuristic
+	if (currentTime == 0 && mRepresentativeHeuristic != ERepresentativeHeuristic::Invalid)
 	{
-		assert(lhs != nullptr);
-		assert(rhs != nullptr);
-
-		return lhs->GetNNSquaredDistance() > rhs->GetNNSquaredDistance();
-	});
-
-	
+		this->SetupHeuristic(controllers);
+	}
 
 	// Avoid sorting a second time
 	/*std::sort (degDist.begin(), degDist.end());
@@ -995,5 +989,42 @@ void CMarchingLoopFunctions::OutputSeedData()
 	int pop_size = m_cFootbots.size();
 }
 
+
+
+void CMarchingLoopFunctions::SetupHeuristic(std::vector<CFootBotMarching*>& controllers)
+{
+	// Sort based on nearest neighbour distances
+	std::sort(controllers.begin(), controllers.end(), [](CFootBotMarching* lhs, CFootBotMarching* rhs)
+	{
+		assert(lhs != nullptr);
+		assert(rhs != nullptr);
+
+		return lhs->GetNNSquaredDistance() > rhs->GetNNSquaredDistance();
+	});
+
+	// Do the following unless the representative ID variables have been filled in already
+
+	if (mRepresentativeHeuristic == ERepresentativeHeuristic::SortedExtremes)
+	{
+		// Select and mark the following nodes
+		// -> 0 is marked for top
+		// -> controllers.size() -1 is marked for low
+		// -> controllers.size() / 2 is marked for mid
+	}
+	else if (mRepresentativeHeuristic == ERepresentativeHeuristic::SortedRandomChoice)
+	{
+		// Select and mark the following nodes
+		// -> randomly select out of top fraction and mark for top
+		// -> randomly select out of low fraction and mark for low
+		// -> randomly select out of mid section and mark for mid
+	}
+	else if (mRepresentativeHeuristic == ERepresentativeHeuristic::PostExperimentDegreeCount)
+	{
+		// Try and open the file which contains the three indices of top, low, and mid based on degree counts at the end of a previous simulation run
+		// File is outputted at the end of simulation in Destroy()
+		// If it doesn't exist, then mRepresentativeHeuristic is reinitialized
+		// otherwise mark the nodes for top, low and mid respectively
+	}
+}
 
 REGISTER_LOOP_FUNCTIONS(CMarchingLoopFunctions, "marching_loop_functions")

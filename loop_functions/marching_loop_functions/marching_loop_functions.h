@@ -12,6 +12,8 @@
 
 using namespace argos;
 
+class CFootBotMarching;
+
 // Helper struct to use for DFS traversal in order to determine the components
 struct Node
 {
@@ -138,6 +140,8 @@ private:
    int mRepresentativeOfMinID = -1;
    int mRepresentativeOfMidID = -1;
    int mRepresentativeOfMaxID = -1;
+
+   void SetupHeuristic(std::vector<CFootBotMarching*>& controllers);
 };
 
 #endif
