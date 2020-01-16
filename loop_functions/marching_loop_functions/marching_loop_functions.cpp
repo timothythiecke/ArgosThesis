@@ -49,6 +49,13 @@ void CMarchingLoopFunctions::Init(TConfigurationNode& t_node) {
 
 		TConfigurationNode& tRepresentative = GetNode(t_node, "representative");
 		GetNodeAttribute(tRepresentative, "fraction", mRepresentativeFraction);
+		GetNodeAttribute(tRepresentative, "heuristic", mRepresentativeHeuristicFromFile);
+		GetNodeAttribute(tRepresentative, "maxNode", mRepresentativeOfMaxID);
+		GetNodeAttribute(tRepresentative, "midNode", mRepresentativeOfMidID);
+		GetNodeAttribute(tRepresentative, "minNode", mRepresentativeOfMinID);
+
+		mRepresentativeHeuristic = (ERepresentativeHeuristic)mRepresentativeHeuristicFromFile;
+		LOG << "Using heursitic " << (int)mRepresentativeHeuristic << std::endl;
 
 	   OpenOutFilesID();
 	   finished = false;
@@ -790,7 +797,6 @@ void CMarchingLoopFunctions::PostStep()
 		}
 	}
 
-
 	// If the degree of the footbot is in the top x%, then mark it as a potential hub
 	// Sort descending by grade (largest to smallest)
 	std::sort(controllers.begin(), controllers.end(), [](/*const*/ CFootBotMarching* lhs, CFootBotMarching* rhs)
@@ -852,6 +858,7 @@ void CMarchingLoopFunctions::PostStep()
 		counter++;
 	}
 
+	// Heuristics
 	// Sort based on nearest neighbour distances
 	std::sort(controllers.begin(), controllers.end(), [](CFootBotMarching* lhs, CFootBotMarching* rhs)
 	{
@@ -861,39 +868,7 @@ void CMarchingLoopFunctions::PostStep()
 		return lhs->GetNNSquaredDistance() > rhs->GetNNSquaredDistance();
 	});
 
-	i = controllers.size() - 1;
-	counter = 0;
-	for (CFootBotMarching* ptr : controllers)
-	{
-		assert(ptr != nullptr);
-		
-		/*const int history_degree = ptr->GetLatestDegreeFromHistory();
-		if (history_degree != -1)
-		{
-			assert(history_degree == ptr->GetDegree());
-		}*/
-
-		// Separate the robots into different categories depending on the distance 
-		// of their nearest neighbours using the fraction parameter mRepresentativeFraction
-		CFootBotMarching::EDistanceState state = CFootBotMarching::EDistanceState::INVALID;
-		if (counter < (controllers.size() * mRepresentativeFraction))
-		{
-			state = CFootBotMarching::EDistanceState::ISOLATED;
-		}
-		else if (counter > controllers.size() - (controllers.size() * mRepresentativeFraction))
-		{
-			state = CFootBotMarching::EDistanceState::CLUSTERED;
-		}
-		else
-		{
-			state = CFootBotMarching::EDistanceState::OTHER;
-		}
-		ptr->SetDistanceState(state);
-		
-		mNNDistanceDistTot[controllers.size() - 1 - i] += controllers[i]->GetNNSquaredDistance();
-		i--;
-		counter++;
-	}
+	
 
 	// Avoid sorting a second time
 	/*std::sort (degDist.begin(), degDist.end());

@@ -45,6 +45,17 @@ struct IndexValuePair<Real>
 };
 
 
+
+enum class ERepresentativeHeuristic
+{
+   Invalid = -1,
+   SortedExtremes = 0,
+   SortedRandomChoice = 1,
+   PostExperimentDegreeCount = 2
+};
+
+
+
 class CMarchingLoopFunctions : public CLoopFunctions 
 {
 public:
@@ -111,8 +122,6 @@ private:
    void OutputNNDistanceDistribution();
    bool mDrawNNLinks = false;
 
-   Real mRepresentativeFraction;
-
    std::vector<int> degDistTot;
    std::vector<Real> mNNDistanceDistTot;
    std::vector<Real> mRangeDistTot;
@@ -122,6 +131,13 @@ private:
    Real mAvgRABRange = 0.0;
    Real mAvgDegree = 0.0;
    Real mAvgNNDistance = 0.0;
+
+   Real mRepresentativeFraction;
+   int mRepresentativeHeuristicFromFile = -1;
+   ERepresentativeHeuristic mRepresentativeHeuristic = ERepresentativeHeuristic::Invalid;
+   int mRepresentativeOfMinID = -1;
+   int mRepresentativeOfMidID = -1;
+   int mRepresentativeOfMaxID = -1;
 };
 
 #endif
