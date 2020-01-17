@@ -57,6 +57,9 @@ void CMarchingLoopFunctions::Init(TConfigurationNode& t_node) {
 		mRepresentativeHeuristic = (ERepresentativeHeuristic)mRepresentativeHeuristicFromFile;
 		LOG << "Using heursitic " << (int)mRepresentativeHeuristic << std::endl;
 
+		TConfigurationNode& tLongrun = GetNode(t_node, "longrun");
+		GetNodeAttribute(tLongrun, "enabled", mLongrunEnabled);
+
 	   OpenOutFilesID();
 	   finished = false;
 	   timer = 0;
@@ -461,6 +464,16 @@ void CMarchingLoopFunctions::Destroy() {
 	os_degD_Tot.close();
 
 	//os_interest.close();
+
+	// Handle longrun files
+	if (mLongrunEnabled)
+	{
+		oLongrunDegrees.close();
+   		oLongrunRanges.close(); 
+   		oLongrunDegSnapshot.close(); 
+   		oLongrunDegOverTime.close();
+   		oLongrunMeta.close();
+	}
 }
 
 
@@ -899,6 +912,16 @@ bool CMarchingLoopFunctions::IsExperimentFinished() {
 void CMarchingLoopFunctions::OpenOutFilesID() {
 	// TODO: file init should be better done	
 	//os_interest.open("/mnt/c/argos/pl_check_kit/pl_check_kit/nodeinfo.log", std::ofstream::trunc | std::ofstream::out);
+
+	if (mLongrunEnabled)
+	{
+		std::string base = "/mnt/c/argos/pl_check_kit/pl_check_kit/Longrun/";
+		oLongrunDegrees.open(base + "degrees.csv");
+   		oLongrunRanges.open(base + "ranges.csv"); 
+   		oLongrunDegSnapshot.open(base + "degSnapshot.lr"); 
+   		oLongrunDegOverTime.open(base + "degOverTime.lr");
+   		oLongrunMeta.open(base + "meta.lr");
+	}
 
     // This method automatically detects the current working directory and opens the output files
     std::string filename = "";

@@ -145,6 +145,14 @@ private:
 
    void SetupHeuristic(std::vector<CFootBotMarching*>& controllers);
    void OutputDataForHeuristic(std::vector<CFootBotMarching*>& controllers);
+
+   // Longrun
+   bool mLongrunEnabled = false;
+   std::ofstream oLongrunDegrees; // File handle to csv containing: min deg, avg deg and max deg per entry per time step
+   std::ofstream oLongrunRanges; // Analogous to above
+   std::ofstream oLongrunDegSnapshot; // similar to existing implementation, but done to ensure nothing gets overwritten
+   std::ofstream oLongrunDegOverTime;
+   std::ofstream oLongrunMeta;
 };
 
 #endif
