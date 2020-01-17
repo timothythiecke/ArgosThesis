@@ -330,7 +330,7 @@ void CMarchingLoopFunctions::Destroy() {
 		files[1] << sqrt(history[d].NearestNeighbourDistance) << std::endl;
 		files[2] << (int)(history[c].DistanceState) << std::endl;
 		files[3] << history[c].DirectionDecision << std::endl;
-		files[4] << history[c].Degree << std::endl;
+		files[4] << history[c].GlobalDegree << std::endl;
 	}
 
 	for (std::ofstream& file : files)
@@ -1085,7 +1085,7 @@ void CMarchingLoopFunctions::OutputDataForHeuristic(std::vector<CFootBotMarching
 	if (mRepresentativeHeuristic == ERepresentativeHeuristic::Invalid)
 		return;
 	
-	std::vector<std::string> filenames = { "range", "nnrange", "nndist", "directiondecision", "degree" };
+	std::vector<std::string> filenames = { "range", "nnrange", "nndist", "directiondecision", "degree", "breakdown", "fractiondifference", "localdegree" };
 	std::string folder = "/mnt/c/argos/pl_check_kit/pl_check_kit/HeuristicData/";
 	int seed = CSimulator::GetInstance().GetRandomSeed();
 	int size = controllers.size();
@@ -1112,6 +1112,9 @@ void CMarchingLoopFunctions::OutputDataForHeuristic(std::vector<CFootBotMarching
 			std::ofstream oNNDistance;
 			std::ofstream oDirectionDecision;
 			std::ofstream oDegree;
+			std::ofstream oBreakdown;
+			std::ofstream oFractionDifference;
+			std::ofstream oLocalDegree;
 
 			std::string base = folder + std::to_string(seed) + "_" + std::to_string(size) + "_" + std::to_string(time) + "_" + heuristicNames[(int)(mRepresentativeHeuristic)] + "_" + type[i] + "_";
 			oRange.open(base + filenames[0]);
@@ -1119,6 +1122,9 @@ void CMarchingLoopFunctions::OutputDataForHeuristic(std::vector<CFootBotMarching
 			oNNDistance.open(base + filenames[2]);
 			oDirectionDecision.open(base + filenames[3]);
 			oDegree.open(base + filenames[4]);
+			oBreakdown.open(base + filenames[5]);
+			oFractionDifference.open(base+filenames[6]);
+			oLocalDegree.open(base+filenames[7]);
 
 			const vector<CFootBotMarching::SHistoryData>& history = (*it)->GetHistory();
 			int d = 0;
@@ -1132,7 +1138,10 @@ void CMarchingLoopFunctions::OutputDataForHeuristic(std::vector<CFootBotMarching
 				oNNDistance << sqrt(history[d].NearestNeighbourDistance) << std::endl;
 				oNNRange << history[d].NearestNeighbourRange << std::endl;
 				oDirectionDecision << history[c].DirectionDecision << std::endl;
-				oDegree << history[c].Degree << std::endl;
+				oDegree << history[c].GlobalDegree << std::endl;
+				oBreakdown << history[c].BreakdownDetected << std::endl;
+				oFractionDifference << history[c].FractionDifference << std::endl;
+				oLocalDegree << history[c].LocalDegree << std::endl;
 			}
 
 			oRange.close();
@@ -1140,6 +1149,9 @@ void CMarchingLoopFunctions::OutputDataForHeuristic(std::vector<CFootBotMarching
 			oNNDistance.close();
 			oDirectionDecision.close();
 			oDegree.close();
+			oBreakdown.close();
+			oFractionDifference.close();
+			oLocalDegree.close();
 		}
 		else
 		{

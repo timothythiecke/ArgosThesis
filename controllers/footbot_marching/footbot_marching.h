@@ -163,9 +163,12 @@ public:
       Real Range = -1.0;
       Real NearestNeighbourRange = -1.0;
       Real NearestNeighbourDistance = -1.0;
+      Real FractionDifference = 0.0;
       EDistanceState DistanceState = EDistanceState::INVALID;
       bool DirectionDecision = false; // true cw, false = ccw
-      int Degree = -1;
+      bool BreakdownDetected = false;
+      int GlobalDegree = -1;
+      int LocalDegree = -1;
 
       void Reset()
       {
@@ -174,7 +177,10 @@ public:
          NearestNeighbourDistance = -1.0;
          DistanceState = EDistanceState::INVALID;
          DirectionDecision = false;
-         Degree = -1;
+         BreakdownDetected = false;
+         GlobalDegree = -1;
+         LocalDegree = -1;
+         FractionDifference = 0.0;
       }
    };
 

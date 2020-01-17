@@ -336,7 +336,7 @@ int CFootBotMarching::GetDegree(){
 
 void CFootBotMarching::Decision() {
 	int degreeLocal = tPackets.size();
-
+	mCurrentHistoryState.LocalDegree = degreeLocal;
 	/* ======================= LISTEN TO NEIGHBORS ======================= */
 	/* ======================= + UPDATE THE SPEED ======================== */
 	/* =================================================================== */
@@ -416,6 +416,7 @@ void CFootBotMarching::Decision() {
 		if (mLocalNeighbourhoodCheck)
 		{
 			Real fraction_difference = Abs(f_fracLeft - f_fracRight);
+			mCurrentHistoryState.FractionDifference = fraction_difference;
 			if (m_pcRNG->Uniform(CRange<Real>(0.0, 1.0)) > fraction_difference)
 			{
 				mInterestFile << timer <<  ": Increasing range due to RNG > fraction_difference(" << fraction_difference << ")\n";
@@ -528,6 +529,7 @@ void CFootBotMarching::ControlStep()
 	if(variance_of_change_left_old < variance_of_change_left || variance_of_change_right_old < variance_of_change_right)
 	{
 		b_breakdown = true;
+		mCurrentHistoryState.BreakdownDetected = true;
 	}
 	/* ==================================================================== */
 	/* ==================================================================== */
@@ -653,7 +655,7 @@ void CFootBotMarching::ControlStep()
 	else{ m_pcLEDs->SetAllColors(CColor::BLACK); }
 	
 	// Keep track of state at this timestep
-	mCurrentHistoryState.Degree = this->GetDegree(); // Need to check if this is recalculated between ControlStep and PostStep
+	mCurrentHistoryState.GlobalDegree = this->GetDegree(); // Need to check if this is recalculated between ControlStep and PostStep
 	mCurrentHistoryState.DirectionDecision = this->GetVelocity() > 0.0;
 	mCurrentHistoryState.Range = this->GetNewRABRange();
     mCurrentHistoryState.NearestNeighbourDistance = this->GetNNSquaredDistance();
