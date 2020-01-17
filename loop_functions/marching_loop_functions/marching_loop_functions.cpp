@@ -278,6 +278,10 @@ void CMarchingLoopFunctions::Destroy() {
 		{
 			fRangesTot << ranges_tot[i] << std::endl;
 		}
+
+
+		oLongrunDegSnapshot << degrees[i] << "\n";
+		oLongrunDegOverTime << degrees_tot[i] << "\n";
 	}
 
 	// What about k-means clustering over 
@@ -408,6 +412,12 @@ void CMarchingLoopFunctions::Destroy() {
 	
 	fLog << "Done with writing, closing all file handles..." << std::endl;
 
+	// Meta file of long run
+	if (mLongrunEnabled)
+	{
+		oLongrunMeta << "Largest component contained " << components[0].size() << " elements (" << components[0].size() / (double)(degrees.size()) << ")" << std::endl;
+	}
+
 	// Close file handles
 	for (std::ofstream* f : file_handles)
 		f->close();
@@ -468,6 +478,11 @@ void CMarchingLoopFunctions::Destroy() {
 	// Handle longrun files
 	if (mLongrunEnabled)
 	{
+		oLongrunDegrees << std::flush;
+		oLongrunRanges << std::flush;
+		oLongrunDegSnapshot << std::flush;
+		oLongrunDegOverTime << std::flush;
+
 		oLongrunDegrees.close();
    		oLongrunRanges.close(); 
    		oLongrunDegSnapshot.close(); 
@@ -836,6 +851,12 @@ void CMarchingLoopFunctions::PostStep()
 		i--;
 	}
 
+	// Add data for longrun files
+	if (mLongrunEnabled)
+	{
+		oLongrunDegrees << controllers[controllers.size() - 1]->GetDegree() << "," << controllers[controllers.size() / 2]->GetDegree() << "," << controllers[0]->GetDegree() << "," << mAvgDegree << "\n";
+	}
+	
 	// TODO: additional sort call, wasteful?
 	std::sort(controllers.begin(), controllers.end(), [](CFootBotMarching* lhs, CFootBotMarching* rhs)
 	{
@@ -867,7 +888,13 @@ void CMarchingLoopFunctions::PostStep()
 		counter++;
 	}
 
-	// Steup heuristic
+	// Add data for longrun files
+	if (mLongrunEnabled)
+	{
+		oLongrunRanges << controllers[controllers.size() - 1]->GetNewRABRange() << "," << controllers[controllers.size() / 2]->GetNewRABRange() << "," << controllers[0]->GetNewRABRange() << "," << mAvgRABRange  << "\n";
+	}
+
+	// Setup heuristic
 	if (currentTime == 1 && mRepresentativeHeuristic != ERepresentativeHeuristic::Invalid)
 	{
 		LOG << "Setting up heuristic..." << std::endl;
