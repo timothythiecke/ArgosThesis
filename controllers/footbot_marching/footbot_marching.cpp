@@ -165,6 +165,9 @@ void CFootBotMarching::Init(TConfigurationNode& t_node) {
 	GetNodeAttribute(tDmm, "breakdownEnabled", mBreakdownEnabled);
 	GetNodeAttribute(tDmm, "localNeighbourhoodCheck", mLocalNeighbourhoodCheck);
 
+	TConfigurationNode& tOutput = GetNode(t_node, "output");
+	GetNodeAttribute(tOutput, "folderForInterestFile", mFolderForInterestFile);
+
 	mHistoryData.reserve(200);
 
 	m_pcRNG = CRandom::CreateRNG("argos");
@@ -481,7 +484,7 @@ void CFootBotMarching::ControlStep()
 {
   	if (mIsNodeOfInterest && !mInterestFile.is_open())
 	{
-		mInterestFile.open("/mnt/c/argos/pl_check_kit/pl_check_kit/nodeinfo.log", std::ofstream::trunc | std::ofstream::out);
+		mInterestFile.open(mFolderForInterestFile + "nodeinfo.log", std::ofstream::trunc | std::ofstream::out);
 		mInterestFile << "Starting interest ouput for node " << m_unID << std::endl;
 	}
    

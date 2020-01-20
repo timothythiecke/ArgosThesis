@@ -391,6 +391,7 @@ private:
    // True if we are interested in which events happend for this node
    bool mIsNodeOfInterest = false; 
    std::ofstream mInterestFile;
+   std::string mFolderForInterestFile;
 
    Real f_fracLeft;
    Real f_fracRight;
