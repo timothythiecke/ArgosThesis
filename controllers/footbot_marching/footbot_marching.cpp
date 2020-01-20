@@ -437,6 +437,7 @@ void CFootBotMarching::Decision() {
 		{
 			mInterestFile << timer <<  ": Increasing range due to detected breakdown (no neighbours)\n";
 			
+			mCurrentHistoryState.BreakdownDetected = 1;
 			IncreaseRange();
 		}
 	}
@@ -529,7 +530,7 @@ void CFootBotMarching::ControlStep()
 	if(variance_of_change_left_old < variance_of_change_left || variance_of_change_right_old < variance_of_change_right)
 	{
 		b_breakdown = true;
-		mCurrentHistoryState.BreakdownDetected = true;
+		mCurrentHistoryState.BreakdownDetected = 0;
 	}
 	/* ==================================================================== */
 	/* ==================================================================== */

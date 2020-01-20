@@ -5,7 +5,7 @@
   <!-- ************************* -->
   <framework>
     <system threads="0"/>
-    <experiment length="100" ticks_per_second="1" random_seed="13"/>
+    <experiment length="100" ticks_per_second="1" random_seed="10"/>
   </framework>
   <!-- *************** -->
   <!-- * Controllers * -->
@@ -42,8 +42,8 @@
     <hubs fraction="0.1"/>
     <node zeroWorkAround="true" output="false"/>
     <nearestNeighbour drawLinks="true"/>
-    <representative heuristic="-1" maxNode="-1" midNode="-1" minNode="-1" fraction="0.2"/>
-    <longrun enabled="true"/>
+    <representative heuristic="2" maxNode="-1" midNode="-1" minNode="-1" fraction="0.2"/>
+    <longrun enabled="false"/>
   </loop_functions>
   
   <!-- ******************* -->

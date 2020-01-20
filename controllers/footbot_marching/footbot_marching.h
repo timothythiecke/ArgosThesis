@@ -163,10 +163,10 @@ public:
       Real Range = -1.0;
       Real NearestNeighbourRange = -1.0;
       Real NearestNeighbourDistance = -1.0;
-      Real FractionDifference = 0.0;
+      Real FractionDifference = -1.0;
       EDistanceState DistanceState = EDistanceState::INVALID;
       bool DirectionDecision = false; // true cw, false = ccw
-      bool BreakdownDetected = false;
+      int BreakdownDetected = -1; // -1 -> no breakdown, 0 -> breakdown detected, 1 -> range increase due to breakdown
       int GlobalDegree = -1;
       int LocalDegree = -1;
 
@@ -177,10 +177,10 @@ public:
          NearestNeighbourDistance = -1.0;
          DistanceState = EDistanceState::INVALID;
          DirectionDecision = false;
-         BreakdownDetected = false;
+         BreakdownDetected = -1;
          GlobalDegree = -1;
          LocalDegree = -1;
-         FractionDifference = 0.0;
+         FractionDifference = -1.0;
       }
    };
 
