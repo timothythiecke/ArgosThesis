@@ -303,8 +303,7 @@ void CMarchingLoopFunctions::Destroy() {
 	int c = 0;
 	for (std::ofstream& file : files)
 	{
-		std::string filename;
-		filename.append("/mnt/c/argos/pl_check_kit/pl_check_kit/");
+		std::string filename = mBaseFolderForOutput;
 		filename.append("0_isolated_");
 		filename.append(file_names[c]);
 		filename.append(".dat");
@@ -315,7 +314,7 @@ void CMarchingLoopFunctions::Destroy() {
 	
 	assert(controllers[0] != nullptr);
 	std::ofstream isolatedMeta;
-	isolatedMeta.open("/mnt/c/argos/pl_check_kit/pl_check_kit/0_isolated_meta.dat");
+	isolatedMeta.open(mBaseFolderForOutput + "0_isolated_meta.dat");
 	isolatedMeta << controllers[0]->GetID() << std::endl;
 	for (CFootBotMarching* ptr : controllers)
 	{
@@ -371,33 +370,32 @@ void CMarchingLoopFunctions::Destroy() {
 		return lhs->GetNewRABRange() > rhs->GetNewRABRange();
 	});
 
-	std::ofstream shiefefl;
-	std::string filename;
-	filename.append("/mnt/c/argos/pl_check_kit/pl_check_kit/rangedeg").append(std::to_string(controllers.size())).append(".dat");
-	//shiefefl.open("/mnt/c/argos/pl_check_kit/pl_check_kit/rangedeg.dat");
-	shiefefl.open(filename);
+	std::string filename = mBaseFolderForOutput;
+	filename.append("rangedeg").append(std::to_string(controllers.size())).append(".dat");
+	std::ofstream oRangeDeg;
+	oRangeDeg.open(filename);
 	for (CFootBotMarching* ptr : controllers)
 	{
 		assert(ptr != nullptr);
 
 		if (ptr->GetDegree() > 0)
-			shiefefl << ptr->GetNewRABRange() << "," << ptr->GetDegree() << std::endl;
+			oRangeDeg << ptr->GetNewRABRange() << "," << ptr->GetDegree() << std::endl;
 	}
-	shiefefl.close();
+	oRangeDeg.close();
 	
 	this->OutputDataForHeuristic(controllers);
 
 	filename.clear();
-	filename.append("/mnt/c/argos/pl_check_kit/pl_check_kit/degrange").append(std::to_string(controllers.size())).append(".dat");
-	//shiefefl.open("/mnt/c/argos/pl_check_kit/pl_check_kit/degrange.dat");
-	shiefefl.open(filename);
+	filename = mBaseFolderForOutput;
+	filename.append("degrange").append(std::to_string(controllers.size())).append(".dat");
+	oRangeDeg.open(filename);
 	for (CFootBotMarching* ptr : controllers)
 	{
 		assert(ptr != nullptr);
 		if (ptr->GetDegree() > 0)
-			shiefefl << ptr->GetDegree() << "," << ptr->GetNewRABRange() << std::endl;
+			oRangeDeg << ptr->GetDegree() << "," << ptr->GetNewRABRange() << std::endl;
 	}
-	shiefefl.close();
+	oRangeDeg.close();
 
 
 	// Populate metadata file
@@ -935,13 +933,11 @@ bool CMarchingLoopFunctions::IsExperimentFinished() {
 /****************************************/
 /****************************************/
 
-void CMarchingLoopFunctions::OpenOutFilesID() {
-	// TODO: file init should be better done	
-	//os_interest.open("/mnt/c/argos/pl_check_kit/pl_check_kit/nodeinfo.log", std::ofstream::trunc | std::ofstream::out);
-
+void CMarchingLoopFunctions::OpenOutFilesID() 
+{
 	if (mLongrunEnabled)
 	{
-		std::string base = "/mnt/c/argos/pl_check_kit/pl_check_kit/Longrun/";
+		std::string base = mBaseFolderForOutput + "Longrun/";
 		oLongrunDegrees.open(base + "degrees.csv");
    		oLongrunRanges.open(base + "ranges.csv"); 
    		oLongrunDegSnapshot.open(base + "degSnapshot.lr"); 
@@ -1013,7 +1009,7 @@ void CMarchingLoopFunctions::OutputNNDistanceDistribution()
 	std::sort(mNNSquaredDistanceDistribution.begin(), mNNSquaredDistanceDistribution.end());
 
 	std::ofstream fNNDistr;
-	fNNDistr.open("/mnt/c/argos/pl_check_kit/pl_check_kit/nnDistribution.dat", std::ofstream::trunc | std::ofstream::out);
+	fNNDistr.open(mBaseFolderForOutput + "nnDistribution.dat", std::ofstream::trunc | std::ofstream::out);
 	
 	for (const Real sqDist : mNNSquaredDistanceDistribution)
 	{
@@ -1135,7 +1131,7 @@ void CMarchingLoopFunctions::OutputDataForHeuristic(std::vector<CFootBotMarching
 		return;
 	
 	std::vector<std::string> filenames = { "range", "nnrange", "nndist", "directiondecision", "degree", "breakdown", "fractiondifference", "localdegree" };
-	std::string folder = "/mnt/c/argos/pl_check_kit/pl_check_kit/HeuristicData/";
+	std::string folder = mBaseFolderForOutput + "HeuristicData/";
 	int seed = CSimulator::GetInstance().GetRandomSeed();
 	int size = controllers.size();
 	int time = GetSpace().GetSimulationClock();
