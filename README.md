@@ -28,6 +28,7 @@ Contains the files associated with the longrun of the experiment. The .lr files 
 Contains a subfolder with seeddata in the same vein as the DMMAnalysis files without the w component in the filename. The result of recurring PL evaluator tests (binomial) are then processed and formatted into the .csv files.
 
 ## TODO list
+* Readme: explain what each .argos file configurable variable does
 * The Loopfunction requires cleanup of the way file handles are used
 * Cleanup sorting in Destroy() should be reduced as much as possible
 * Naive nearest neighbour evaluation should be replaced with a more efficient technique
