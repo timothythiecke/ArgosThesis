@@ -153,6 +153,8 @@ private:
    std::ofstream oLongrunDegSnapshot; // similar to existing implementation, but done to ensure nothing gets overwritten
    std::ofstream oLongrunDegOverTime;
    std::ofstream oLongrunMeta;
+
+   std::string mBaseFolderForOutput;
 };
 
 #endif

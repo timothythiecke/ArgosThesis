@@ -36,6 +36,7 @@ void CMarchingLoopFunctions::Init(TConfigurationNode& t_node) {
 	  	TConfigurationNode& tOutput = GetNode(t_node, "output");
 		GetNodeAttribute(tOutput, "timer", mOutputTimer);
 		GetNodeAttribute(tOutput, "nodeOfInterest", mNodeOfInterest);
+		GetNodeAttribute(tOutput, "baseFolder", mBaseFolderForOutput);
 
 		TConfigurationNode& tHubs = GetNode(t_node, "hubs");
 		GetNodeAttribute(tHubs, "fraction", mHubMarkingFraction);
@@ -94,7 +95,7 @@ void CMarchingLoopFunctions::Destroy() {
 
 	//OutputSeedData();
 
-#define DIRECT_OUTPUT // If defined, outputs files directly to the pl_check_kit folder
+#define DIRECT_OUTPUT // If defined, outputs files directly to the baseFolder (config)
 #ifdef DIRECT_OUTPUT
 	// Create file handles
 	std::ofstream fDegrees;
@@ -109,19 +110,17 @@ void CMarchingLoopFunctions::Destroy() {
 	std::ofstream fRangesTot;
 
 	vector<std::ofstream*> file_handles = { &fDegrees, &fDegreesTot, &fMetaData, &fLog, &fDegreesGC, &fDegreesTotGC, &fDegreesUnsorted, &fDegreesTotUnsorted, &fRanges, &fRangesTot};
-	std::string dir = "/mnt/c/argos/pl_check_kit/pl_check_kit/";
 	vector<std::string> names = { "degDistribution.dat", "degDistribution_tot.dat", "metaData.dat", "log.log", "degDistributionGiant.dat", "degDistribution_totGiant.dat",
 									"degDistributionUnsorted.dat", "degDistribution_totUnsorted.dat","ranges.dat", "ranges_tot.dat" };
 	
 	int i = 0;
 	for (std::ofstream* file : file_handles)
-		file->open(dir + names[i++]);
+		file->open(mBaseFolderForOutput + names[i++]);
 
 	// File handles for seed data
 	CFootBotEntity& bot = *any_cast<CFootBotEntity*>(m_cFootbots.begin()->second);
 	CFootBotMarching& controller = dynamic_cast<CFootBotMarching&>(bot.GetControllableEntity().GetController());
 	i = 0;
-	dir = "/mnt/c/argos/pl_check_kit/pl_check_kit/SeedData/";
 	vector<std::ofstream> seed_based_files(7);
 	vector<std::string> seed_based_names = { "deg", "degTime", "NN", "NNTime", "range", "rangeTime", "meta"};
 	assert(seed_based_files.size() == seed_based_names.size());
@@ -129,7 +128,7 @@ void CMarchingLoopFunctions::Destroy() {
 	{
 		int breakdown = controller.GetBreakdownEnabled() ? 1 : 0;
 		int local = controller.GetLocalNeighbourhoodCheck() ? 1 : 0;
-		file.open(dir + std::to_string(seed) + "_" + std::to_string(pop_size) + "_" + std::to_string(timer)+ "_" + std::to_string(breakdown) + std::to_string(local) + "_" + seed_based_names[i++]);
+		file.open(mBaseFolderForOutput + "SeedData/" + std::to_string(seed) + "_" + std::to_string(pop_size) + "_" + std::to_string(timer)+ "_" + std::to_string(breakdown) + std::to_string(local) + "_" + seed_based_names[i++]);
 	}
 
 	std::vector<int> degrees(pop_size);
